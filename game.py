@@ -10,6 +10,8 @@ SCREEN_HEIGHT = 600  # Wysokość ekranu
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # Utworzenie ekranu o określonych wymiarach
 INITIAL_STATE = GameState.MAIN_MENU  # Początkowy stan gry
 ESC_BUTTON = pygame.K_ESCAPE  # Przycisk ESC
+WINDOW_TITLE = "Squaregame"  # Tytuł okna
+FPS_CAP = 60  # Maksymalna liczba klatek na sekundę
 
 
 class Game:
@@ -20,6 +22,7 @@ class Game:
         """
         self.state = INITIAL_STATE  # Początkowy stan gry
         self.screen = SCREEN  # Utworzenie ekranu o określonych wymiarach
+        self.caption = pygame.display.set_caption(WINDOW_TITLE)  # Nadanie tytułu okna
 
     def get_events(self):
         """
@@ -54,12 +57,15 @@ class Game:
                 action = event_actions[event.type]  # Pobranie akcji dla danego zdarzenia
                 if isinstance(action, dict):  # Sprawdzenie, czy akcja jest słownikiem
                     if (
-                        event.type == self.KEYDOWN_EVENT and event.key in action
+                        event.type == KEYDOWN_EVENT and event.key in action
                     ):  # Sprawdzenie, czy klawisz jest obsługiwany
                         # Zwrócenie nowego stanu gry lub aktualnego, jeśli nie ma zdefiniowanej akcji dla aktualnego stanu
                         return action[event.key].get(self.state, self.state)
+                    else:
+                        # Jeśli dla danego klawisza nie ma zdefiniowanej akcji dla aktualnego stanu, zwróć aktualny stan
+                        self.state = self.state
                 else:
-                    return action
+                    self.state = action
         return self.state  # Zwrócenie aktualnego stanu, jeśli nie ma zdarzeń do obsługi
 
     def run(self):
@@ -67,6 +73,7 @@ class Game:
         Uruchamia główną pętlę gry, która trwa, dopóki stan gry nie jest równy QUIT.
         W każdej iteracji pętli, zdarzenia są obsługiwane, a stan gry jest aktualizowany.
         """
+        clock = pygame.time.Clock()  # Utworzenie zegara do kontrolowania liczby klatek na sekundę
         while self.state != GameState.QUIT:
             self.state = self.handle_events()  # Obsługa zdarzeń i aktualizacja stanu gry
             if self.state == GameState.MAIN_MENU:
@@ -75,6 +82,8 @@ class Game:
                 self.game_running()  # Uruchomienie gry
             elif self.state == GameState.PAUSE:
                 self.pause_menu()  # Wyświetlanie menu pauzy
+            pygame.display.flip()  # Aktualizacja wyświetlania
+            clock.tick(FPS_CAP)  # Limit FPS do 60
 
     def main_menu(self):
         """
