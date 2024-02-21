@@ -5,12 +5,16 @@ def game_running(screen):
     """
     Funkcja obsługująca stan gry "running".
     """
-    font = pygame.font.Font(None, 36)  # Utwórz czcionkę o rozmiarze 36
-    text = font.render("Game is running properly", True, (255, 255, 255))  # Utwórz tekst
-    pygame.display.flip()  # Aktualizuj ekran
-    # Wyświetl tekst na środku ekranu
-    x = (screen.get_width() - text.get_width()) // 2
-    y = (screen.get_height() - text.get_height()) // 2
-    screen.blit(text, (x, y))
+    # Wypełnij ekran kolorem czarnym
+    screen.fill((0, 0, 0))
 
-    pygame.display.flip()  # Aktualizuj ekran
+    # Ustal rozmiar i pozycję kwadratu
+    square_size = 50
+    square_x = (screen.get_width() - square_size) / 2
+    square_y = (screen.get_height() - square_size) / 2
+
+    # Narysuj czerwony kwadrat
+    pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(square_x, square_y, square_size, square_size))
+
+    # Wyświetl zmiany na ekranie
+    pygame.display.flip()

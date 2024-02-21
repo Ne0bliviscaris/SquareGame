@@ -46,7 +46,7 @@ class Button:
         self.border_width = border_width
 
     @staticmethod
-    def create_from_screen(screen, y_offset, text, action):
+    def create_from_screen_size(screen, y_offset, text, action):
         """
         Tworzy przycisk z określonymi stałymi wartościami.
         """
@@ -59,7 +59,7 @@ class Button:
         Rysuje przycisk na ekranie.
         """
         # Zmień kolor przycisku, gdy kursor myszy jest nad nim
-        if self.is_mouse_over():
+        if self.is_hovered():
             color = self.hover_color
         else:
             color = self.button_color
@@ -80,7 +80,7 @@ class Button:
             ),
         )
 
-    def is_mouse_over(self):
+    def is_hovered(self):
         """
         Sprawdza, czy kursor myszy jest nad przyciskiem.
         """
@@ -92,7 +92,7 @@ class Button:
         """
         Sprawdza, czy przycisk został naciśnięty.
         """
-        if self.is_mouse_over():  # Sprawdź, czy kursor myszy jest nad przyciskiem
+        if self.is_hovered():  # Sprawdź, czy kursor myszy jest nad przyciskiem
             if pygame.mouse.get_pressed()[0]:  # Sprawdź, czy lewy przycisk myszy jest naciśnięty
                 return True
         return False
@@ -104,8 +104,8 @@ def main_menu(screen, game_state):
     """
 
     # Utwórz przyciski
-    start_button = Button.create_from_screen(screen, 0, "New Game", GameState.RUNNING)
-    quit_button = Button.create_from_screen(screen, 1, "Quit", GameState.QUIT)
+    start_button = Button.create_from_screen_size(screen, 0, "New Game", GameState.RUNNING)
+    quit_button = Button.create_from_screen_size(screen, 1, "Quit", GameState.QUIT)
 
     screen.fill((0, 0, 0))  # Wypełnij ekran kolorem
     display_logo(screen)  # Wyświetl logo
@@ -129,20 +129,37 @@ def main_menu(screen, game_state):
 
 
 def pause_menu(screen, game_state):
-    """
-    Funkcja obsługująca menu pauzy.
-    """
-    pygame.display.flip()  # Aktualizuj ekran
-    display_logo(screen)
-    pygame.display.flip()  # Wyświetlenie zmian na ekranie
-    font = pygame.font.Font(None, 36)  # Utwórz czcionkę o rozmiarze 36
-    text = font.render("Game is paused properly", True, (255, 255, 255))  # Utwórz tekst
+    # Utwórz przezroczystą powierzchnię dla menu pauzy
+    pause_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+    pause_surface.fill((0, 0, 0, 128))  # Półprzezroczysty czarny
 
-    # Wyświetl tekst na środku ekranu
-    x = (screen.get_width() - text.get_width()) // 2
-    y = (screen.get_height() - text.get_height()) // 2
-    screen.blit(text, (x, y))
-    pass
+    # Utwórz przyciski
+    resume_button = Button.create_from_screen_size(pause_surface, 0, "Resume", GameState.RUNNING)
+    quit_button = Button.create_from_screen_size(pause_surface, 1, "Quit", GameState.QUIT)
+
+    # Wyświetl logo
+    display_logo(pause_surface)
+
+    # Rysuj przyciski
+    resume_button.draw(pause_surface)
+    quit_button.draw(pause_surface)
+
+    # Obsługa zdarzeń
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            return GameState.QUIT
+        elif resume_button.is_mouse_down():
+            return GameState.RUNNING
+        elif quit_button.is_mouse_down():
+            return GameState.QUIT
+
+    # Rysuj powierzchnię menu pauzy na ekranie gry
+    screen.blit(pause_surface, (0, 0))
+
+    # Wyświetl zmiany na ekranie
+    pygame.display.flip()
+
+    return game_state
 
 
 def display_logo(screen):
