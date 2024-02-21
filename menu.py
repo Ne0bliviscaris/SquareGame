@@ -12,15 +12,21 @@ class GameState(Enum):
     QUIT = 3
 
 
+BUTTON_WIDTH = 200
+BUTTON_HEIGHT = 50
+BUTTON_Y_START = 300  # Możesz zmienić tę wartość na tę, którą chcesz
+BUTTON_Y_GAP = 60  # Możesz zmienić tę wartość na tę, którą chcesz
+
+
 class Button:
     def __init__(
         self,
         x,
         y,
-        width,
-        height,
         text,
         action,
+        width=BUTTON_WIDTH,
+        height=BUTTON_HEIGHT,
         font_size=36,
         text_color=(255, 255, 255),
         button_color=(0, 0, 0),
@@ -39,12 +45,21 @@ class Button:
         self.hover_color = hover_color
         self.border_width = border_width
 
+    @staticmethod
+    def create_from_screen(screen, y_offset, text, action):
+        """
+        Tworzy przycisk z określonymi stałymi wartościami.
+        """
+        screen_width, _ = screen.get_size()
+        button_x = (screen_width - BUTTON_WIDTH) / 2
+        return Button(button_x, BUTTON_Y_START + y_offset * BUTTON_Y_GAP, text, action)
+
     def draw(self, screen):
         """
         Rysuje przycisk na ekranie.
         """
         # Zmień kolor przycisku, gdy kursor myszy jest nad nim
-        if self.rect.collidepoint(pygame.mouse.get_pos()):
+        if self.is_mouse_over():
             color = self.hover_color
         else:
             color = self.button_color
@@ -65,12 +80,20 @@ class Button:
             ),
         )
 
-    def is_clicked(self, event):
+    def is_mouse_over(self):
+        """
+        Sprawdza, czy kursor myszy jest nad przyciskiem.
+        """
+        if self.rect.collidepoint(pygame.mouse.get_pos()):
+            return True
+        return False
+
+    def is_mouse_down(self):
         """
         Sprawdza, czy przycisk został naciśnięty.
         """
-        if event.type == pygame.MOUSEBUTTONDOWN:  # Sprawdź czy klawisz myszy został naciśnięty
-            if self.rect.collidepoint(event.pos):  # Sprawdź czy kursor myszy jest nad przyciskiem
+        if self.is_mouse_over():  # Sprawdź, czy kursor myszy jest nad przyciskiem
+            if pygame.mouse.get_pressed()[0]:  # Sprawdź, czy lewy przycisk myszy jest naciśnięty
                 return True
         return False
 
@@ -81,20 +104,8 @@ def main_menu(screen, game_state):
     """
 
     # Utwórz przyciski
-    button_width = 200
-    button_height = 50
-    screen_width, screen_height = screen.get_size()
-    start_button = Button(
-        (screen_width - button_width) / 2, screen_height / 2, button_width, button_height, "Start", GameState.RUNNING
-    )
-    quit_button = Button(
-        (screen_width - button_width) / 2,
-        screen_height / 2 + button_height + 10,
-        button_width,
-        button_height,
-        "Quit",
-        GameState.QUIT,
-    )
+    start_button = Button.create_from_screen(screen, 0, "New Game", GameState.RUNNING)
+    quit_button = Button.create_from_screen(screen, 1, "Quit", GameState.QUIT)
 
     screen.fill((0, 0, 0))  # Wypełnij ekran kolorem
     display_logo(screen)  # Wyświetl logo
@@ -104,13 +115,12 @@ def main_menu(screen, game_state):
     quit_button.draw(screen)  # Przycisk quit
 
     # Obsługa zdarzeń
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            return GameState.QUIT
-        elif start_button.is_clicked(event):
-            return start_button.action
-        elif quit_button.is_clicked(event):
-            return quit_button.action
+    if start_button.is_mouse_down():  # Sprawdź, czy przycisk start został naciśnięty
+        return start_button.action  # Akcja przycisku start
+    elif quit_button.is_mouse_down():  # Sprawdź, czy przycisk quit został naciśnięty
+        return quit_button.action  # Akcja przycisku quit
+    # elif pygame.event.get(pygame.QUIT):
+    #     return GameState.QUIT
 
     # Wyświetl zmiany na ekranie
     pygame.display.flip()
