@@ -128,3 +128,6 @@ def launch():
     game = Game()
     game.run()
     pygame.quit()
+
+
+launch()
