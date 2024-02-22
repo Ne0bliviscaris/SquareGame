@@ -2,7 +2,7 @@ import pygame
 
 import menu
 import play
-from menu import GameState
+from menu import Button, GameState
 
 # Stałe wartości
 SCREEN_WIDTH = 900  # Szerokość ekranu
@@ -11,7 +11,8 @@ SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # Utworzenie ek
 INITIAL_STATE = GameState.MAIN_MENU  # Początkowy stan gry
 ESC_BUTTON = pygame.K_ESCAPE  # Przycisk ESC
 WINDOW_TITLE = "Squaregame"  # Tytuł okna
-FPS_CAP = 60  # Maksymalna liczba klatek na sekundę
+
+FPS_CAP = 200  # Maksymalna liczba klatek na sekundę
 
 
 class Game:
@@ -23,6 +24,21 @@ class Game:
         self.state = INITIAL_STATE  # Początkowy stan gry
         self.screen = SCREEN  # Utworzenie ekranu o określonych wymiarach
         self.caption = pygame.display.set_caption(WINDOW_TITLE)  # Nadanie tytułu okna
+        self.logo = pygame.image.load("assets/logo.png")  # Załaduj obraz logo na początku gry
+        # Utwórz jednorazowo przyciski menu głównego
+        self.start_button = Button.create_from_screen_size(self.screen, 0, "New Game", GameState.RUNNING)
+        self.resume_button = Button.create_from_screen_size(self.screen, 0, "Resume", GameState.RUNNING)
+        self.quit_button = Button.create_from_screen_size(self.screen, 1, "Quit", GameState.QUIT)
+
+    def display_logo(self, screen):
+        """
+        Wyświetla logo gry.
+        """
+        # Oblicz pozycję, na której logo powinno być wyświetlone
+        x = (screen.get_width() - self.logo.get_width()) // 2  # Środek ekranu
+        y = 5  # Odległość od góry ekranu
+
+        screen.blit(self.logo, (x, y))  # Wyświetl logo
 
     def get_events(self):
         """
@@ -89,7 +105,7 @@ class Game:
         """
         Wywołuje funkcję wyświetlającą menu główne gry.
         """
-        self.state = menu.main_menu(self.screen, self.state)
+        self.state = menu.main_menu(self.screen, self.state, self.logo, self.start_button, self.quit_button)
 
     def game_running(self):
         """
@@ -101,7 +117,7 @@ class Game:
         """
         Wywołuje funkcję wyświetlającą menu pauzy gry.
         """
-        menu.pause_menu(self.screen, self.state)
+        menu.pause_menu(self.screen, self.state, self.logo, self.resume_button, self.quit_button)
 
 
 def launch():

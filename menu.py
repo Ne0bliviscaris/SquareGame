@@ -2,6 +2,24 @@ from enum import Enum
 
 import pygame
 
+BUTTON_WIDTH = 200
+BUTTON_HEIGHT = 50
+BUTTON_Y_START = 300  # Możesz zmienić tę wartość na tę, którą chcesz
+BUTTON_Y_GAP = 60  # Możesz zmienić tę wartość na tę, którą chcesz
+
+
+def display_logo(screen, logo):
+    """
+    Wyświetla logo gry.
+    """
+
+    # Oblicz pozycję, na której logo powinno być wyświetlone
+    x = (screen.get_width() - logo.get_width()) // 2
+    y = 5
+
+    # Wyświetl logo
+    screen.blit(logo, (x, y))
+
 
 class GameState(Enum):
     """Enum reprezentujący różne stany gry."""
@@ -12,13 +30,8 @@ class GameState(Enum):
     QUIT = 3
 
 
-BUTTON_WIDTH = 200
-BUTTON_HEIGHT = 50
-BUTTON_Y_START = 300  # Możesz zmienić tę wartość na tę, którą chcesz
-BUTTON_Y_GAP = 60  # Możesz zmienić tę wartość na tę, którą chcesz
-
-
 class Button:
+
     def __init__(
         self,
         x,
@@ -44,6 +57,7 @@ class Button:
         self.button_color = button_color
         self.hover_color = hover_color
         self.border_width = border_width
+        self.text_surface = self.font.render(self.text, True, self.text_color)  # Przygotuj powierzchnię tekstu
 
     @staticmethod
     def create_from_screen_size(screen, y_offset, text, action):
@@ -71,12 +85,11 @@ class Button:
         pygame.draw.rect(screen, self.text_color, self.rect, self.border_width)
 
         # Rysuj tekst na przycisku
-        text_surface = self.font.render(self.text, True, self.text_color)
         screen.blit(
-            text_surface,
+            self.text_surface,
             (
-                self.rect.x + (self.rect.width - text_surface.get_width()) // 2,
-                self.rect.y + (self.rect.height - text_surface.get_height()) // 2,
+                self.rect.x + (self.rect.width - self.text_surface.get_width()) // 2,
+                self.rect.y + (self.rect.height - self.text_surface.get_height()) // 2,
             ),
         )
 
@@ -92,35 +105,46 @@ class Button:
         """
         Sprawdza, czy przycisk został naciśnięty.
         """
-        if self.is_hovered():  # Sprawdź, czy kursor myszy jest nad przyciskiem
-            if pygame.mouse.get_pressed()[0]:  # Sprawdź, czy lewy przycisk myszy jest naciśnięty
-                return True
+        if self.is_hovered() and pygame.mouse.get_pressed()[0]:  # Sprawdź hover i kliknięcie myszy
+            return True
         return False
 
+    def handle_event(self):
+        """
+        Obsługuje zdarzenia dla przycisku.
+        """
+        if self.is_mouse_down():
+            return self.action
+        return None
 
-def main_menu(screen, game_state):
+    def update(self):
+        """
+        Aktualizuje stan przycisku i wywołuje obsługę zdarzenia.
+        """
+        action = self.handle_event()
+        if action is not None:
+            return action
+
+
+def main_menu(screen, game_state, logo, start_button, quit_button):
     """
     Funkcja obsługująca menu główne gry.
     """
 
-    # Utwórz przyciski
-    start_button = Button.create_from_screen_size(screen, 0, "New Game", GameState.RUNNING)
-    quit_button = Button.create_from_screen_size(screen, 1, "Quit", GameState.QUIT)
-
     screen.fill((0, 0, 0))  # Wypełnij ekran kolorem
-    display_logo(screen)  # Wyświetl logo
-
+    display_logo(screen, logo)  # Wyświetl logo
     # Rysuj przyciski
     start_button.draw(screen)  # Przycisk start
     quit_button.draw(screen)  # Przycisk quit
 
-    # Obsługa zdarzeń
-    if start_button.is_mouse_down():  # Sprawdź, czy przycisk start został naciśnięty
-        return start_button.action  # Akcja przycisku start
-    elif quit_button.is_mouse_down():  # Sprawdź, czy przycisk quit został naciśnięty
-        return quit_button.action  # Akcja przycisku quit
-    # elif pygame.event.get(pygame.QUIT):
-    #     return GameState.QUIT
+    # Aktualizacja przycisków
+    start_action = start_button.update()
+    if start_action is not None:
+        return start_action
+
+    quit_action = quit_button.update()
+    if quit_action is not None:
+        return quit_action
 
     # Wyświetl zmiany na ekranie
     pygame.display.flip()
@@ -128,30 +152,24 @@ def main_menu(screen, game_state):
     return game_state
 
 
-def pause_menu(screen, game_state):
+def pause_menu(screen, game_state, logo, resume_button, quit_button):
     # Utwórz przezroczystą powierzchnię dla menu pauzy
     pause_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
     pause_surface.fill((0, 0, 0, 128))  # Półprzezroczysty czarny
 
-    # Utwórz przyciski
-    resume_button = Button.create_from_screen_size(pause_surface, 0, "Resume", GameState.RUNNING)
-    quit_button = Button.create_from_screen_size(pause_surface, 1, "Quit", GameState.QUIT)
-
-    # Wyświetl logo
-    display_logo(pause_surface)
-
+    display_logo(screen, logo)  # Wyświetl logo
     # Rysuj przyciski
-    resume_button.draw(pause_surface)
-    quit_button.draw(pause_surface)
+    resume_button.draw(screen)  # Przycisk start
+    quit_button.draw(screen)  # Przycisk quit
 
-    # Obsługa zdarzeń
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            return GameState.QUIT
-        elif resume_button.is_mouse_down():
-            return GameState.RUNNING
-        elif quit_button.is_mouse_down():
-            return GameState.QUIT
+    # Aktualizacja przycisków
+    start_action = resume_button.update()
+    if start_action is not None:
+        return start_action
+
+    quit_action = quit_button.update()
+    if quit_action is not None:
+        return quit_action
 
     # Rysuj powierzchnię menu pauzy na ekranie gry
     screen.blit(pause_surface, (0, 0))
@@ -160,18 +178,3 @@ def pause_menu(screen, game_state):
     pygame.display.flip()
 
     return game_state
-
-
-def display_logo(screen):
-    """
-    Wyświetla logo gry.
-    """
-    # Załaduj obrazek
-    logo = pygame.image.load("assets/logo.png")
-
-    # Oblicz pozycję, na której logo powinno być wyświetlone
-    x = (screen.get_width() - logo.get_width()) // 2
-    y = 5
-
-    # Wyświetl logo
-    screen.blit(logo, (x, y))
