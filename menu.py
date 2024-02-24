@@ -67,20 +67,21 @@ class PauseMenuState:
         self.pause_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
         self.pause_surface.fill((0, 60, 0, 255))  # Półprzezroczyste zielone tło
 
-    def handle_events(self, events):
+    def handle_events(self, events, screen=None):
         for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                return self.main_menu_state.running_game_state
+                return self.running_game_state  # Zwróć running_game_state zamiast main_menu_state
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 action = self.resume_button.update()
                 if action is not None:
                     return action
                 action = self.replay_button.update()
                 if action is not None:
-                    return action
+                    if action is not None:
+                        return GameState.RESET  # Zwróć GameState.RESET zamiast resetować stan gry bezpośrednio
                 action = self.quit_button.update()
                 if action is not None:
                     pygame.quit()
@@ -108,6 +109,12 @@ class PauseMenuState:
         self.resume_button.draw(self.screen)
         self.replay_button.draw(self.screen)
         self.quit_button.draw(self.screen)
+
+    def set_running_game_state(self, running_game_state):
+        """
+        Ustawia stan gry.
+        """
+        self.running_game_state = running_game_state
 
 
 def display_logo(screen, logo):

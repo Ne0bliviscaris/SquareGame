@@ -6,8 +6,9 @@ os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 
 import pygame
 
-from menu import MainMenuState, PauseMenuState, main_menu, pause_menu
-from play import RunningGameState, game_running
+from menu import MainMenuState, PauseMenuState
+from play import RunningGameState
+from state import GameState
 
 # Stałe wartości
 SCREEN_WIDTH = 1000  # Szerokość ekranu
@@ -46,7 +47,14 @@ class Game:
         while self.current_state:
             events = pygame.event.get()
             new_state = self.current_state.handle_events(events)
-            if new_state is not None:
+            if new_state is GameState.RESET:  # Jeśli zwrócona wartość to GameState.RESET, resetuj stan gry
+                self.running_game_state = RunningGameState(SCREEN_HEIGHT, SCREEN_WIDTH)
+                self.running_game_state.set_pause_state(self.pause_menu_state)
+                self.pause_menu_state.set_running_game_state(
+                    self.running_game_state
+                )  # Aktualizuj stan pauzy o nowym stanie gry
+                self.current_state = self.running_game_state
+            elif new_state is not None:
                 self.current_state = new_state
             self.current_state.update()
             self.current_state.draw(self.screen)

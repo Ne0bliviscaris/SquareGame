@@ -81,5 +81,5 @@ class Button:
         Aktualizuje stan przycisku i wywołuje obsługę zdarzenia.
         """
         # self.handle_event()
-        if self.rect.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
+        if self.is_hovered and pygame.mouse.get_pressed()[0]:
             return self.action
