@@ -29,9 +29,9 @@ class MainMenuState(GameState):
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if self.start_button.is_mouse_down():
+                if self.start_button.is_mouse_down:
                     return self.start_button.action  # Zwróć akcję przycisku "Start"
-                elif self.quit_button.is_mouse_down():  # Dodano obsługę przycisku "Quit"
+                elif self.quit_button.is_mouse_down:  # Dodano obsługę przycisku "Quit"
                     pygame.quit()
                     sys.exit()
         return self  # Zwróć aktualny stan
@@ -59,8 +59,8 @@ class PauseMenuState:
         """
         self.screen = screen
         self.resume_button = Button.create_from_screen_size(self.screen, 0, "Resume", running_game_state)
-        self.quit_button = Button.create_from_screen_size(self.screen, 1, "Quit", GameState.QUIT)
-        self.replay_button = Button.create_from_screen_size(self.screen, 2, "Replay", running_game_state)
+        self.replay_button = Button.create_from_screen_size(self.screen, 1, "Replay", running_game_state)
+        self.quit_button = Button.create_from_screen_size(self.screen, 2, "Quit", GameState.QUIT)
         self.running_game_state = running_game_state
         self.logo = pygame.image.load("assets/logo.png")  # Załaduj obraz logo na początku gry
         self.pause_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
@@ -74,9 +74,11 @@ class PauseMenuState:
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 return self.running_game_state  # Wznów grę po naciśnięciu ESC
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if self.resume_button.is_mouse_down():
+                if self.resume_button.is_mouse_down:
                     return self.running_game_state
-                elif self.quit_button.is_mouse_down():  # Dodano obsługę przycisku "Quit"
+                elif self.replay_button.is_mouse_down:
+                    return self.replay_button.action
+                elif self.quit_button.is_mouse_down:  # Dodano obsługę przycisku "Quit"
                     pygame.quit()
                     sys.exit()
         return self  # Zwróć aktualny stan

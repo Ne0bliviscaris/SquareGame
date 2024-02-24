@@ -49,7 +49,7 @@ class Button:
         Rysuje przycisk na ekranie.
         """
         # Zmień kolor przycisku, gdy kursor myszy jest nad nim
-        if self.is_hovered():
+        if self.is_hovered:
             color = self.hover_color
         else:
             color = self.button_color
@@ -69,29 +69,26 @@ class Button:
             ),
         )
 
+    @property
     def is_hovered(self):
         """
         Sprawdza, czy kursor myszy jest nad przyciskiem.
         """
-        if self.rect.collidepoint(pygame.mouse.get_pos()):
-            return True
-        return False
+        return self.rect.collidepoint(pygame.mouse.get_pos())
 
+    @property
     def is_mouse_down(self):
         """
         Sprawdza, czy przycisk został naciśnięty.
         """
-        if self.is_hovered() and pygame.mouse.get_pressed()[0]:  # Sprawdź hover i kliknięcie myszy
-            return True
-        return False
+        return self.is_hovered and pygame.mouse.get_pressed()[0]
 
     def handle_event(self):
         """
         Obsługuje zdarzenia dla przycisku.
         """
-        if self.is_mouse_down():
+        if self.is_mouse_down:
             return self.action
-        return None
 
     def update(self):
         """
