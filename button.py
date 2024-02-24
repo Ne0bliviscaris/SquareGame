@@ -76,24 +76,10 @@ class Button:
         """
         return self.rect.collidepoint(pygame.mouse.get_pos())
 
-    @property
-    def is_mouse_down(self):
-        """
-        Sprawdza, czy przycisk został naciśnięty.
-        """
-        return self.is_hovered and pygame.mouse.get_pressed()[0]
-
-    def handle_event(self):
-        """
-        Obsługuje zdarzenia dla przycisku.
-        """
-        if self.is_mouse_down:
-            return self.action
-
     def update(self):
         """
         Aktualizuje stan przycisku i wywołuje obsługę zdarzenia.
         """
-        action = self.handle_event()
-        if action is not None:
-            return action
+        # self.handle_event()
+        if self.rect.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
+            return self.action

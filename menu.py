@@ -29,12 +29,13 @@ class MainMenuState(GameState):
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if self.start_button.is_mouse_down:
-                    return self.start_button.action  # Zwróć akcję przycisku "Start"
-                elif self.quit_button.is_mouse_down:  # Dodano obsługę przycisku "Quit"
+                action = self.start_button.update()
+                if action is not None:
+                    return action
+                action = self.quit_button.update()
+                if action is not None:
                     pygame.quit()
                     sys.exit()
-        return self  # Zwróć aktualny stan
 
     def update(self):
         """
@@ -72,24 +73,27 @@ class PauseMenuState:
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                return self.running_game_state  # Wznów grę po naciśnięciu ESC
+                return self.main_menu_state.running_game_state
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if self.resume_button.is_mouse_down:
-                    return self.running_game_state
-                elif self.replay_button.is_mouse_down:
-                    return self.replay_button.action
-                elif self.quit_button.is_mouse_down:  # Dodano obsługę przycisku "Quit"
+                action = self.resume_button.update()
+                if action is not None:
+                    return action
+                action = self.replay_button.update()
+                if action is not None:
+                    return action
+                action = self.quit_button.update()
+                if action is not None:
                     pygame.quit()
                     sys.exit()
-        return self  # Zwróć aktualny stan
+        return self
 
     def update(self):
         """
         Aktualizuje stan przycisków resume i quit.
         """
-        start_action = self.resume_button.update()
-        if start_action is not None:
-            return start_action
+        resume_action = self.resume_button.update()
+        if resume_action is not None:
+            return resume_action
 
         quit_action = self.quit_button.update()
         if quit_action is not None:
