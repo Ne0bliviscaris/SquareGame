@@ -53,24 +53,6 @@ class Game:
             pygame.display.flip()
             clock.tick(FPS_CAP)
 
-    def main_menu(self):
-        """
-        Wywołuje funkcję wyświetlającą menu główne gry.
-        """
-        self.state = main_menu(self.screen, self.state, self.logo, self.start_button, self.quit_button)
-
-    def game_running(self):
-        """
-        Wywołuje funkcję uruchamiającą grę.
-        """
-        game_running(self.screen)
-
-    def pause_menu(self):
-        """
-        Wywołuje funkcję wyświetlającą menu pauzy gry.
-        """
-        pause_menu(self.screen, self.state, self.logo, self.resume_button, self.quit_button)
-
 
 def launch():
     """
