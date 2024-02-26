@@ -7,6 +7,8 @@ world_matrix = [
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -15,29 +17,28 @@ world_matrix = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 ]
 WORLD_WIDTH = len(world_matrix[0]) * TILE_SIZE
-print(WORLD_WIDTH)
 
 
 class Tile:
     """Klasa bazowa dla kafelków."""
 
-    def __init__(self, x, y, TILE_SIZE, color):
+    def __init__(self, x, y, TILE_SIZE, color, zoom_level=1, SCREEN_HEIGHT=0):
         """Inicjalizuje kafelek na podanej pozycji, o podanym rozmiarze i kolorze."""
         self.x = x
         self.y = y
-        self.size = TILE_SIZE
+        self.size = TILE_SIZE * zoom_level
         self.color = color
 
-    def draw(self, screen, camera_offset=0):
+    def draw(self, screen, camera_offset=0, zoom_level=1, SCREEN_HEIGHT=0):
         """Rysuje kafelek na ekranie."""
         pygame.draw.rect(
             screen,
             self.color,
             pygame.Rect(
-                self.x + camera_offset,
-                self.y,
-                self.size,
-                self.size,
+                (self.x * zoom_level) + camera_offset,
+                (self.y + self.size) * zoom_level,
+                self.size * zoom_level,
+                self.size * zoom_level,
             ),
         )
 

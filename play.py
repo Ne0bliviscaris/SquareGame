@@ -24,16 +24,16 @@ class Square:
         self.y += self.velocity
         self.x += self.velocity_x  # Aktualizujemy pozycję x na podstawie prędkości x
 
-    def draw(self, screen, camera_offset=0):
+    def draw(self, screen, camera_offset=0, zoom_level=1):
         """Rysuje kwadrat na ekranie."""
         pygame.draw.rect(
             screen,
             (180, 0, 0),
             pygame.Rect(
-                self.x + camera_offset,
-                self.y,
-                self.size,
-                self.size,
+                (self.x * zoom_level) + camera_offset,
+                (self.y + self.size) * zoom_level,
+                self.size * zoom_level,
+                self.size * zoom_level,
             ),
         )
 
@@ -48,6 +48,7 @@ class RunningGameState(GameState):
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.tiles = world_list
+        self.zoom_level = 1
 
         # Ustaw przesunięcie kamery na środek świata gry
         self.camera_offset = -WORLD_WIDTH / 2 + SCREEN_WIDTH / 2
@@ -69,6 +70,7 @@ class RunningGameState(GameState):
             pygame.QUIT: self.handle_quit_event,
             pygame.KEYDOWN: self.handle_keydown_events,
             pygame.KEYUP: self.handle_keyup_events,
+            pygame.MOUSEBUTTONDOWN: self.handle_mousebuttondown_events,
         }
 
         for event in events:
@@ -81,6 +83,12 @@ class RunningGameState(GameState):
         self.handle_continuous_key_events()
 
         return self
+
+    def handle_mousebuttondown_events(self, event):
+        if event.button == 4:
+            self.zoom_level *= 1.1
+        elif event.button == 5:
+            self.zoom_level /= 1.1
 
     def handle_continuous_key_events(self):
         """Obsługuje zdarzenia związane z ciągłym naciśnięciem klawisza."""
@@ -98,23 +106,13 @@ class RunningGameState(GameState):
                 handler()
 
     def update_camera(self):
-        square_position = self.square.x + self.camera_offset
         half_screen_width = self.SCREEN_WIDTH / 2
-        right_border = WORLD_WIDTH - half_screen_width
         lerp_speed = 0.1  # Szybkość interpolacji, możesz dostosować tę wartość
 
-        if half_screen_width < square_position < right_border and self.square.velocity_x != 0:
-            # Kwadrat jest oddalony od krawędzi świata o więcej niż pół SCREEN_WIDTH, kamera może się poruszać
-            target_offset = -self.square.x + half_screen_width
-            self.camera_offset += (target_offset - self.camera_offset) * lerp_speed
-        elif square_position <= half_screen_width:
-            # Kwadrat jest oddalony od lewej krawędzi świata o mniej lub równo pół SCREEN_WIDTH, kamera jest stała
-            target_offset = 0
-            self.camera_offset += (target_offset - self.camera_offset) * lerp_speed
-        elif square_position >= right_border:
-            # Kwadrat jest oddalony od prawej krawędzi świata o mniej lub równo pół SCREEN_WIDTH, kamera jest stała
-            target_offset = -(WORLD_WIDTH - self.SCREEN_WIDTH)
-            self.camera_offset += (target_offset - self.camera_offset) * lerp_speed
+        # Oblicz target_offset na podstawie bieżącej pozycji kwadratu
+        target_offset = -self.square.x + half_screen_width
+
+        self.camera_offset += (target_offset * self.zoom_level - self.camera_offset) * lerp_speed
 
     def handle_keydown_events(self, event):
         """Obsługuje zdarzenia związane z naciśnięciem klawisza."""
@@ -178,9 +176,11 @@ class RunningGameState(GameState):
         """Rysuje elementy gry na ekranie dla bieżącego stanu gry."""
         screen.fill((0, 38, 52))
 
-        # Narysuj wszystkie kafelki z uwzględnieniem przesunięcia kamery
+        # Narysuj wszystkie kafelki z uwzględnieniem przesunięcia kamery i poziomu zoomu
         for tile in self.tiles:
-            tile.draw(screen, self.camera_offset)
+            tile.draw(screen, self.camera_offset, self.zoom_level)
 
-        self.square.draw(screen, self.camera_offset)  # Narysuj kwadrat z uwzględnieniem przesunięcia kamery
+        # Narysuj kwadrat z uwzględnieniem przesunięcia kamery i poziomu zoomu
+        self.square.draw(screen, self.camera_offset, self.zoom_level)
+
         pygame.display.flip()
