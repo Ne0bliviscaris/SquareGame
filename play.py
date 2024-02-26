@@ -24,14 +24,14 @@ class Square:
         self.y += self.velocity
         self.x += self.velocity_x  # Aktualizujemy pozycję x na podstawie prędkości x
 
-    def draw(self, screen, camera_offset=0, zoom_level=1):
+    def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
         """Rysuje kwadrat na ekranie."""
         pygame.draw.rect(
             screen,
             (180, 0, 0),
             pygame.Rect(
-                (self.x * zoom_level) + camera_offset,
-                (self.y + self.size) * zoom_level,
+                (self.x * zoom_level) + camera_offset_x,
+                (self.y * zoom_level) + camera_offset_y,
                 self.size * zoom_level,
                 self.size * zoom_level,
             ),
@@ -51,7 +51,8 @@ class RunningGameState(GameState):
         self.zoom_level = 1
 
         # Ustaw przesunięcie kamery na środek świata gry
-        self.camera_offset = -WORLD_WIDTH / 2 + SCREEN_WIDTH / 2
+        self.camera_offset_x = -WORLD_WIDTH / 2 + SCREEN_WIDTH / 2
+        self.camera_offset_y = 0
 
         # Znajdź najniższy rząd kafelków Ground
         ground_tiles = [tile for tile in self.tiles if isinstance(tile, Ground)]
@@ -107,12 +108,15 @@ class RunningGameState(GameState):
 
     def update_camera(self):
         half_screen_width = self.SCREEN_WIDTH / 2
+        half_screen_height = self.SCREEN_HEIGHT / 2
         lerp_speed = 0.1  # Szybkość interpolacji, możesz dostosować tę wartość
 
         # Oblicz target_offset na podstawie bieżącej pozycji kwadratu
-        target_offset = -self.square.x + half_screen_width
+        target_offset_x = -self.square.x + half_screen_width
+        target_offset_y = -self.square.y + half_screen_height
 
-        self.camera_offset += (target_offset * self.zoom_level - self.camera_offset) * lerp_speed
+        self.camera_offset_x += (target_offset_x - self.camera_offset_x) * lerp_speed
+        self.camera_offset_y += (target_offset_y - self.camera_offset_y) * lerp_speed
 
     def handle_keydown_events(self, event):
         """Obsługuje zdarzenia związane z naciśnięciem klawisza."""
@@ -178,9 +182,9 @@ class RunningGameState(GameState):
 
         # Narysuj wszystkie kafelki z uwzględnieniem przesunięcia kamery i poziomu zoomu
         for tile in self.tiles:
-            tile.draw(screen, self.camera_offset, self.zoom_level)
+            tile.draw(screen, self.camera_offset_x, self.camera_offset_y, self.zoom_level)
 
         # Narysuj kwadrat z uwzględnieniem przesunięcia kamery i poziomu zoomu
-        self.square.draw(screen, self.camera_offset, self.zoom_level)
+        self.square.draw(screen, self.camera_offset_x, self.camera_offset_y, self.zoom_level)
 
         pygame.display.flip()
