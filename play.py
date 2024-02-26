@@ -4,6 +4,8 @@ import pygame
 
 from state import GameState
 
+SQUARE_SIZE = 50
+
 
 class Square:
     """Klasa reprezentująca kwadrat na ekranie."""
@@ -41,7 +43,7 @@ class RunningGameState(GameState):
     def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT):
         """Inicjalizuje stan gry jako działający."""
         self.pause_menu_state = None
-        self.square = Square(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, 50)  # Utwórz instancję klasy Square
+        self.square = Square(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, SQUARE_SIZE)  # Utwórz instancję klasy Square
         self.speed = 3
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
         self.SCREEN_WIDTH = SCREEN_WIDTH
