@@ -5,18 +5,44 @@ import pygame
 from state import GameState
 
 
+class Square:
+    """Klasa reprezentująca kwadrat na ekranie."""
+
+    def __init__(self, x, y, size):
+        """Inicjalizuje kwadrat na podanej pozycji i o podanym rozmiarze."""
+        self.x = x
+        self.y = y
+        self.size = size
+        self.velocity = 5
+        self.gravity = 0.07
+
+    def update(self):
+        """Aktualizuje pozycję kwadratu, dodając do niej prędkość."""
+        self.velocity += self.gravity
+        self.y += self.velocity
+
+    def draw(self, screen):
+        """Rysuje kwadrat na ekranie."""
+        pygame.draw.rect(
+            screen,
+            (255, 0, 0),
+            pygame.Rect(
+                self.x - self.size // 2,
+                self.y - self.size // 2,
+                self.size,
+                self.size,
+            ),
+        )
+
+
 class RunningGameState(GameState):
     """Stan gry reprezentujący działającą grę."""
 
     def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT):
         """Inicjalizuje stan gry jako działający."""
         self.pause_menu_state = None
-        self.square_size = 50
-        self.square_x = (SCREEN_WIDTH - self.square_size) // 2
-        self.square_y = (SCREEN_HEIGHT - self.square_size) // 2
-        self.speed = 5
-        self.velocity = 0
-        self.gravity = 0.1
+        self.square = Square(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, 50)  # Utwórz instancję klasy Square
+        self.speed = 3
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
         self.SCREEN_WIDTH = SCREEN_WIDTH
 
@@ -34,32 +60,22 @@ class RunningGameState(GameState):
                 if event.key == pygame.K_ESCAPE:
                     return self.pause_menu_state
                 elif event.key == pygame.K_SPACE:
-                    self.velocity = -5
+                    self.square.velocity = -4  # Zaktualizuj prędkość kwadratu
 
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_a]:
-            self.square_x -= self.speed
-        if keys[pygame.K_d]:
-            self.square_x += self.speed
+        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+            self.square.x -= self.speed  # Zaktualizuj pozycję kwadratu
+        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+            self.square.x += self.speed  # Zaktualizuj pozycję kwadratu
 
         return self
 
     def update(self):
         """Aktualizuje logikę gry dla bieżącego stanu gry."""
-        self.velocity += self.gravity
-        self.square_y += self.velocity
+        self.square.update()  # Zaktualizuj kwadrat
 
     def draw(self, screen):
         """Rysuje elementy gry na ekranie dla bieżącego stanu gry."""
-        screen.fill((0, 0, 0))
-        pygame.draw.rect(
-            screen,
-            (255, 0, 0),
-            pygame.Rect(
-                self.square_x - self.square_size // 2,
-                self.square_y - self.square_size // 2,
-                self.square_size,
-                self.square_size,
-            ),
-        )
+        screen.fill((0, 38, 52))
+        self.square.draw(screen)  # Narysuj kwadrat
         pygame.display.flip()
