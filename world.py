@@ -14,6 +14,8 @@ world_matrix = [
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 ]
+WORLD_WIDTH = len(world_matrix[0]) * TILE_SIZE
+print(WORLD_WIDTH)
 
 
 class Tile:
@@ -40,7 +42,7 @@ class Tile:
         )
 
 
-class Skybox(Tile):
+class Sky(Tile):
     """Klasa dla kafelków skybox."""
 
     def __init__(self, x, y, size):
@@ -71,7 +73,7 @@ world_list = []
 for y, row in enumerate(world_matrix):
     for x, tile_type in enumerate(row):
         if tile_type == 0:
-            tile = Skybox(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE)
+            tile = Sky(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE)
         elif tile_type == 1:
             tile = Ground(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE)
         world_list.append(tile)
