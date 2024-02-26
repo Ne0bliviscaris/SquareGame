@@ -26,13 +26,13 @@ class Tile:
         self.size = TILE_SIZE
         self.color = color
 
-    def draw(self, screen):
+    def draw(self, screen, camera_offset=0):
         """Rysuje kafelek na ekranie."""
         pygame.draw.rect(
             screen,
             self.color,
             pygame.Rect(
-                self.x,
+                self.x + camera_offset,
                 self.y,
                 self.size,
                 self.size,

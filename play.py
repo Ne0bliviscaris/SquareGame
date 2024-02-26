@@ -15,20 +15,22 @@ class Square:
         self.y = y
         self.size = size
         self.velocity = 5
+        self.velocity_x = 0  # Dodajemy prędkość w osi x
         self.gravity = 0.07
 
     def update(self):
         """Aktualizuje pozycję kwadratu, dodając do niej prędkość."""
         self.velocity += self.gravity
         self.y += self.velocity
+        self.x += self.velocity_x  # Aktualizujemy pozycję x na podstawie prędkości x
 
-    def draw(self, screen):
+    def draw(self, screen, camera_offset=0):
         """Rysuje kwadrat na ekranie."""
         pygame.draw.rect(
             screen,
             (180, 0, 0),
             pygame.Rect(
-                self.x,
+                self.x + camera_offset,
                 self.y,
                 self.size,
                 self.size,
@@ -46,6 +48,7 @@ class RunningGameState(GameState):
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.tiles = world_list
+        self.camera_offset = 0
 
         # Znajdź najniższy rząd kafelków Ground
         ground_tiles = [tile for tile in self.tiles if isinstance(tile, Ground)]
@@ -69,12 +72,17 @@ class RunningGameState(GameState):
                     return self.pause_menu_state
                 elif event.key == pygame.K_SPACE:
                     self.square.velocity = -4  # Zaktualizuj prędkość kwadratu
+            elif event.type == pygame.KEYUP:
+                if event.key in (pygame.K_a, pygame.K_LEFT, pygame.K_d, pygame.K_RIGHT):
+                    self.square.velocity_x = 0  # Zresetuj prędkość x kwadratu
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-            self.square.x -= self.speed  # Zaktualizuj pozycję kwadratu
+            self.square.velocity_x = -self.speed  # Zaktualizuj prędkość x kwadratu
+            self.camera_offset += self.speed  # Zaktualizuj przesunięcie kamery
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-            self.square.x += self.speed  # Zaktualizuj pozycję kwadratu
+            self.square.velocity_x = self.speed  # Zaktualizuj prędkość x kwadratu
+            self.camera_offset -= self.speed  # Zaktualizuj przesunięcie kamery
 
         return self
 
@@ -89,14 +97,22 @@ class RunningGameState(GameState):
                 if self.square.y < tile.y and self.square.velocity > 0:
                     self.square.velocity = 0
                     self.square.y = tile.y - self.square.size
+                # Jeśli kwadrat koliduje z kafelkiem Ground i porusza się w prawo, zatrzymaj jego ruch
+                elif self.square.x < tile.x and self.square.velocity_x > 0:
+                    self.square.velocity_x = 0
+                    self.square.x = tile.x - self.square.size
+                # Jeśli kwadrat koliduje z kafelkiem Ground i porusza się w lewo, zatrzymaj jego ruch
+                elif self.square.x > tile.x and self.square.velocity_x < 0:
+                    self.square.velocity_x = 0
+                    self.square.x = tile.x + tile.size
 
     def draw(self, screen):
         """Rysuje elementy gry na ekranie dla bieżącego stanu gry."""
         screen.fill((0, 38, 52))
 
-        # Narysuj wszystkie kafelki
+        # Narysuj wszystkie kafelki z uwzględnieniem przesunięcia kamery
         for tile in self.tiles:
-            tile.draw(screen)
+            tile.draw(screen, self.camera_offset)
 
-        self.square.draw(screen)  # Narysuj kwadrat
+        self.square.draw(screen, self.camera_offset)  # Narysuj kwadrat z uwzględnieniem przesunięcia kamery
         pygame.display.flip()
