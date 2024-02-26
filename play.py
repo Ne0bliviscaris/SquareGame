@@ -3,8 +3,7 @@ import sys
 import pygame
 
 from state import GameState
-
-SQUARE_SIZE = 50
+from world import TILE_SIZE, Ground, world_list
 
 
 class Square:
@@ -43,10 +42,11 @@ class RunningGameState(GameState):
     def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT):
         """Inicjalizuje stan gry jako działający."""
         self.pause_menu_state = None
-        self.square = Square(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, SQUARE_SIZE)  # Utwórz instancję klasy Square
+        self.square = Square(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, TILE_SIZE)  # Utwórz instancję klasy Square
         self.speed = 3
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
         self.SCREEN_WIDTH = SCREEN_WIDTH
+        self.tiles = world_list
 
     def set_pause_state(self, pause_state):
         """Ustawia stan pauzy dla stanu gry."""
@@ -75,6 +75,13 @@ class RunningGameState(GameState):
     def update(self):
         """Aktualizuje logikę gry dla bieżącego stanu gry."""
         self.square.update()  # Zaktualizuj kwadrat
+
+        # Sprawdź kolizje między kwadratem a wszystkimi kafelkami
+        for tile in self.tiles:
+            if isinstance(tile, Ground) and tile.collides_with(self.square):
+                # Jeśli kwadrat koliduje z kafelkiem Ground, zatrzymaj jego ruch w dół
+                self.square.velocity = 0
+                self.square.y = tile.y - self.square.size
 
     def draw(self, screen):
         """Rysuje elementy gry na ekranie dla bieżącego stanu gry."""
