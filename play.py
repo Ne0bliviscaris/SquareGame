@@ -26,10 +26,10 @@ class Square:
         """Rysuje kwadrat na ekranie."""
         pygame.draw.rect(
             screen,
-            (255, 0, 0),
+            (180, 0, 0),
             pygame.Rect(
-                self.x - self.size // 2,
-                self.y - self.size // 2,
+                self.x,
+                self.y,
                 self.size,
                 self.size,
             ),
@@ -42,11 +42,17 @@ class RunningGameState(GameState):
     def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT):
         """Inicjalizuje stan gry jako działający."""
         self.pause_menu_state = None
-        self.square = Square(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, TILE_SIZE)  # Utwórz instancję klasy Square
         self.speed = 3
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.tiles = world_list
+
+        # Znajdź najniższy rząd kafelków Ground
+        ground_tiles = [tile for tile in self.tiles if isinstance(tile, Ground)]
+        lowest_row = max(tile.y for tile in ground_tiles)
+
+        # Ustaw pozycję kwadratu na środku dolnego rzędu i o rozmiar kafelka powyżej
+        self.square = Square(SCREEN_WIDTH // 2, lowest_row - TILE_SIZE, TILE_SIZE)
 
     def set_pause_state(self, pause_state):
         """Ustawia stan pauzy dla stanu gry."""
@@ -79,12 +85,18 @@ class RunningGameState(GameState):
         # Sprawdź kolizje między kwadratem a wszystkimi kafelkami
         for tile in self.tiles:
             if isinstance(tile, Ground) and tile.collides_with(self.square):
-                # Jeśli kwadrat koliduje z kafelkiem Ground, zatrzymaj jego ruch w dół
-                self.square.velocity = 0
-                self.square.y = tile.y - self.square.size
+                # Jeśli kwadrat koliduje z kafelkiem Ground i porusza się w dół, zatrzymaj jego ruch
+                if self.square.y < tile.y and self.square.velocity > 0:
+                    self.square.velocity = 0
+                    self.square.y = tile.y - self.square.size
 
     def draw(self, screen):
         """Rysuje elementy gry na ekranie dla bieżącego stanu gry."""
         screen.fill((0, 38, 52))
+
+        # Narysuj wszystkie kafelki
+        for tile in self.tiles:
+            tile.draw(screen)
+
         self.square.draw(screen)  # Narysuj kwadrat
         pygame.display.flip()
