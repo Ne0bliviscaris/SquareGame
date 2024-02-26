@@ -3,7 +3,7 @@ import sys
 import pygame
 
 from state import GameState
-from world import TILE_SIZE, Ground, world_list
+from world import TILE_SIZE, WORLD_WIDTH, Ground, world_list
 
 
 class Square:
@@ -48,14 +48,16 @@ class RunningGameState(GameState):
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.tiles = world_list
-        self.camera_offset = 0
+
+        # Ustaw przesunięcie kamery na środek świata gry
+        self.camera_offset = -WORLD_WIDTH / 2 + SCREEN_WIDTH / 2
 
         # Znajdź najniższy rząd kafelków Ground
         ground_tiles = [tile for tile in self.tiles if isinstance(tile, Ground)]
         lowest_row = max(tile.y for tile in ground_tiles)
 
-        # Ustaw pozycję kwadratu na środku dolnego rzędu i o rozmiar kafelka powyżej
-        self.square = Square(SCREEN_WIDTH // 2, lowest_row - TILE_SIZE, TILE_SIZE)
+        # Ustaw pozycję kwadratu na środku świata gry i na dolnym rzędzie
+        self.square = Square(WORLD_WIDTH / 2, lowest_row - TILE_SIZE, TILE_SIZE)
 
     def set_pause_state(self, pause_state):
         """Ustawia stan pauzy dla stanu gry."""
@@ -63,28 +65,83 @@ class RunningGameState(GameState):
 
     def handle_events(self, events):
         """Obsługuje zdarzenia dla bieżącego stanu gry."""
-        for event in events:
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    return self.pause_menu_state
-                elif event.key == pygame.K_SPACE:
-                    self.square.velocity = -4  # Zaktualizuj prędkość kwadratu
-            elif event.type == pygame.KEYUP:
-                if event.key in (pygame.K_a, pygame.K_LEFT, pygame.K_d, pygame.K_RIGHT):
-                    self.square.velocity_x = 0  # Zresetuj prędkość x kwadratu
+        event_handlers = {
+            pygame.QUIT: self.handle_quit_event,
+            pygame.KEYDOWN: self.handle_keydown_events,
+            pygame.KEYUP: self.handle_keyup_events,
+        }
 
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-            self.square.velocity_x = -self.speed  # Zaktualizuj prędkość x kwadratu
-            self.camera_offset += self.speed  # Zaktualizuj przesunięcie kamery
-        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-            self.square.velocity_x = self.speed  # Zaktualizuj prędkość x kwadratu
-            self.camera_offset -= self.speed  # Zaktualizuj przesunięcie kamery
+        for event in events:
+            handler = event_handlers.get(event.type)
+            if handler:
+                new_state = handler(event)
+                if new_state is not None:
+                    return new_state
+
+        self.handle_continuous_key_events()
 
         return self
+
+    def handle_continuous_key_events(self):
+        """Obsługuje zdarzenia związane z ciągłym naciśnięciem klawisza."""
+        keys = pygame.key.get_pressed()
+
+        key_handlers = {
+            pygame.K_a: self.move_left,
+            pygame.K_LEFT: self.move_left,
+            pygame.K_d: self.move_right,
+            pygame.K_RIGHT: self.move_right,
+        }
+
+        for key, handler in key_handlers.items():
+            if keys[key]:
+                handler()
+
+    def move_left(self):
+        if self.square.x - self.camera_offset > 0:  # Sprawdź, czy kwadrat jest blisko lewej krawędzi ekranu
+            self.square.velocity_x = -self.speed  # Zaktualizuj prędkość x kwadratu
+            if self.camera_offset < 0:  # Sprawdź, czy kamera jest w granicach świata gry
+                self.camera_offset += self.speed  # Zaktualizuj przesunięcie kamery
+
+    # def move_right(self):
+    #     if (
+    #         self.square.x - self.camera_offset < self.SCREEN_WIDTH - self.square.size
+    #     ):  # Sprawdź, czy kwadrat jest blisko prawej krawędzi ekranu
+    #         self.square.velocity_x = self.speed  # Zaktualizuj prędkość x kwadratu
+    #         if self.camera_offset > -(
+    #             len(self.tiles) * TILE_SIZE - self.SCREEN_WIDTH
+    #         ):  # Sprawdź, czy kamera jest w granicach świata gry
+    #             self.camera_offset -= self.speed  # Zaktualizuj przesunięcie kamery
+    def move_right(self):
+        if (
+            self.square.x - self.camera_offset < self.SCREEN_WIDTH - self.square.size
+        ):  # Sprawdź, czy kwadrat jest blisko prawej krawędzi ekranu
+            self.square.velocity_x = self.speed  # Zaktualizuj prędkość x kwadratu
+        if self.camera_offset > -(
+            len(self.tiles) * TILE_SIZE - self.SCREEN_WIDTH
+        ):  # Sprawdź, czy kamera jest w granicach świata gry
+            self.camera_offset -= self.speed  # Zaktualizuj przesunięcie kamery
+
+    def handle_keydown_events(self, event):
+        """Obsługuje zdarzenia związane z naciśnięciem klawisza."""
+        if event.key == pygame.K_ESCAPE:
+            return self.pause_menu_state
+        elif event.key == pygame.K_SPACE:
+            self.handle_jump_event()
+
+    def handle_keyup_events(self, event):
+        """Obsługuje zdarzenia związane z puszczeniem klawisza."""
+        if event.key in (pygame.K_a, pygame.K_LEFT, pygame.K_d, pygame.K_RIGHT):
+            self.square.velocity_x = 0  # Zresetuj prędkość x kwadratu
+
+    def handle_jump_event(self):
+        """Obsługuje zdarzenie skoku."""
+        self.square.velocity = -4  # Zaktualizuj prędkość kwadratu
+
+    def handle_quit_event(self):
+        """Obsługuje zdarzenie wyjścia z gry."""
+        pygame.quit()
+        sys.exit()
 
     def update(self):
         """Aktualizuje logikę gry dla bieżącego stanu gry."""
