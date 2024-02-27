@@ -1,3 +1,5 @@
+from math import ceil
+
 import pygame
 
 TILE_SIZE = 50
@@ -43,8 +45,8 @@ class Tile:
             pygame.Rect(
                 (self.x * zoom_level) + camera_offset_x,
                 (self.y * zoom_level) + camera_offset_y,
-                self.size * zoom_level,
-                self.size * zoom_level,
+                ceil(self.size * zoom_level),  # Ułamki powodują błędy w rysowaniu
+                ceil(self.size * zoom_level),
             ),
         )
 
@@ -54,7 +56,7 @@ class Sky(Tile):
 
     def __init__(self, x, y, size):
         """Inicjalizuje kafelek skybox na podanej pozycji i o podanym rozmiarze."""
-        super().__init__(x, y, size, (30, 30, 160))  # Kolor niebieski
+        super().__init__(x, y, size, (40, 40, 140))  # Kolor niebieski
 
 
 class Ground(Tile):
@@ -62,7 +64,7 @@ class Ground(Tile):
 
     def __init__(self, x, y, size):
         """Inicjalizuje kafelek ground na podanej pozycji i o podanym rozmiarze."""
-        super().__init__(x, y, size, (120, 42, 42))  # Kolor brązowy
+        super().__init__(x, y, size, (90, 45, 45))  # Kolor brązowy
 
     def collides_with(self, other):
         """Sprawdza, czy ten kafelek koliduje z innym obiektem."""
