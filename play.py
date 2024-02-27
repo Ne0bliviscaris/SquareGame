@@ -1,4 +1,5 @@
 import sys
+from math import ceil
 
 import pygame
 
@@ -128,11 +129,20 @@ class RunningGameState(GameState):
     def update_camera(self):
         half_screen_width = self.SCREEN_WIDTH / 2
         half_screen_height = self.SCREEN_HEIGHT / 2
-        lerp_speed = 0.1  # Szybkość interpolacji, możesz dostosować tę wartość
 
         # Oblicz przesunięcie kamery na podstawie środka kwadratu i poziomu zoomu
-        self.camera_offset_x = self.SCREEN_WIDTH / 2 - (self.square.x + self.square.size / 2) * self.zoom_level
-        self.camera_offset_y = self.SCREEN_HEIGHT / 2 - (self.square.y + self.square.size / 2) * self.zoom_level
+        self.camera_offset_x = ceil(self.SCREEN_WIDTH / 2 - (self.square.x + self.square.size / 2) * self.zoom_level)
+        target_offset_y = ceil(self.SCREEN_HEIGHT / 2 - (self.square.y + self.square.size / 2) * self.zoom_level)
+
+        # Znajdź najniższy rząd kafelków Ground
+        ground_tiles = [tile for tile in self.tiles if isinstance(tile, Ground)]
+        lowest_row = max(tile.y for tile in ground_tiles)
+
+        # Nie pozwól kamerze obniżyć się poniżej dolnego poziomu world_list, dodaj margines, aby wyświetlić dodatkowy poziom
+        if target_offset_y < ceil(-lowest_row * self.zoom_level + self.SCREEN_HEIGHT - TILE_SIZE * self.zoom_level):
+            target_offset_y = ceil(-lowest_row * self.zoom_level + self.SCREEN_HEIGHT - TILE_SIZE * self.zoom_level)
+
+        self.camera_offset_y = target_offset_y
 
     def handle_key_press_actions(self, event):
         """Obsługuje zdarzenia związane z naciśnięciem klawisza."""
