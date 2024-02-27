@@ -37,6 +37,21 @@ class Square:
             ),
         )
 
+    def handle_ground_collision(self, tile):
+        """Obsługuje kolizję kwadratu z danym kafelkiem."""
+        if self.y < tile.y and self.velocity > 0:
+            self.velocity = 0
+            self.y = tile.y - self.size
+        elif self.x < tile.x and self.velocity_x > 0:
+            self.velocity_x = 0
+            self.x = tile.x - self.size
+        elif self.x > tile.x and self.velocity_x < 0:
+            self.velocity_x = 0
+            self.x = tile.x + tile.size
+        elif self.x > tile.x and self.velocity_x < 0 and abs(self.x - (tile.x + tile.size)) < self.velocity_x:
+            self.velocity_x = 0
+            self.x = tile.x + tile.size
+
 
 class RunningGameState(GameState):
     """Stan gry reprezentujący działającą grę."""
@@ -114,9 +129,9 @@ class RunningGameState(GameState):
         half_screen_height = self.SCREEN_HEIGHT / 2
         lerp_speed = 0.1  # Szybkość interpolacji, możesz dostosować tę wartość
 
-        # Oblicz target_offset na podstawie bieżącej pozycji kwadratu
-        target_offset_x = -self.square.x * self.zoom_level + half_screen_width
-        target_offset_y = -self.square.y * self.zoom_level + half_screen_height
+        # Oblicz target_offset na podstawie środka kwadratu
+        target_offset_x = -(self.square.x + self.square.size / 2) * self.zoom_level + half_screen_width
+        target_offset_y = -(self.square.y + self.square.size / 2) * self.zoom_level + half_screen_height
 
         self.camera_offset_x += (target_offset_x - self.camera_offset_x) * lerp_speed
         self.camera_offset_y += (target_offset_y - self.camera_offset_y) * lerp_speed
@@ -164,26 +179,7 @@ class RunningGameState(GameState):
         # Sprawdź kolizje między kwadratem a wszystkimi kafelkami
         for tile in self.tiles:
             if isinstance(tile, Ground) and tile.collides_with(self.square):
-                # Jeśli kwadrat koliduje z kafelkiem Ground i porusza się w dół, zatrzymaj jego ruch
-                if self.square.y < tile.y and self.square.velocity > 0:
-                    self.square.velocity = 0
-                    self.square.y = tile.y - self.square.size
-                # Jeśli kwadrat koliduje z kafelkiem Ground i porusza się w prawo, zatrzymaj jego ruch
-                elif self.square.x < tile.x and self.square.velocity_x > 0:
-                    self.square.velocity_x = 0
-                    self.square.x = tile.x - self.square.size
-                # Jeśli kwadrat koliduje z kafelkiem Ground i porusza się w lewo, zatrzymaj jego ruch
-                elif self.square.x > tile.x and self.square.velocity_x < 0:
-                    self.square.velocity_x = 0
-                    self.square.x = tile.x + tile.size
-                # Jeśli kwadrat koliduje z kafelkiem Ground i porusza się w lewo, zatrzymaj jego ruch
-                elif (
-                    self.square.x > tile.x
-                    and self.square.velocity_x < 0
-                    and abs(self.square.x - (tile.x + tile.size)) < self.square.velocity_x
-                ):
-                    self.square.velocity_x = 0
-                    self.square.x = tile.x + tile.size
+                self.square.handle_ground_collision(tile)
 
     def draw(self, screen):
         """Rysuje elementy gry na ekranie dla bieżącego stanu gry."""
