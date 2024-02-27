@@ -11,8 +11,8 @@ from play import RunningGameState
 from state import GameState
 
 # Stałe wartości
-SCREEN_WIDTH = 1000  # Szerokość ekranu
-SCREEN_HEIGHT = 600  # Wysokość ekranu
+SCREEN_WIDTH = 1600  # Szerokość ekranu
+SCREEN_HEIGHT = 850  # Wysokość ekranu
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # Utworzenie ekranu o określonych wymiarach
 WINDOW_TITLE = "Squaregame"  # Tytuł okna
 FPS_CAP = 200  # Maksymalna liczba klatek na sekundę
