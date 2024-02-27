@@ -76,6 +76,7 @@ class RunningGameState(GameState):
 
         # Ustaw pozycję kwadratu na środku świata gry i na dolnym rzędzie
         self.square = Square(WORLD_WIDTH / 2, lowest_row - TILE_SIZE, TILE_SIZE)
+        self.drawables = self.tiles + [self.square]  # Dodajemy kwadrat do listy obiektów do narysowania
 
     def set_pause_state(self, pause_state):
         """Ustawia stan pauzy dla stanu gry."""
@@ -129,12 +130,9 @@ class RunningGameState(GameState):
         half_screen_height = self.SCREEN_HEIGHT / 2
         lerp_speed = 0.1  # Szybkość interpolacji, możesz dostosować tę wartość
 
-        # Oblicz target_offset na podstawie środka kwadratu
-        target_offset_x = -(self.square.x + self.square.size / 2) * self.zoom_level + half_screen_width
-        target_offset_y = -(self.square.y + self.square.size / 2) * self.zoom_level + half_screen_height
-
-        self.camera_offset_x += (target_offset_x - self.camera_offset_x) * lerp_speed
-        self.camera_offset_y += (target_offset_y - self.camera_offset_y) * lerp_speed
+        # Oblicz przesunięcie kamery na podstawie środka kwadratu i poziomu zoomu
+        self.camera_offset_x = self.SCREEN_WIDTH / 2 - (self.square.x + self.square.size / 2) * self.zoom_level
+        self.camera_offset_y = self.SCREEN_HEIGHT / 2 - (self.square.y + self.square.size / 2) * self.zoom_level
 
     def handle_key_press_actions(self, event):
         """Obsługuje zdarzenia związane z naciśnięciem klawisza."""
@@ -185,11 +183,8 @@ class RunningGameState(GameState):
         """Rysuje elementy gry na ekranie dla bieżącego stanu gry."""
         screen.fill((0, 38, 52))
 
-        # Narysuj wszystkie kafelki z uwzględnieniem przesunięcia kamery i poziomu zoomu
-        for tile in self.tiles:
-            tile.draw(screen, self.camera_offset_x, self.camera_offset_y, self.zoom_level)
-
-        # Narysuj kwadrat z uwzględnieniem przesunięcia kamery i poziomu zoomu
-        self.square.draw(screen, self.camera_offset_x, self.camera_offset_y, self.zoom_level)
+        # Narysuj wszystkie obiekty z uwzględnieniem przesunięcia kamery i poziomu zoomu
+        for drawable in self.drawables:
+            drawable.draw(screen, self.camera_offset_x, self.camera_offset_y, self.zoom_level)
 
         pygame.display.flip()
