@@ -112,8 +112,8 @@ class RunningGameState(GameState):
         lerp_speed = 0.1  # Szybkość interpolacji, możesz dostosować tę wartość
 
         # Oblicz target_offset na podstawie bieżącej pozycji kwadratu
-        target_offset_x = -self.square.x + half_screen_width
-        target_offset_y = -self.square.y + half_screen_height
+        target_offset_x = -self.square.x * self.zoom_level + half_screen_width
+        target_offset_y = -self.square.y * self.zoom_level + half_screen_height
 
         self.camera_offset_x += (target_offset_x - self.camera_offset_x) * lerp_speed
         self.camera_offset_y += (target_offset_y - self.camera_offset_y) * lerp_speed
