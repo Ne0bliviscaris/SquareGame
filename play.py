@@ -131,7 +131,7 @@ class RunningGameState(GameState):
         half_screen_height = self.SCREEN_HEIGHT / 2
 
         # Oblicz przesunięcie kamery na podstawie środka kwadratu i poziomu zoomu
-        self.camera_offset_x = ceil(self.SCREEN_WIDTH / 2 - (self.square.x + self.square.size / 2) * self.zoom_level)
+        target_offset_x = ceil(self.SCREEN_WIDTH / 2 - (self.square.x + self.square.size / 2) * self.zoom_level)
         target_offset_y = ceil(self.SCREEN_HEIGHT / 2 - (self.square.y + self.square.size / 2) * self.zoom_level)
 
         # Znajdź najniższy rząd kafelków Ground
@@ -142,6 +142,13 @@ class RunningGameState(GameState):
         if target_offset_y < ceil(-lowest_row * self.zoom_level + self.SCREEN_HEIGHT - TILE_SIZE * self.zoom_level):
             target_offset_y = ceil(-lowest_row * self.zoom_level + self.SCREEN_HEIGHT - TILE_SIZE * self.zoom_level)
 
+        # Nie pozwól kamerze przesunąć się poza granice świata gry po bokach
+        if target_offset_x > 0:
+            target_offset_x = 0
+        elif target_offset_x < self.SCREEN_WIDTH - WORLD_WIDTH * self.zoom_level:
+            target_offset_x = self.SCREEN_WIDTH - WORLD_WIDTH * self.zoom_level
+
+        self.camera_offset_x = target_offset_x
         self.camera_offset_y = target_offset_y
 
     def handle_key_press_actions(self, event):
