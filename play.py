@@ -49,6 +49,7 @@ class RunningGameState(GameState):
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.tiles = world_list
         self.zoom_level = 1
+        self.target_zoom_level = 1  # Dla płynnego zoomu
 
         # Ustaw przesunięcie kamery na środek świata gry
         self.camera_offset_x = -WORLD_WIDTH / 2 + SCREEN_WIDTH / 2
@@ -69,9 +70,9 @@ class RunningGameState(GameState):
         """Obsługuje zdarzenia dla bieżącego stanu gry."""
         event_handlers = {
             pygame.QUIT: self.handle_quit_event,
-            pygame.KEYDOWN: self.handle_keydown_events,
-            pygame.KEYUP: self.handle_keyup_events,
-            pygame.MOUSEBUTTONDOWN: self.handle_mousebuttondown_events,
+            pygame.KEYDOWN: self.handle_key_press_actions,
+            pygame.KEYUP: self.handle_key_release,
+            pygame.MOUSEBUTTONDOWN: self.handle_scroll_zoom,
         }
 
         for event in events:
@@ -81,17 +82,19 @@ class RunningGameState(GameState):
                 if new_state is not None:
                     return new_state
 
-        self.handle_continuous_key_events()
+        self.handle_movement()
 
         return self
 
-    def handle_mousebuttondown_events(self, event):
+    def handle_scroll_zoom(self, event):
+        """
+        Obsługuje zoom przy użyciu rolki myszy."""
         if event.button == 4:
-            self.zoom_level *= 1.1
+            self.target_zoom_level *= 1.1
         elif event.button == 5:
-            self.zoom_level /= 1.1
+            self.target_zoom_level /= 1.1
 
-    def handle_continuous_key_events(self):
+    def handle_movement(self):
         """Obsługuje zdarzenia związane z ciągłym naciśnięciem klawisza."""
         keys = pygame.key.get_pressed()
 
@@ -118,14 +121,14 @@ class RunningGameState(GameState):
         self.camera_offset_x += (target_offset_x - self.camera_offset_x) * lerp_speed
         self.camera_offset_y += (target_offset_y - self.camera_offset_y) * lerp_speed
 
-    def handle_keydown_events(self, event):
+    def handle_key_press_actions(self, event):
         """Obsługuje zdarzenia związane z naciśnięciem klawisza."""
         if event.key == pygame.K_ESCAPE:
             return self.pause_menu_state
         elif event.key == pygame.K_SPACE:
             self.handle_jump_event()
 
-    def handle_keyup_events(self, event):
+    def handle_key_release(self, event):
         """Obsługuje zdarzenia związane z puszczeniem klawisza."""
         if event.key in (pygame.K_a, pygame.K_LEFT, pygame.K_d, pygame.K_RIGHT):
             self.square.velocity_x = 0  # Zresetuj prędkość x kwadratu
@@ -147,10 +150,16 @@ class RunningGameState(GameState):
         pygame.quit()
         sys.exit()
 
+    def update_zoom(self):
+        """Aktualizuje poziom zoomu, interpolując go do docelowego poziomu zoomu."""
+        lerp_speed = 0.1  # Szybkość interpolacji, możesz dostosować tę wartość
+        self.zoom_level += (self.target_zoom_level - self.zoom_level) * lerp_speed
+
     def update(self):
         """Aktualizuje logikę gry dla bieżącego stanu gry."""
-        self.square.update()  # Zaktualizuj kwadrat
-        self.update_camera()  # Aktualizuj kamerę
+        self.square.update()  # Aktualizacja kwadratu
+        self.update_zoom()  # Aktualizacja zoomu
+        self.update_camera()  # Aktualizacja kamery
 
         # Sprawdź kolizje między kwadratem a wszystkimi kafelkami
         for tile in self.tiles:
