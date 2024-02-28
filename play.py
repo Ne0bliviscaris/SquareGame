@@ -205,3 +205,20 @@ class RunningGameState(GameState):
             drawable.draw(screen, self.camera_offset_x, self.camera_offset_y, self.zoom_level)
 
         pygame.display.flip()
+
+
+if __name__ == "__main__":
+    pygame.init()
+
+    SCREEN_WIDTH, SCREEN_HEIGHT = 1500, 800
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+    running_game_state = RunningGameState(SCREEN_WIDTH, SCREEN_HEIGHT)
+
+    while True:
+        events = pygame.event.get()
+        new_state = running_game_state.handle_events(events)
+        if new_state is not None:
+            running_game_state = new_state
+        running_game_state.update()
+        running_game_state.draw(screen)
