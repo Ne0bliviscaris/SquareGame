@@ -44,11 +44,14 @@ class Ground(Tile):
         """Inicjalizuje kafelek ground na podanej pozycji i o podanym rozmiarze."""
         super().__init__(x, y, size, (90, 45, 45))  # Kolor brązowy
 
+    @property
+    def rect(self):
+        """Returns the pygame.Rect object representing the tile."""
+        return pygame.Rect(self.x, self.y, self.size, self.size)
+
     def collides_with(self, other):
         """Sprawdza, czy ten kafelek koliduje z innym obiektem."""
-        return pygame.Rect(self.x, self.y, self.size, self.size).colliderect(
-            pygame.Rect(other.x, other.y, other.size, other.size)
-        )
+        return self.rect.colliderect(other.rect)
 
 
 # Macierz reprezentująca świat, gdzie 0 to Skybox, a 1 to Ground
