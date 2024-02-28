@@ -1,3 +1,5 @@
+from math import ceil
+
 import pygame
 
 
@@ -21,6 +23,7 @@ class Square:
         """Aktualizuje pozycję kwadratu, dodając do niej prędkość."""
         self.velocity += self.gravity
         self.y += self.velocity
+        self.y = ceil(self.y)  # Zaokrągla wartość self.y do najbliższej liczby całkowitej
         self.x += self.velocity_x  # Aktualizujemy pozycję x na podstawie prędkości x
 
     def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
@@ -29,10 +32,10 @@ class Square:
             screen,
             (180, 0, 0),
             pygame.Rect(
-                (self.x * zoom_level) + camera_offset_x,
-                (self.y * zoom_level) + camera_offset_y,
-                self.size * zoom_level,
-                self.size * zoom_level,
+                int(self.x * zoom_level) + camera_offset_x,
+                int(self.y * zoom_level) + camera_offset_y,
+                int(self.size * zoom_level),
+                int(self.size * zoom_level),
             ),
         )
 
