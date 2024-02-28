@@ -189,16 +189,17 @@ class RunningGameState(GameState):
         lerp_speed = 0.1  # Szybkość interpolacji, możesz dostosować tę wartość
         self.zoom_level += (self.target_zoom_level - self.zoom_level) * lerp_speed
 
+    def handle_ground_collisions(self):
+        for tile in self.tiles:
+            if isinstance(tile, Ground) and tile.collides_with(self.square):
+                self.square.handle_ground_collision(tile)
+
     def update(self):
         """Aktualizuje logikę gry dla bieżącego stanu gry."""
         self.square.update()  # Aktualizacja kwadratu
         self.update_zoom()  # Aktualizacja zoomu
         self.update_camera()  # Aktualizacja kamery
-
-        # Sprawdź kolizje między kwadratem a wszystkimi kafelkami
-        for tile in self.tiles:
-            if isinstance(tile, Ground) and tile.collides_with(self.square):
-                self.square.handle_ground_collision(tile)
+        self.handle_ground_collisions()  # Sprawdź kolizje między kwadratem a wszystkimi kafelkami
 
     def draw(self, screen):
         """Rysuje elementy gry na ekranie dla bieżącego stanu gry."""
