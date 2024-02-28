@@ -2,17 +2,17 @@ from math import ceil
 
 import pygame
 
-from world import TILE_SIZE, grid
+from world import GROUND, SKY, TILE_SIZE, grid
 
 
 class Tile:
     """Klasa bazowa dla kafelków."""
 
-    def __init__(self, x, y, TILE_SIZE, color, zoom_level=1, SCREEN_HEIGHT=0):
+    def __init__(self, x, y, size, color):
         """Inicjalizuje kafelek na podanej pozycji, o podanym rozmiarze i kolorze."""
         self.x = x
         self.y = y
-        self.size = TILE_SIZE * zoom_level
+        self.size = size
         self.color = color
 
     def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
@@ -46,20 +46,18 @@ class Ground(Tile):
 
     def collides_with(self, other):
         """Sprawdza, czy ten kafelek koliduje z innym obiektem."""
-        return (
-            self.x < other.x + other.size
-            and self.x + self.size > other.x
-            and self.y < other.y + other.size
-            and self.y + self.size > other.y
+        return pygame.Rect(self.x, self.y, self.size, self.size).colliderect(
+            pygame.Rect(other.x, other.y, other.size, other.size)
         )
 
 
 # Macierz reprezentująca świat, gdzie 0 to Skybox, a 1 to Ground
-world_list = []
-for y, row in enumerate(grid):
-    for x, tile_type in enumerate(row):
-        if tile_type == 0:
-            tile = Sky(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE)
-        elif tile_type == 1:
-            tile = Ground(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE)
-        world_list.append(tile)
+world_list = [
+    (
+        Sky(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE)
+        if tile_type == SKY
+        else Ground(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE)
+    )
+    for y, row in enumerate(grid)
+    for x, tile_type in enumerate(row)
+]
