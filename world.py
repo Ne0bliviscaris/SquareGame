@@ -1,5 +1,3 @@
-from tiles import Ground, Sky
-
 grid = [
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -26,15 +24,3 @@ TILE_SIZE = 70
 GRID_HEIGHT = len(grid)
 GRID_WIDTH = len(grid[0])
 WORLD_WIDTH = GRID_WIDTH * TILE_SIZE
-
-
-# Macierz reprezentująca świat, gdzie 0 to Skybox, a 1 to Ground
-world_list = [
-    (
-        Sky(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE)
-        if tile_type == SKY
-        else Ground(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE)
-    )
-    for y, row in enumerate(grid)
-    for x, tile_type in enumerate(row)
-]

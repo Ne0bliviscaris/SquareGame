@@ -5,7 +5,8 @@ import pygame
 from square import Square
 from state import GameState
 from tiles import Ground
-from world import TILE_SIZE, WORLD_WIDTH, world_list
+from world import TILE_SIZE, WORLD_WIDTH
+from world_builder import world_list
 
 
 class RunningGameState(GameState):
