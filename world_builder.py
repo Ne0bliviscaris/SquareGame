@@ -6,7 +6,7 @@ world_list = [
     (
         Sky(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE)
         if tile_type == SKY
-        else Ground(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE)
+        else Ground(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, grid)
     )
     for y, row in enumerate(grid)
     for x, tile_type in enumerate(row)

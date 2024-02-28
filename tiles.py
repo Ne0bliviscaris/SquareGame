@@ -41,7 +41,7 @@ class Sky(Tile):
 class Ground(Tile):
     """Klasa dla kafelków ground."""
 
-    def __init__(self, x, y, size):
+    def __init__(self, x, y, size, grid):
         """Inicjalizuje kafelek ground na podanej pozycji i o podanym rozmiarze."""
         super().__init__(x, y, size, (GROUND_COLOR))  # Kolor brązowy
 
