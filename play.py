@@ -3,8 +3,8 @@ import sys
 import pygame
 
 from state import GameState
-from tiles import Ground, world_list
-from world import TILE_SIZE, WORLD_WIDTH
+from tiles import Ground
+from world import TILE_SIZE, WORLD_WIDTH, world_list
 
 
 class Square:

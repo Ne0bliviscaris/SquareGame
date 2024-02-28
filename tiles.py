@@ -2,8 +2,6 @@ from math import ceil
 
 import pygame
 
-from world import GROUND, SKY, TILE_SIZE, grid
-
 SKY_COLOR = (40, 40, 140)
 GROUND_COLOR = (90, 45, 45)
 
@@ -55,15 +53,3 @@ class Ground(Tile):
     def collides_with(self, other):
         """Sprawdza, czy ten kafelek koliduje z innym obiektem."""
         return self.rect.colliderect(other.rect)
-
-
-# Macierz reprezentująca świat, gdzie 0 to Skybox, a 1 to Ground
-world_list = [
-    (
-        Sky(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE)
-        if tile_type == SKY
-        else Ground(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE)
-    )
-    for y, row in enumerate(grid)
-    for x, tile_type in enumerate(row)
-]
