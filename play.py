@@ -1,5 +1,4 @@
 import sys
-from math import ceil
 
 import pygame
 
@@ -107,9 +106,9 @@ class RunningGameState(GameState):
         """
         Obsługuje zoom przy użyciu rolki myszy."""
         if event.button == 4:
-            self.target_zoom_level *= 1.1
+            self.target_zoom_level *= 1.2
         elif event.button == 5:
-            self.target_zoom_level /= 1.1
+            self.target_zoom_level /= 1.2
 
     def handle_movement(self):
         """Obsługuje zdarzenia związane z ciągłym naciśnięciem klawisza."""
@@ -131,16 +130,16 @@ class RunningGameState(GameState):
         half_screen_height = self.SCREEN_HEIGHT / 2
 
         # Oblicz przesunięcie kamery na podstawie środka kwadratu i poziomu zoomu
-        target_offset_x = ceil(self.SCREEN_WIDTH / 2 - (self.square.x + self.square.size / 2) * self.zoom_level)
-        target_offset_y = ceil(self.SCREEN_HEIGHT / 2 - (self.square.y + self.square.size / 2) * self.zoom_level)
+        target_offset_x = self.SCREEN_WIDTH / 2 - (self.square.x + self.square.size / 2) * self.zoom_level
+        target_offset_y = self.SCREEN_HEIGHT / 2 - (self.square.y + self.square.size / 2) * self.zoom_level
 
         # Znajdź najniższy rząd kafelków Ground
         ground_tiles = [tile for tile in self.tiles if isinstance(tile, Ground)]
         lowest_row = max(tile.y for tile in ground_tiles)
 
         # Nie pozwól kamerze obniżyć się poniżej dolnego poziomu world_list, dodaj margines, aby wyświetlić dodatkowy poziom
-        if target_offset_y < ceil(-lowest_row * self.zoom_level + self.SCREEN_HEIGHT - TILE_SIZE * self.zoom_level):
-            target_offset_y = ceil(-lowest_row * self.zoom_level + self.SCREEN_HEIGHT - TILE_SIZE * self.zoom_level)
+        if target_offset_y < -lowest_row * self.zoom_level + self.SCREEN_HEIGHT - TILE_SIZE * self.zoom_level:
+            target_offset_y = -lowest_row * self.zoom_level + self.SCREEN_HEIGHT - TILE_SIZE * self.zoom_level
 
         # Nie pozwól kamerze przesunąć się poza granice świata gry po bokach
         if target_offset_x > 0:
