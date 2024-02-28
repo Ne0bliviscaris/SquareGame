@@ -4,6 +4,9 @@ import pygame
 
 from world import GROUND, SKY, TILE_SIZE, grid
 
+SKY_COLOR = (40, 40, 140)
+GROUND_COLOR = (90, 45, 45)
+
 
 class Tile:
     """Klasa bazowa dla kafelków."""
@@ -34,7 +37,7 @@ class Sky(Tile):
 
     def __init__(self, x, y, size):
         """Inicjalizuje kafelek skybox na podanej pozycji i o podanym rozmiarze."""
-        super().__init__(x, y, size, (40, 40, 140))  # Kolor niebieski
+        super().__init__(x, y, size, (SKY_COLOR))  # Kolor niebieski
 
 
 class Ground(Tile):
@@ -42,11 +45,11 @@ class Ground(Tile):
 
     def __init__(self, x, y, size):
         """Inicjalizuje kafelek ground na podanej pozycji i o podanym rozmiarze."""
-        super().__init__(x, y, size, (90, 45, 45))  # Kolor brązowy
+        super().__init__(x, y, size, (GROUND_COLOR))  # Kolor brązowy
 
     @property
     def rect(self):
-        """Returns the pygame.Rect object representing the tile."""
+        """Generuje kwadrat o podanych wymiarach."""
         return pygame.Rect(self.x, self.y, self.size, self.size)
 
     def collides_with(self, other):
