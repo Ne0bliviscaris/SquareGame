@@ -19,6 +19,10 @@ class Square:
         self.velocity_x = 0  # Dodajemy prędkość w osi x
         self.gravity = 0.07
 
+    @property
+    def rect(self):
+        return pygame.Rect(self.x, self.y, self.size, self.size)
+
     def update(self):
         """Aktualizuje pozycję kwadratu, dodając do niej prędkość."""
         self.velocity += self.gravity
@@ -175,7 +179,7 @@ class RunningGameState(GameState):
         """Obsługuje zdarzenie skoku."""
         self.square.velocity = -4  # Zaktualizuj prędkość kwadratu
 
-    def handle_quit_event(self):
+    def handle_quit_event(self, event):
         """Obsługuje zdarzenie wyjścia z gry."""
         pygame.quit()
         sys.exit()
