@@ -52,9 +52,21 @@ class Square:
         if is_above_and_falling:
             self.velocity = 0
             self.y = tile.y - self.size
+
         elif is_below_and_rising:
-            self.velocity = 0
-            self.y = tile.y + tile.size
+            ground_coverage = (tile.x + tile.size - self.x) / self.size
+            if ground_coverage > 0.6:
+                self.y = tile.y + tile.size
+                self.velocity = 0
+            elif ground_coverage < 0.4:
+                if self.x % tile.size < tile.size * 0.6:  # jeśli kwadrat jest bliżej lewej krawędzi kafelka
+                    self.x = round((self.x // tile.size) * tile.size)
+                elif tile.type == "Ground":  # sprawdzenie, czy typ kafelka nie jest równy 'Ground'
+                    self.x = (self.x // tile.size + 1) * tile.size  # jeśli kwadrat jest bliżej prawej krawędzi kafelka
+
+            else:
+                self.velocity = 0
+
         elif is_left_and_moving_right:
             self.velocity_x = 0
             self.x = tile.x - self.size

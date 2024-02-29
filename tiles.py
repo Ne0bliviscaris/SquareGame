@@ -2,7 +2,7 @@ from math import ceil
 
 import pygame
 
-from world import ROUND_CORNER
+from world import CORNERS, DIRECTIONS, ROUND_CORNER, grid
 
 SKY_COLOR = (40, 40, 140)
 GROUND_COLOR = (90, 45, 45)
@@ -38,6 +38,7 @@ class Sky(Tile):
     def __init__(self, x, y, size):
         """Inicjalizuje kafelek skybox na podanej pozycji i o podanym rozmiarze."""
         super().__init__(x, y, size, (SKY_COLOR))  # Kolor niebieski
+        self.type = "Sky"
 
 
 class Ground(Tile):
@@ -49,6 +50,7 @@ class Ground(Tile):
         """Inicjalizuje kafelek ground na podanej pozycji i o podanym rozmiarze."""
         super().__init__(x, y, size, (GROUND_COLOR))  # Kolor brązowy
         self.bent_corners = []
+        self.type = "Ground"
 
     @property
     def rect(self):
@@ -59,22 +61,12 @@ class Ground(Tile):
         """Sprawdza, czy ten kafelek koliduje z innym obiektem."""
         return self.rect.colliderect(other.rect)
 
-    def is_corner_adjacent(self, direction, grid):
+    def is_corner_adjacent(self, corner, grid):
         """Sprawdza, czy do kąta w tile klasy ground przylega drugi tile klasy ground."""
-        # Tworzymy listę kafelków, które są wokół danego kąta.
-        # Każdy kafelek jest identyfikowany przez parę współrzędnych (x, y).
-        # Współrzędne są obliczane na podstawie pozycji aktualnego kafelka (self.x, self.y)
-        # oraz przesunięcia kąta (dx, dy).
-
-        DIRECTIONS = {
-            "top_left": [(-1, -1), (0, -1), (-1, 0)],
-            "top_right": [(0, -1), (1, -1), (1, 0)],
-            "bottom_left": [(-1, 0), (-1, 1), (0, 1)],
-            "bottom_right": [(1, 0), (0, 1), (1, 1)],
-        }
         corner_tiles = [
             grid[self.y + dy][self.x + dx]
-            for dx, dy in DIRECTIONS[direction]
+            for dir in CORNERS[corner]
+            for dx, dy in [DIRECTIONS[dir]]
             if 0 <= self.y + dy < len(grid) and 0 <= self.x + dx < len(grid[0])
         ]
 

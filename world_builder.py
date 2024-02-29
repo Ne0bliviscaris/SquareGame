@@ -1,7 +1,7 @@
 from tiles import Ground, Sky
 from world import SKY, TILE_SIZE, grid
 
-# Macierz reprezentująca świat, gdzie 0 to Skybox, a 1 to Ground
+# Lista przechowująca wszystkie kafelki w grze
 world_list = [
     (
         Sky(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE)
