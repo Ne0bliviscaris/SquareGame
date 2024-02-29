@@ -147,9 +147,10 @@ class RunningGameState(GameState):
         self.zoom_level += (self.target_zoom_level - self.zoom_level) * lerp_speed
 
     def handle_ground_collisions(self):
+        """Sprawdza kolizje między kwadratem a wszystkimi kafelkami."""
         for tile in self.tiles:
             if isinstance(tile, Ground) and tile.collides_with(self.square):
-                self.square.handle_ground_collision(tile)
+                self.square.handle_ground_collision(tile, self.tiles)
 
     def update(self):
         """Aktualizuje logikę gry dla bieżącego stanu gry."""
