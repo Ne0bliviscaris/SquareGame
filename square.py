@@ -1,4 +1,4 @@
-from math import ceil
+from math import ceil, floor
 
 import pygame
 
@@ -54,17 +54,17 @@ class Square:
             self.y = tile.y - self.size
 
         elif is_below_and_rising:
-            ground_coverage = (tile.x + tile.size - self.x) / self.size
-            if ground_coverage > 0.6:
-                self.y = tile.y + tile.size
-                self.velocity = 0
-            elif ground_coverage < 0.4:
-                if self.x % tile.size < tile.size * 0.6:  # jeśli kwadrat jest bliżej lewej krawędzi kafelka
-                    self.x = round((self.x // tile.size) * tile.size)
-                elif tile.type == "Ground":  # sprawdzenie, czy typ kafelka nie jest równy 'Ground'
-                    self.x = (self.x // tile.size + 1) * tile.size  # jeśli kwadrat jest bliżej prawej krawędzi kafelka
+            # Oblicz różnicę między środkiem kwadratu a środkiem kafelka
+            center_diff = (self.x + self.size / 2) - (tile.x + tile.size / 2)
 
+            # Jeśli środek kwadratu jest przesunięty o więcej niż 40% w lewo od środka kafelka
+            if center_diff < -0.4 * tile.size:
+                self.x = round((self.x // tile.size) * tile.size)
+            # Jeśli środek kwadratu jest przesunięty o więcej niż 40% w prawo od środka kafelka
+            elif center_diff > 0.4 * tile.size:
+                self.x = (self.x // tile.size + 1) * tile.size
             else:
+                self.y = tile.y + tile.size
                 self.velocity = 0
 
         elif is_left_and_moving_right:
