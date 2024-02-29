@@ -44,6 +44,9 @@ class Square:
         if self.y < tile.y and self.velocity > 0:
             self.velocity = 0
             self.y = tile.y - self.size
+        elif self.y > tile.y and self.velocity < 0:  # Dodajemy ten warunek
+            self.velocity = 0
+            self.y = tile.y + tile.size
         elif self.x < tile.x and self.velocity_x > 0:
             self.velocity_x = 0
             self.x = tile.x - self.size
