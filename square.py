@@ -59,7 +59,7 @@ class Square:
 
             # Jeśli środek kwadratu jest przesunięty o więcej niż 40% w lewo od środka kafelka
             if center_diff < -0.4 * tile.size:
-                self.x = round((self.x // tile.size) * tile.size)
+                self.x = (self.x // tile.size) * tile.size
             # Jeśli środek kwadratu jest przesunięty o więcej niż 40% w prawo od środka kafelka
             elif center_diff > 0.4 * tile.size:
                 self.x = (self.x // tile.size + 1) * tile.size
