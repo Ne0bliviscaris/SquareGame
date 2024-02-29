@@ -41,18 +41,26 @@ class Square:
 
     def handle_ground_collision(self, tile):
         """Obsługuje kolizję kwadratu z danym kafelkiem."""
-        if self.y < tile.y and self.velocity > 0:
+        is_above_and_falling = self.y < tile.y and self.velocity > 0
+        is_below_and_rising = self.y > tile.y and self.velocity < 0
+        is_left_and_moving_right = self.x < tile.x and self.velocity_x > 0
+        is_right_and_moving_left = self.x > tile.x and self.velocity_x < 0
+        is_right_and_moving_left_fast = (
+            self.x > tile.x and self.velocity_x < 0 and abs(self.x - (tile.x + tile.size)) < self.velocity_x
+        )
+
+        if is_above_and_falling:
             self.velocity = 0
             self.y = tile.y - self.size
-        elif self.y > tile.y and self.velocity < 0:  # Dodajemy ten warunek
+        elif is_below_and_rising:
             self.velocity = 0
             self.y = tile.y + tile.size
-        elif self.x < tile.x and self.velocity_x > 0:
+        elif is_left_and_moving_right:
             self.velocity_x = 0
             self.x = tile.x - self.size
-        elif self.x > tile.x and self.velocity_x < 0:
+        elif is_right_and_moving_left:
             self.velocity_x = 0
             self.x = tile.x + tile.size
-        elif self.x > tile.x and self.velocity_x < 0 and abs(self.x - (tile.x + tile.size)) < self.velocity_x:
+        elif is_right_and_moving_left_fast:
             self.velocity_x = 0
             self.x = tile.x + tile.size
