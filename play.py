@@ -11,6 +11,25 @@ from world_builder import world_list
 FPS_LIMIT = 250
 
 
+class Camera:
+    def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT, square, tiles, ground_tiles):
+        """Inicjalizuje kamerę."""
+        self.SCREEN_WIDTH = SCREEN_WIDTH
+        self.SCREEN_HEIGHT = SCREEN_HEIGHT
+        self.square = square
+        self.tiles = tiles
+        self.zoom_level = 1
+        self.target_zoom_level = 1  # Dla płynnego zoomu
+
+        # Ustaw przesunięcie kamery na środek świata gry
+        self.camera_offset_x = -WORLD_WIDTH / 2 + SCREEN_WIDTH / 2
+        self.camera_offset_y = 0
+
+        # Znajdź najniższy rząd kafelków Ground
+        self.ground_tiles = ground_tiles
+        self.lowest_row = max(tile.y for tile in ground_tiles)
+
+
 class RunningGameState(GameState):
     """Stan gry reprezentujący działającą grę."""
 
@@ -21,12 +40,6 @@ class RunningGameState(GameState):
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.tiles = world_list
-        self.zoom_level = 1
-        self.target_zoom_level = 1  # Dla płynnego zoomu
-
-        # Ustaw przesunięcie kamery na środek świata gry
-        self.camera_offset_x = -WORLD_WIDTH / 2 + SCREEN_WIDTH / 2
-        self.camera_offset_y = 0
 
         # Znajdź najniższy rząd kafelków Ground
         ground_tiles = [tile for tile in self.tiles if isinstance(tile, Ground)]
@@ -36,23 +49,31 @@ class RunningGameState(GameState):
         self.square = Square(WORLD_WIDTH / 2, lowest_row - TILE_SIZE, TILE_SIZE)
         self.drawables = self.tiles + [self.square]  # Dodajemy kwadrat do listy obiektów do narysowania
 
+        # Utwórz instancję Camera
+        self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, self.square, self.tiles, ground_tiles)
+
     def calculate_target_offset(self):  # MOVE THIS TO CAMERA CLASS
         """Oblicza przesunięcie kamery, aby śledzić kwadrat."""
         half_screen_width = self.SCREEN_WIDTH / 2
         half_screen_height = self.SCREEN_HEIGHT / 2
-        self.target_offset_x = half_screen_width - (self.square.x + self.square.size / 2) * self.zoom_level
-        self.target_offset_y = half_screen_height - (self.square.y + self.square.size / 2) * self.zoom_level
+        self.target_offset_x = half_screen_width - (self.square.x + self.square.size / 2) * self.camera.zoom_level
+        self.target_offset_y = half_screen_height - (self.square.y + self.square.size / 2) * self.camera.zoom_level
 
     def limit_target_offset(self):  # MOVE THIS TO CAMERA CLASS
         """Ogranicza przesunięcie kamery, aby nie wyświetlać obszarów poza światem gry."""
         ground_tiles = [tile for tile in self.tiles if isinstance(tile, Ground)]
         lowest_row = max(tile.y for tile in ground_tiles)
-        if self.target_offset_y < -lowest_row * self.zoom_level + self.SCREEN_HEIGHT - TILE_SIZE * self.zoom_level:
-            self.target_offset_y = -lowest_row * self.zoom_level + self.SCREEN_HEIGHT - TILE_SIZE * self.zoom_level
+        if (
+            self.target_offset_y
+            < -lowest_row * self.camera.zoom_level + self.SCREEN_HEIGHT - TILE_SIZE * self.camera.zoom_level
+        ):
+            self.target_offset_y = (
+                -lowest_row * self.camera.zoom_level + self.SCREEN_HEIGHT - TILE_SIZE * self.camera.zoom_level
+            )
         if self.target_offset_x > 0:
             self.target_offset_x = 0
-        elif self.target_offset_x < self.SCREEN_WIDTH - WORLD_WIDTH * self.zoom_level:
-            self.target_offset_x = self.SCREEN_WIDTH - WORLD_WIDTH * self.zoom_level
+        elif self.target_offset_x < self.SCREEN_WIDTH - WORLD_WIDTH * self.camera.zoom_level:
+            self.target_offset_x = self.SCREEN_WIDTH - WORLD_WIDTH * self.camera.zoom_level
 
     def update_camera_offset(self):  # MOVE THIS TO CAMERA CLASS
         """Aktualizuje przesunięcie kamery, interpolując je do docelowego przesunięcia kamery."""
@@ -62,15 +83,15 @@ class RunningGameState(GameState):
     def update_zoom(self):  # MOVE THIS TO CAMERA CLASS
         """Aktualizuje poziom zoomu, interpolując go do docelowego poziomu zoomu."""
         lerp_speed = 0.1  # Szybkość interpolacji, możesz dostosować tę wartość
-        self.zoom_level += (self.target_zoom_level - self.zoom_level) * lerp_speed
+        self.camera.zoom_level += (self.camera.target_zoom_level - self.camera.zoom_level) * lerp_speed
 
     def handle_scroll_zoom(self, event):  # MOVE THIS TO CAMERA CLASS
         """
         Obsługuje zoom przy użyciu rolki myszy."""
         if event.button == 4:
-            self.target_zoom_level *= 1.2
+            self.camera.target_zoom_level *= 1.2
         elif event.button == 5:
-            self.target_zoom_level /= 1.2
+            self.camera.target_zoom_level /= 1.2
 
     def update_camera(self):  # MOVE THIS TO CAMERA CLASS
         self.calculate_target_offset()
@@ -150,7 +171,7 @@ class RunningGameState(GameState):
 
         # Narysuj wszystkie obiekty z uwzględnieniem przesunięcia kamery i poziomu zoomu
         for drawable in self.drawables:
-            drawable.draw(screen, self.camera_offset_x, self.camera_offset_y, self.zoom_level)
+            drawable.draw(screen, self.camera_offset_x, self.camera_offset_y, self.camera.zoom_level)
 
         pygame.display.flip()
 
