@@ -36,24 +36,6 @@ class RunningGameState(GameState):
         self.square = Square(WORLD_WIDTH / 2, lowest_row - TILE_SIZE, TILE_SIZE)
         self.drawables = self.tiles + [self.square]  # Dodajemy kwadrat do listy obiektów do narysowania
 
-    def update_camera(self):  # MOVE THIS TO CAMERA CLASS
-        self.calculate_target_offset()
-        self.limit_target_offset()
-        self.update_camera_offset()
-
-    def handle_scroll_zoom(self, event):  # MOVE THIS TO CAMERA CLASS
-        """
-        Obsługuje zoom przy użyciu rolki myszy."""
-        if event.button == 4:
-            self.target_zoom_level *= 1.2
-        elif event.button == 5:
-            self.target_zoom_level /= 1.2
-
-    def update_zoom(self):  # MOVE THIS TO CAMERA CLASS
-        """Aktualizuje poziom zoomu, interpolując go do docelowego poziomu zoomu."""
-        lerp_speed = 0.1  # Szybkość interpolacji, możesz dostosować tę wartość
-        self.zoom_level += (self.target_zoom_level - self.zoom_level) * lerp_speed
-
     def calculate_target_offset(self):  # MOVE THIS TO CAMERA CLASS
         """Oblicza przesunięcie kamery, aby śledzić kwadrat."""
         half_screen_width = self.SCREEN_WIDTH / 2
@@ -76,6 +58,24 @@ class RunningGameState(GameState):
         """Aktualizuje przesunięcie kamery, interpolując je do docelowego przesunięcia kamery."""
         self.camera_offset_x = self.target_offset_x
         self.camera_offset_y = self.target_offset_y
+
+    def update_zoom(self):  # MOVE THIS TO CAMERA CLASS
+        """Aktualizuje poziom zoomu, interpolując go do docelowego poziomu zoomu."""
+        lerp_speed = 0.1  # Szybkość interpolacji, możesz dostosować tę wartość
+        self.zoom_level += (self.target_zoom_level - self.zoom_level) * lerp_speed
+
+    def handle_scroll_zoom(self, event):  # MOVE THIS TO CAMERA CLASS
+        """
+        Obsługuje zoom przy użyciu rolki myszy."""
+        if event.button == 4:
+            self.target_zoom_level *= 1.2
+        elif event.button == 5:
+            self.target_zoom_level /= 1.2
+
+    def update_camera(self):  # MOVE THIS TO CAMERA CLASS
+        self.calculate_target_offset()
+        self.limit_target_offset()
+        self.update_camera_offset()
 
     def set_pause_state(self, pause_state):
         """Ustawia stan pauzy dla stanu gry."""
