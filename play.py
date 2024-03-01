@@ -36,6 +36,17 @@ class Camera:
         self.target_offset_x = half_screen_width - (self.square.x + self.square.size / 2) * self.zoom_level
         self.target_offset_y = half_screen_height - (self.square.y + self.square.size / 2) * self.zoom_level
 
+    def limit_target_offset(self):
+        """Ogranicza przesunięcie kamery, aby nie wyświetlać obszarów poza światem gry."""
+        ground_tiles = [tile for tile in self.tiles if isinstance(tile, Ground)]
+        lowest_row = max(tile.y for tile in ground_tiles)
+        if self.target_offset_y < -lowest_row * self.zoom_level + self.SCREEN_HEIGHT - TILE_SIZE * self.zoom_level:
+            self.target_offset_y = -lowest_row * self.zoom_level + self.SCREEN_HEIGHT - TILE_SIZE * self.zoom_level
+        if self.target_offset_x > 0:
+            self.target_offset_x = 0
+        elif self.target_offset_x < self.SCREEN_WIDTH - WORLD_WIDTH * self.zoom_level:
+            self.target_offset_x = self.SCREEN_WIDTH - WORLD_WIDTH * self.zoom_level
+
 
 class RunningGameState(GameState):
     """Stan gry reprezentujący działającą grę."""
@@ -59,26 +70,10 @@ class RunningGameState(GameState):
         # Utwórz instancję Camera
         self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, self.square, self.tiles, ground_tiles)
 
-    def limit_target_offset(self):  # MOVE THIS TO CAMERA CLASS
-        """Ogranicza przesunięcie kamery, aby nie wyświetlać obszarów poza światem gry."""
-        ground_tiles = [tile for tile in self.tiles if isinstance(tile, Ground)]
-        lowest_row = max(tile.y for tile in ground_tiles)
-        if (
-            self.camera.target_offset_y
-            < -lowest_row * self.camera.zoom_level + self.SCREEN_HEIGHT - TILE_SIZE * self.camera.zoom_level
-        ):
-            self.target_offset_y = (
-                -lowest_row * self.camera.zoom_level + self.SCREEN_HEIGHT - TILE_SIZE * self.camera.zoom_level
-            )
-        if self.camera.target_offset_x > 0:
-            self.camera.target_offset_x = 0
-        elif self.camera.target_offset_x < self.SCREEN_WIDTH - WORLD_WIDTH * self.camera.zoom_level:
-            self.camera.target_offset_x = self.SCREEN_WIDTH - WORLD_WIDTH * self.camera.zoom_level
-
     def update_camera_offset(self):  # MOVE THIS TO CAMERA CLASS
         """Aktualizuje przesunięcie kamery, interpolując je do docelowego przesunięcia kamery."""
-        self.camera_offset_x = self.camera.target_offset_x
-        self.camera_offset_y = self.target_offset_y
+        self.camera.camera_offset_x = self.camera.target_offset_x
+        self.camera.camera_offset_y = self.camera.target_offset_y
 
     def update_zoom(self):  # MOVE THIS TO CAMERA CLASS
         """Aktualizuje poziom zoomu, interpolując go do docelowego poziomu zoomu."""
@@ -95,7 +90,7 @@ class RunningGameState(GameState):
 
     def update_camera(self):  # MOVE THIS TO CAMERA CLASS
         self.camera.calculate_target_offset()
-        self.limit_target_offset()
+        self.camera.limit_target_offset()
         self.update_camera_offset()
 
     def set_pause_state(self, pause_state):
@@ -171,7 +166,7 @@ class RunningGameState(GameState):
 
         # Narysuj wszystkie obiekty z uwzględnieniem przesunięcia kamery i poziomu zoomu
         for drawable in self.drawables:
-            drawable.draw(screen, self.camera_offset_x, self.camera_offset_y, self.camera.zoom_level)
+            drawable.draw(screen, self.camera.camera_offset_x, self.camera.camera_offset_y, self.camera.zoom_level)
 
         pygame.display.flip()
 
