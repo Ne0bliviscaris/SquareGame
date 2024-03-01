@@ -8,6 +8,8 @@ from tiles import Ground
 from world import TILE_SIZE, WORLD_WIDTH
 from world_builder import world_list
 
+FPS_LIMIT = 250
+
 
 class RunningGameState(GameState):
     """Stan gry reprezentujący działającą grę."""
@@ -160,7 +162,7 @@ if __name__ == "__main__":
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
     running_game_state = RunningGameState(SCREEN_WIDTH, SCREEN_HEIGHT)
-
+    clock = pygame.time.Clock()
     while True:
         events = pygame.event.get()
         new_state = running_game_state.handle_events(events)
@@ -168,3 +170,4 @@ if __name__ == "__main__":
             running_game_state = new_state
         running_game_state.update()
         running_game_state.draw(screen)
+        clock.tick(FPS_LIMIT)
