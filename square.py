@@ -39,7 +39,7 @@ class Square:
             ),
         )
 
-    def handle_ground_collision(self, tile):
+    def handle_ground_collision(self, tile, tiles):
         """Obsługuje kolizję kwadratu z danym kafelkiem."""
         is_above_and_falling = self.y < tile.y and self.velocity > 0
         is_below_and_rising = self.y > tile.y and self.velocity < 0
