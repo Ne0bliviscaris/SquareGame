@@ -44,6 +44,29 @@ class Square:
             ),
         )
 
+    def move_left(self, speed):
+        """Przesuwa kwadrat w lewo."""
+        self.velocity_x = -speed
+
+    def move_right(self, speed):
+        """Przesuwa kwadrat w prawo."""
+        self.velocity_x = speed
+
+    def jump(self):
+        """Sprawia, że kwadrat skacze."""
+        self.velocity = -4
+
+    def get_nearby_tiles(self, tiles, distance):
+        """Zwraca listę kafelków, które są w danym dystansie od kwadratu."""
+        return [tile for tile in tiles if abs(tile.x - self.x) <= distance and abs(tile.y - self.y) <= distance]
+
+    def handle_ground_collisions(self, tiles):
+        """Sprawdza kolizje między kwadratem a wszystkimi kafelkami."""
+        nearby_tiles = self.get_nearby_tiles(tiles, self.size * 2)  # Użyj rozmiaru kwadratu jako dystansu
+        for tile in nearby_tiles:
+            if isinstance(tile, Ground) and tile.collides_with(self):
+                self.handle_ground_collision(tile, tiles)
+
     def handle_ground_collision(self, tile, tiles):
         """Obsługuje kolizję kwadratu z danym kafelkiem."""
         is_above_and_falling = self.y < tile.y and self.velocity > 0
@@ -73,21 +96,3 @@ class Square:
                 self.x = tile.x + self.size
             else:
                 self.x = tile.x - self.size
-
-    def move_left(self, speed):
-        """Przesuwa kwadrat w lewo."""
-        self.velocity_x = -speed
-
-    def move_right(self, speed):
-        """Przesuwa kwadrat w prawo."""
-        self.velocity_x = speed
-
-    def jump(self):
-        """Sprawia, że kwadrat skacze."""
-        self.velocity = -4
-
-    def handle_ground_collisions(self, tiles):
-        """Sprawdza kolizje między kwadratem a wszystkimi kafelkami."""
-        for tile in tiles:
-            if isinstance(tile, Ground) and tile.collides_with(self):
-                self.handle_ground_collision(tile, tiles)
