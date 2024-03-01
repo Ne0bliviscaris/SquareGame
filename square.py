@@ -15,6 +15,11 @@ class Square:
         self.velocity_x = 0  # Dodajemy prędkość w osi x
         self.gravity = 0.07
 
+    def move(self, dx, dy):
+        """Przesuwa kwadrat o daną ilość pikseli."""
+        self.x += dx
+        self.y += dy
+
     @property
     def rect(self):
         return pygame.Rect(self.x, self.y, self.size, self.size)
@@ -22,9 +27,7 @@ class Square:
     def update(self):
         """Aktualizuje pozycję kwadratu, dodając do niej prędkość."""
         self.velocity += self.gravity
-        self.y += self.velocity
-        self.y = ceil(self.y)  # Zaokrągla wartość self.y do najbliższej liczby całkowitej
-        self.x += self.velocity_x  # Aktualizujemy pozycję x na podstawie prędkości x
+        self.move(self.velocity_x, self.velocity)
 
     def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
         """Rysuje kwadrat na ekranie."""
@@ -48,7 +51,7 @@ class Square:
 
         if is_above_and_falling:
             self.velocity = 0
-            self.y = tile.y - self.size
+            self.move(0, tile.y - self.size - self.y)  # Przesuń kwadrat do kafelka
         elif is_below_and_rising:
             # Oblicz różnicę między środkiem kwadratu a środkiem kafelka
             center_diff = (self.x + self.size / 2) - (tile.x + tile.size / 2)
@@ -68,3 +71,15 @@ class Square:
                 self.x = tile.x + self.size
             else:
                 self.x = tile.x - self.size
+
+    def move_left(self, speed):
+        """Przesuwa kwadrat w lewo."""
+        self.velocity_x = -speed
+
+    def move_right(self, speed):
+        """Przesuwa kwadrat w prawo."""
+        self.velocity_x = speed
+
+    def jump(self):
+        """Sprawia, że kwadrat skacze."""
+        self.velocity = -4

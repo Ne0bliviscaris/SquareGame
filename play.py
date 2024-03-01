@@ -71,15 +71,15 @@ class RunningGameState(GameState):
         keys = pygame.key.get_pressed()
 
         key_handlers = {
-            pygame.K_a: self.move_left,
-            pygame.K_LEFT: self.move_left,
-            pygame.K_d: self.move_right,
-            pygame.K_RIGHT: self.move_right,
+            pygame.K_a: self.square.move_left,
+            pygame.K_LEFT: self.square.move_left,
+            pygame.K_d: self.square.move_right,
+            pygame.K_RIGHT: self.square.move_right,
         }
 
         for key, handler in key_handlers.items():
             if keys[key]:
-                handler()
+                handler(self.speed)
 
     def update_camera(self):
         self.calculate_target_offset()
@@ -117,24 +117,12 @@ class RunningGameState(GameState):
         if event.key == pygame.K_ESCAPE:
             return self.pause_menu_state
         elif event.key == pygame.K_SPACE:
-            self.handle_jump_event()
+            self.square.jump()
 
     def handle_key_release(self, event):
         """Obsługuje zdarzenia związane z puszczeniem klawisza."""
         if event.key in (pygame.K_a, pygame.K_LEFT, pygame.K_d, pygame.K_RIGHT):
             self.square.velocity_x = 0  # Zresetuj prędkość x kwadratu
-
-    def move_left(self):
-        # Aktualizuje prędkość x kwadratu
-        self.square.velocity_x = -self.speed
-
-    def move_right(self):
-        # Aktualizuje prędkość x kwadratu
-        self.square.velocity_x = self.speed
-
-    def handle_jump_event(self):
-        """Obsługuje zdarzenie skoku."""
-        self.square.velocity = -4  # Zaktualizuj prędkość kwadratu
 
     def handle_quit_event(self, event):
         """Obsługuje zdarzenie wyjścia z gry."""
