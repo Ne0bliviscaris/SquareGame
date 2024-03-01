@@ -57,6 +57,14 @@ class Camera:
         lerp_speed = 0.1  # Szybkość interpolacji, możesz dostosować tę wartość
         self.zoom_level += (self.target_zoom_level - self.zoom_level) * lerp_speed
 
+    def handle_scroll_zoom(self, event):  # MOVE THIS TO CAMERA CLASS
+        """
+        Obsługuje zoom przy użyciu rolki myszy."""
+        if event.button == 4:
+            self.target_zoom_level *= 1.2
+        elif event.button == 5:
+            self.target_zoom_level /= 1.2
+
 
 class RunningGameState(GameState):
     """Stan gry reprezentujący działającą grę."""
@@ -80,14 +88,6 @@ class RunningGameState(GameState):
         # Utwórz instancję Camera
         self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, self.square, self.tiles, ground_tiles)
 
-    def handle_scroll_zoom(self, event):  # MOVE THIS TO CAMERA CLASS
-        """
-        Obsługuje zoom przy użyciu rolki myszy."""
-        if event.button == 4:
-            self.camera.target_zoom_level *= 1.2
-        elif event.button == 5:
-            self.camera.target_zoom_level /= 1.2
-
     def update_camera(self):  # MOVE THIS TO CAMERA CLASS
         self.camera.calculate_target_offset()
         self.camera.limit_target_offset()
@@ -103,7 +103,7 @@ class RunningGameState(GameState):
             pygame.QUIT: self.handle_quit_event,
             pygame.KEYDOWN: self.handle_key_press_actions,
             pygame.KEYUP: self.handle_key_release,
-            pygame.MOUSEBUTTONDOWN: self.handle_scroll_zoom,
+            pygame.MOUSEBUTTONDOWN: self.camera.handle_scroll_zoom,
         }
 
         for event in events:
