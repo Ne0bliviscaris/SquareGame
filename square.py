@@ -17,8 +17,8 @@ class Square:
 
     def move(self, dx, dy):
         """Przesuwa kwadrat o daną ilość pikseli."""
-        self.x += dx
-        self.y += dy
+        self.x += ceil(dx)
+        self.y += ceil(dy)
 
     @property
     def rect(self):
@@ -35,8 +35,8 @@ class Square:
             screen,
             (180, 0, 0),
             pygame.Rect(
-                int(self.x * zoom_level) + camera_offset_x,
-                int(self.y * zoom_level) + camera_offset_y,
+                int(self.x * zoom_level) + camera_offset_x + 1,
+                int(self.y * zoom_level) + camera_offset_y + 1,
                 int(self.size * zoom_level),
                 int(self.size * zoom_level),
             ),
