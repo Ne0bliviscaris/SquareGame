@@ -150,7 +150,7 @@ class Ground(Tile):
             rect,
             self.color,
             [
-                self.size // ROUND_CORNER if corner in self.bent_corners else 0
+                (self.size // ROUND_CORNER) * zoom_level if corner in self.bent_corners else 0
                 for corner in ["top_left", "top_right", "bottom_left", "bottom_right"]
             ],
             self.bent_corners,
