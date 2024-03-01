@@ -2,6 +2,8 @@ from math import ceil, floor
 
 import pygame
 
+from tiles import Ground
+
 
 class Square:
     """Klasa reprezentująca kwadrat na ekranie."""
@@ -83,3 +85,9 @@ class Square:
     def jump(self):
         """Sprawia, że kwadrat skacze."""
         self.velocity = -4
+
+    def handle_ground_collisions(self, tiles):
+        """Sprawdza kolizje między kwadratem a wszystkimi kafelkami."""
+        for tile in tiles:
+            if isinstance(tile, Ground) and tile.collides_with(self):
+                self.handle_ground_collision(tile, tiles)
