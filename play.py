@@ -52,6 +52,11 @@ class Camera:
         self.camera_offset_x = self.target_offset_x
         self.camera_offset_y = self.target_offset_y
 
+    def update_zoom(self):  # MOVE THIS TO CAMERA CLASS
+        """Aktualizuje poziom zoomu, interpolując go do docelowego poziomu zoomu."""
+        lerp_speed = 0.1  # Szybkość interpolacji, możesz dostosować tę wartość
+        self.zoom_level += (self.target_zoom_level - self.zoom_level) * lerp_speed
+
 
 class RunningGameState(GameState):
     """Stan gry reprezentujący działającą grę."""
@@ -74,11 +79,6 @@ class RunningGameState(GameState):
 
         # Utwórz instancję Camera
         self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, self.square, self.tiles, ground_tiles)
-
-    def update_zoom(self):  # MOVE THIS TO CAMERA CLASS
-        """Aktualizuje poziom zoomu, interpolując go do docelowego poziomu zoomu."""
-        lerp_speed = 0.1  # Szybkość interpolacji, możesz dostosować tę wartość
-        self.camera.zoom_level += (self.camera.target_zoom_level - self.camera.zoom_level) * lerp_speed
 
     def handle_scroll_zoom(self, event):  # MOVE THIS TO CAMERA CLASS
         """
@@ -156,7 +156,7 @@ class RunningGameState(GameState):
     def update(self):
         """Aktualizuje logikę gry dla bieżącego stanu gry."""
         self.square.update()  # Aktualizacja kwadratu
-        self.update_zoom()  # Aktualizacja zoomu
+        self.camera.update_zoom()  # Aktualizacja zoomu
         self.update_camera()  # Aktualizacja kamery
         self.handle_ground_collisions()  # Sprawdź kolizje między kwadratem a wszystkimi kafelkami
 
