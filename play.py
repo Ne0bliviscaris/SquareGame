@@ -47,6 +47,11 @@ class Camera:
         elif self.target_offset_x < self.SCREEN_WIDTH - WORLD_WIDTH * self.zoom_level:
             self.target_offset_x = self.SCREEN_WIDTH - WORLD_WIDTH * self.zoom_level
 
+    def update_camera_offset(self):  # MOVE THIS TO CAMERA CLASS
+        """Aktualizuje przesunięcie kamery, interpolując je do docelowego przesunięcia kamery."""
+        self.camera_offset_x = self.target_offset_x
+        self.camera_offset_y = self.target_offset_y
+
 
 class RunningGameState(GameState):
     """Stan gry reprezentujący działającą grę."""
@@ -70,11 +75,6 @@ class RunningGameState(GameState):
         # Utwórz instancję Camera
         self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, self.square, self.tiles, ground_tiles)
 
-    def update_camera_offset(self):  # MOVE THIS TO CAMERA CLASS
-        """Aktualizuje przesunięcie kamery, interpolując je do docelowego przesunięcia kamery."""
-        self.camera.camera_offset_x = self.camera.target_offset_x
-        self.camera.camera_offset_y = self.camera.target_offset_y
-
     def update_zoom(self):  # MOVE THIS TO CAMERA CLASS
         """Aktualizuje poziom zoomu, interpolując go do docelowego poziomu zoomu."""
         lerp_speed = 0.1  # Szybkość interpolacji, możesz dostosować tę wartość
@@ -91,7 +91,7 @@ class RunningGameState(GameState):
     def update_camera(self):  # MOVE THIS TO CAMERA CLASS
         self.camera.calculate_target_offset()
         self.camera.limit_target_offset()
-        self.update_camera_offset()
+        self.camera.update_camera_offset()
 
     def set_pause_state(self, pause_state):
         """Ustawia stan pauzy dla stanu gry."""
