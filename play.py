@@ -92,7 +92,7 @@ class RunningGameState(GameState):
 
     def handle_ground_collisions(self):
         """Sprawdza kolizje między kwadratem a wszystkimi kafelkami."""
-        self.square.handle_ground_collisions(self.tiles)
+        self.square.handle_nearby_collisions(self.tiles)
 
     def update(self):
         """Aktualizuje logikę gry dla bieżącego stanu gry."""
