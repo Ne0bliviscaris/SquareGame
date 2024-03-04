@@ -3,6 +3,7 @@ import sys
 import pygame
 
 from camera import Camera
+from collisions import Collisions
 from square import Square
 from state import GameState
 from tiles import Ground
@@ -31,6 +32,8 @@ class RunningGameState(GameState):
         self.square = Square(WORLD_WIDTH / 2, lowest_row - TILE_SIZE, TILE_SIZE)
         self.drawables = self.tiles + [self.square]  # Dodajemy kwadrat do listy obiektów do narysowania
 
+        # Utwórz instancję Collisions
+        self.collisions = Collisions(self.square)
         # Utwórz instancję Camera
         self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, self.square, self.tiles, ground_tiles)
 
@@ -92,7 +95,7 @@ class RunningGameState(GameState):
 
     def handle_ground_collisions(self):
         """Sprawdza kolizje między kwadratem a wszystkimi kafelkami."""
-        self.square.handle_nearby_collisions(self.tiles)
+        self.collisions.handle_collisions_around(self.tiles)
 
     def update(self):
         """Aktualizuje logikę gry dla bieżącego stanu gry."""
