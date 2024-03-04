@@ -45,6 +45,10 @@ class Square:
             ),
         )
 
+
+class Player(Square):
+    """Klasa reprezentująca kwadrat gracza."""
+
     def move_left(self, speed):
         """Przesuwa kwadrat w lewo."""
         self.velocity_x = -speed
@@ -56,3 +60,13 @@ class Square:
     def jump(self):
         """Sprawia, że kwadrat skacze."""
         self.velocity = -4
+
+
+class AI(Square):
+    """Klasa reprezentująca kwadrat przeciwnika."""
+
+    def update(self):
+        """Aktualizuje pozycję kwadratu, dodając do niej prędkość."""
+        super().update()
+
+        # Dodaj tutaj logikę AI, która steruje ruchem przeciwnika

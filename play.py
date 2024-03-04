@@ -4,7 +4,7 @@ import pygame
 
 from camera import Camera
 from collisions import Collisions
-from square import Square
+from square import Player
 from state import GameState
 from tiles import Ground
 from world import TILE_SIZE, WORLD_WIDTH
@@ -29,7 +29,7 @@ class RunningGameState(GameState):
         lowest_row = max(tile.y for tile in ground_tiles)
 
         # Ustaw pozycję kwadratu na środku świata gry i na dolnym rzędzie
-        self.square = Square(WORLD_WIDTH / 2, lowest_row - TILE_SIZE, TILE_SIZE)
+        self.square = Player(WORLD_WIDTH / 2, lowest_row - TILE_SIZE, TILE_SIZE)
         self.drawables = self.tiles + [self.square]  # Dodajemy kwadrat do listy obiektów do narysowania
 
         # Utwórz instancję Collisions
