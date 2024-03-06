@@ -93,16 +93,12 @@ class RunningGameState(GameState):
         pygame.quit()
         sys.exit()
 
-    def handle_ground_collisions(self):
-        """Sprawdza kolizje między kwadratem a wszystkimi kafelkami."""
-        self.collisions.handle_collisions_around(self.tiles)
-
     def update(self):
         """Aktualizuje logikę gry dla bieżącego stanu gry."""
         self.square.update()  # Aktualizacja kwadratu
         self.camera.update_zoom()  # Aktualizacja zoomu
         self.camera.update_camera()  # Aktualizacja kamery
-        self.handle_ground_collisions()  # Sprawdź kolizje między kwadratem a wszystkimi kafelkami
+        self.collisions.handle_collisions_around(self.tiles)  # Sprawdź kolizje między kwadratem a wszystkimi kafelkami
 
     def draw(self, screen):
         """Rysuje elementy gry na ekranie dla bieżącego stanu gry."""

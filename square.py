@@ -2,8 +2,6 @@ from math import ceil, floor
 
 import pygame
 
-from collisions import Collisions
-
 
 class Square:
     """Klasa reprezentująca kwadrat na ekranie."""
@@ -16,11 +14,10 @@ class Square:
         self.velocity = 5
         self.velocity_x = 0  # Dodajemy prędkość w osi x
         self.gravity = 0.07
-        self.collisions = Collisions(self)
 
     def move(self, dx, dy):
         """Przesuwa kwadrat o daną ilość pikseli."""
-        self.x += ceil(dx)
+        self.x += dx
         self.y += ceil(dy)
 
     @property
