@@ -1,5 +1,7 @@
 from modules.objects.tiles import Ground
 
+X_GRID_PULLING = 0.2
+
 
 class Collisions:
     """Klasa do obsługi kolizji kwadratu."""
@@ -26,10 +28,16 @@ class Collisions:
     def handle_rising_collision(self, tile):
         """Obsługuje kolizję kwadratu z danym kafelkiem podczas skoku."""
         center_diff = (self.square.x + self.square.size / 2) - (tile.x + tile.size / 2)
-        if center_diff < -0.2 * tile.size and self.square.y > tile.y:
-            self.square.x = (self.square.x // tile.size) * tile.size
-        elif center_diff > 0.2 * tile.size and self.square.y > tile.y:
-            self.square.x = (self.square.x // tile.size + 1) * tile.size
+        left_offset_above_threshold = center_diff < -X_GRID_PULLING * tile.size
+        right_offset_above_threshold = center_diff > X_GRID_PULLING * tile.size
+        is_below = self.square.y > tile.y
+        grid_pull_left = (self.square.x // tile.size) * tile.size
+        grid_pull_right = (self.square.x // tile.size + 1) * tile.size
+
+        if left_offset_above_threshold and is_below:
+            self.square.x = grid_pull_left
+        elif right_offset_above_threshold and is_below:
+            self.square.x = grid_pull_right
         else:
             self.square.y = tile.y + tile.size
             self.square.velocity_y = 0
@@ -44,14 +52,16 @@ class Collisions:
 
     def handle_collision(self, tile):
         """Obsługuje kolizję kwadratu z danym kafelkiem."""
-        is_above_and_falling = self.square.y < tile.y and self.square.velocity_y > 0
-        is_below_and_rising = self.square.y > tile.y and self.square.velocity_y < 0
+        is_above = self.square.y < tile.y
+        is_falling = self.square.velocity_y > 0
+        is_below = self.square.y > tile.y
+        is_rising = self.square.velocity_y < 0
         is_moving_horizontally = self.square.velocity_x != 0
         is_moving_left = self.square.x > tile.x and self.square.velocity_x < 0
 
-        if is_above_and_falling:
+        if is_above and is_falling:
             self.handle_falling_collision(tile)
-        elif is_below_and_rising:
+        elif is_below and is_rising:
             self.handle_rising_collision(tile)
         elif is_moving_horizontally:
             self.handle_horizontal_collision(tile, is_moving_left)
