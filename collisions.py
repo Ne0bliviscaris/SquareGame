@@ -27,6 +27,7 @@ class Collisions:
 
     def handle_rising_collision(self, tile):
         """Obsługuje kolizję kwadratu z danym kafelkiem podczas skoku."""
+        # Sprawdzenie pozycji kwadratu względem kafelka
         center_diff = (self.square.x + self.square.size / 2) - (tile.x + tile.size / 2)
         left_offset_above_threshold = center_diff < -X_GRID_PULLING * tile.size
         right_offset_above_threshold = center_diff > X_GRID_PULLING * tile.size
