@@ -11,7 +11,7 @@ class Square:
         self.x = x
         self.y = y
         self.size = size
-        self.velocity = 5
+        self.velocity_y = 5
         self.velocity_x = 0  # Dodajemy prędkość w osi x
         self.gravity = 0.07
 
@@ -26,8 +26,8 @@ class Square:
 
     def update(self):
         """Aktualizuje pozycję kwadratu, dodając do niej prędkość."""
-        self.velocity += self.gravity
-        self.move(self.velocity_x, self.velocity)
+        self.velocity_y += self.gravity
+        self.move(self.velocity_x, self.velocity_y)
 
     def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
         """Rysuje kwadrat na ekranie."""
@@ -56,7 +56,7 @@ class Player(Square):
 
     def jump(self):
         """Sprawia, że kwadrat skacze."""
-        self.velocity = -4
+        self.velocity_y = -4
 
 
 class AI(Square):

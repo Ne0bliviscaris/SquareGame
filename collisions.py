@@ -20,7 +20,7 @@ class Collisions:
 
     def handle_falling_collision(self, tile):
         """Obsługuje kolizję kwadratu z danym kafelkiem podczas spadania."""
-        self.square.velocity = 0
+        self.square.velocity_y = 0
         self.square.move(0, tile.y - self.square.size - self.square.y)  # Przesuń kwadrat do kafelka
 
     def handle_rising_collision(self, tile):
@@ -32,7 +32,7 @@ class Collisions:
             self.square.x = (self.square.x // tile.size + 1) * tile.size
         else:
             self.square.y = tile.y + tile.size
-            self.square.velocity = 0
+            self.square.velocity_y = 0
 
     def handle_horizontal_collision(self, tile, is_moving_left):
         """Obsługuje kolizję kwadratu z danym kafelkiem podczas ruchu poziomego."""
@@ -44,8 +44,8 @@ class Collisions:
 
     def handle_collision(self, tile):
         """Obsługuje kolizję kwadratu z danym kafelkiem."""
-        is_above_and_falling = self.square.y < tile.y and self.square.velocity > 0
-        is_below_and_rising = self.square.y > tile.y and self.square.velocity < 0
+        is_above_and_falling = self.square.y < tile.y and self.square.velocity_y > 0
+        is_below_and_rising = self.square.y > tile.y and self.square.velocity_y < 0
         is_moving_horizontally = self.square.velocity_x != 0
         is_moving_left = self.square.x > tile.x and self.square.velocity_x < 0
 

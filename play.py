@@ -1,5 +1,3 @@
-import sys
-
 import pygame
 
 from camera import Camera
@@ -91,7 +89,7 @@ class RunningGameState(GameState):
     def handle_quit_event(self, event):
         """Obsługuje zdarzenie wyjścia z gry."""
         pygame.quit()
-        sys.exit()
+        quit()
 
     def update(self):
         """Aktualizuje logikę gry dla bieżącego stanu gry."""
@@ -108,7 +106,7 @@ class RunningGameState(GameState):
         for drawable in self.drawables:
             drawable.draw(screen, self.camera.camera_offset_x, self.camera.camera_offset_y, self.camera.zoom_level)
 
-        pygame.display.flip()
+        pygame.display.update()
 
 
 if __name__ == "__main__":
