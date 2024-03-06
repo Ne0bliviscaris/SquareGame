@@ -32,15 +32,15 @@ class Collisions:
         center_diff = (self.square.x + self.square.size / 2) - (tile.x + tile.size / 2)
         left_offset_above_threshold = center_diff < -GRID_PULLING * tile.size
         right_offset_above_threshold = center_diff > GRID_PULLING * tile.size
-        is_below = self.square.y > tile.y
+        is_below_ground = self.square.y > tile.y
         grid_pull_left = (self.square.x // tile.size) * tile.size
         grid_pull_right = (self.square.x // tile.size + 1) * tile.size
         is_blocked_from_above = -CANT_JUMP * tile.size < center_diff < CANT_JUMP * tile.size
 
-        if not is_blocked_from_above:
-            if left_offset_above_threshold and is_below:
+        if not is_blocked_from_above and is_below_ground:
+            if left_offset_above_threshold:
                 self.square.x = grid_pull_left
-            elif right_offset_above_threshold and is_below:
+            elif right_offset_above_threshold:
                 self.square.x = grid_pull_right
         else:
             self.square.y = tile.y + tile.size
