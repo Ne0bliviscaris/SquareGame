@@ -2,7 +2,7 @@ from math import ceil
 
 import pygame
 
-from world import CORNERS, DIRECTIONS, ROUND_CORNER, grid
+from modules.world.world import CORNERS, DIRECTIONS, ROUND_CORNER, grid
 
 SKY_COLOR = (40, 40, 140)
 GROUND_COLOR = (90, 45, 45)

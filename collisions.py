@@ -1,4 +1,4 @@
-from tiles import Ground
+from modules.objects.tiles import Ground
 
 
 class Collisions:

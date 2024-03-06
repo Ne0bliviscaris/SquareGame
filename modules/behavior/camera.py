@@ -1,5 +1,5 @@
-from tiles import Ground
-from world import TILE_SIZE, WORLD_WIDTH
+from modules.objects.tiles import Ground
+from modules.world.world import TILE_SIZE, WORLD_WIDTH
 
 
 class Camera:

@@ -1,5 +1,5 @@
-from tiles import Ground, Sky
-from world import SKY, TILE_SIZE, grid
+from modules.objects.tiles import Ground, Sky
+from modules.world.world import SKY, TILE_SIZE, grid
 
 # Lista przechowująca wszystkie kafelki w grze
 world_list = [

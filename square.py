@@ -1,6 +1,6 @@
 from math import ceil, floor
 
-import pygame
+from pygame import Rect, draw
 
 
 class Square:
@@ -22,7 +22,7 @@ class Square:
 
     @property
     def rect(self):
-        return pygame.Rect(self.x, self.y, self.size, self.size)
+        return Rect(self.x, self.y, self.size, self.size)
 
     def update(self):
         """Aktualizuje pozycję kwadratu, dodając do niej prędkość."""
@@ -31,10 +31,10 @@ class Square:
 
     def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
         """Rysuje kwadrat na ekranie."""
-        pygame.draw.rect(
+        draw.rect(
             screen,
             (180, 0, 0),
-            pygame.Rect(
+            Rect(
                 int(self.x * zoom_level) + camera_offset_x + 1,
                 int(self.y * zoom_level) + camera_offset_y + 1,
                 int(self.size * zoom_level),

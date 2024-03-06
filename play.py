@@ -1,12 +1,12 @@
 import pygame
 
-from camera import Camera
 from collisions import Collisions
+from modules.behavior.camera import Camera
+from modules.objects.tiles import Ground
+from modules.state import GameState
+from modules.world.world import TILE_SIZE, WORLD_WIDTH
+from modules.world.world_builder import world_list
 from square import Player
-from state import GameState
-from tiles import Ground
-from world import TILE_SIZE, WORLD_WIDTH
-from world_builder import world_list
 
 FPS_LIMIT = 250
 
