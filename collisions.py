@@ -52,6 +52,7 @@ class Collisions:
 
     def handle_collision(self, tile):
         """Obsługuje kolizję kwadratu z danym kafelkiem."""
+        # Warunki kolizji
         is_above = self.square.y < tile.y
         is_falling = self.square.velocity_y > 0
         is_below = self.square.y > tile.y
