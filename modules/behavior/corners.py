@@ -22,16 +22,17 @@ class RoundCorners:
         """Sprawdza, czy do kąta w tile klasy ground przylega drugi tile klasy ground."""
         from modules.objects.tiles import Ground
 
-        corner_tiles = [
-            self.grid[self.y + dy][self.x + dx]
-            for dir in CORNERS[corner]
-            for dx, dy in [DIRECTIONS[dir]]
-            if 0 <= self.y + dy < len(self.grid) and 0 <= self.x + dx < len(self.grid[0])
-        ]
-
-        # Sprawdzamy, czy którykolwiek z kafelków wokół kąta jest kafelkiem klasy Ground.
-        # Jeśli tak, zwracamy True. W przeciwnym razie zwracamy False.
-        return any(isinstance(tile, Ground) for tile in corner_tiles)
+        for dir in CORNERS[corner]:
+            dx, dy = DIRECTIONS[dir]
+            new_x = self.x + dx
+            new_y = self.y + dy
+            is_inside_grid_y = 0 <= new_y < len(self.grid)
+            is_inside_grid_x = 0 <= new_x < len(self.grid[0])
+            if is_inside_grid_y and is_inside_grid_x:
+                tile = self.grid[new_y][new_x]
+                if isinstance(tile, Ground):
+                    return True
+        return False
 
     def bend_corner(self, direction):
         """Zgina kąt, jeśli do niego nie przylega inny kafelek klasy ground."""
@@ -40,7 +41,7 @@ class RoundCorners:
 
     def bend_all_corners(self):
         """Zgina wszystkie kąty, jeśli do nich nie przylega inny kafelek klasy ground."""
-        for direction in ["top_left", "top_right", "bottom_left", "bottom_right"]:
+        for direction in CORNERS:
             self.bend_corner(direction)
 
     def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
@@ -51,14 +52,12 @@ class RoundCorners:
             ceil(self.size * zoom_level),  # Ułamki powodują błędy w rysowaniu
             ceil(self.size * zoom_level),
         )
+        corner_radius = (self.size // ROUND_CORNER) * zoom_level if self.bent_corners else 0
         self.draw_rounded_rect(
             screen,
             rect,
             GROUND_COLOR,
-            [
-                (self.size // ROUND_CORNER) * zoom_level if corner in self.bent_corners else 0
-                for corner in ["top_left", "top_right", "bottom_left", "bottom_right"]
-            ],
+            [corner_radius] * 4,
             self.bent_corners,
         )
 
