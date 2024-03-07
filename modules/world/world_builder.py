@@ -1,4 +1,4 @@
-from modules.objects.tiles import Ground, RoundedCorners, Sky
+from modules.objects.tiles import Ground, RoundCorners, Sky
 from modules.world.world import SKY, TILE_SIZE, grid
 
 # Lista przechowująca wszystkie kafelki w grze
