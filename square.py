@@ -1,6 +1,8 @@
-from math import ceil
+from math import ceil, floor
 
-import pygame
+from pygame import Rect, draw
+
+SQUARE_COLOR = (180, 0, 0)
 
 
 class Square:
@@ -11,45 +13,63 @@ class Square:
         self.x = x
         self.y = y
         self.size = size
-        self.velocity = 5
+        self.velocity_y = 5
         self.velocity_x = 0  # Dodajemy prędkość w osi x
         self.gravity = 0.07
 
+    def move(self, dx, dy):
+        """Przesuwa kwadrat o daną ilość pikseli."""
+        self.x += dx
+        self.y += ceil(dy)
+
     @property
     def rect(self):
-        return pygame.Rect(self.x, self.y, self.size, self.size)
+        return Rect(self.x, self.y, self.size, self.size)
 
     def update(self):
         """Aktualizuje pozycję kwadratu, dodając do niej prędkość."""
-        self.velocity += self.gravity
-        self.y += self.velocity
-        self.y = ceil(self.y)  # Zaokrągla wartość self.y do najbliższej liczby całkowitej
-        self.x += self.velocity_x  # Aktualizujemy pozycję x na podstawie prędkości x
+        self.velocity_y += self.gravity
+        self.move(self.velocity_x, self.velocity_y)
 
     def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
         """Rysuje kwadrat na ekranie."""
-        pygame.draw.rect(
+        # Ustalenie pozcji i wymiarów
+        left = int(self.x * zoom_level) + camera_offset_x + 1
+        top = int(self.y * zoom_level) + camera_offset_y + 1
+        square = int(self.size * zoom_level)
+        draw.rect(
             screen,
-            (180, 0, 0),
-            pygame.Rect(
-                int(self.x * zoom_level) + camera_offset_x,
-                int(self.y * zoom_level) + camera_offset_y,
-                int(self.size * zoom_level),
-                int(self.size * zoom_level),
+            SQUARE_COLOR,
+            Rect(
+                left,
+                top,
+                square,
+                square,
             ),
         )
 
-    def handle_ground_collision(self, tile):
-        """Obsługuje kolizję kwadratu z danym kafelkiem."""
-        if self.y < tile.y and self.velocity > 0:
-            self.velocity = 0
-            self.y = tile.y - self.size
-        elif self.x < tile.x and self.velocity_x > 0:
-            self.velocity_x = 0
-            self.x = tile.x - self.size
-        elif self.x > tile.x and self.velocity_x < 0:
-            self.velocity_x = 0
-            self.x = tile.x + tile.size
-        elif self.x > tile.x and self.velocity_x < 0 and abs(self.x - (tile.x + tile.size)) < self.velocity_x:
-            self.velocity_x = 0
-            self.x = tile.x + tile.size
+
+class Player(Square):
+    """Klasa reprezentująca kwadrat gracza."""
+
+    def move_left(self, speed):
+        """Przesuwa kwadrat w lewo."""
+        self.velocity_x = -speed
+
+    def move_right(self, speed):
+        """Przesuwa kwadrat w prawo."""
+        self.velocity_x = speed
+
+    def jump(self):
+        """Sprawia, że kwadrat skacze."""
+        self.velocity_y = -4
+
+
+class AI(Square):
+    """Klasa reprezentująca kwadrat przeciwnika."""
+
+    def update(self):
+        """Aktualizuje pozycję kwadratu, dodając do niej prędkość."""
+        super().update()
+
+        # Dodaj tutaj logikę AI, która steruje ruchem przeciwnika

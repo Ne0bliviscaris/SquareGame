@@ -2,6 +2,9 @@ from math import ceil
 
 import pygame
 
+from modules.behavior.corners import RoundCorners
+from modules.world.world import CORNERS, DIRECTIONS, ROUND_CORNER, grid
+
 SKY_COLOR = (40, 40, 140)
 GROUND_COLOR = (90, 45, 45)
 
@@ -18,14 +21,19 @@ class Tile:
 
     def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
         """Rysuje kafelek na ekranie."""
+        # Ustalenie pozcji i wymiarów
+        left = (self.x * zoom_level) + camera_offset_x
+        top = (self.y * zoom_level) + camera_offset_y
+        square = ceil(self.size * zoom_level)  # Ułamki powodują błędy w rysowaniu
+
         pygame.draw.rect(
             screen,
             self.color,
             pygame.Rect(
-                (self.x * zoom_level) + camera_offset_x,
-                (self.y * zoom_level) + camera_offset_y,
-                ceil(self.size * zoom_level),  # Ułamki powodują błędy w rysowaniu
-                ceil(self.size * zoom_level),
+                left,
+                top,
+                square,
+                square,
             ),
         )
 
@@ -36,6 +44,7 @@ class Sky(Tile):
     def __init__(self, x, y, size):
         """Inicjalizuje kafelek skybox na podanej pozycji i o podanym rozmiarze."""
         super().__init__(x, y, size, (SKY_COLOR))  # Kolor niebieski
+        self.type = "Sky"
 
 
 class Ground(Tile):
@@ -44,6 +53,8 @@ class Ground(Tile):
     def __init__(self, x, y, size, grid):
         """Inicjalizuje kafelek ground na podanej pozycji i o podanym rozmiarze."""
         super().__init__(x, y, size, (GROUND_COLOR))  # Kolor brązowy
+        self.type = "Ground"
+        self.rounded_corners = RoundCorners(x, y, size, grid)
 
     @property
     def rect(self):
@@ -53,3 +64,7 @@ class Ground(Tile):
     def collides_with(self, other):
         """Sprawdza, czy ten kafelek koliduje z innym obiektem."""
         return self.rect.colliderect(other.rect)
+
+    def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
+        """Rysuje kafelek na ekranie."""
+        self.rounded_corners.draw(screen, camera_offset_x, camera_offset_y, zoom_level)
