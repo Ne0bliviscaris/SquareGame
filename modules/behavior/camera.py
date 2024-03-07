@@ -1,6 +1,9 @@
 from modules.objects.tiles import Ground
 from modules.world.world import TILE_SIZE, WORLD_WIDTH
 
+ZOOM_OUT_LIMIT = 0.5
+ZOOM_IN_LIMIT = 2.0
+
 
 class Camera:
     def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT, square, tiles, ground_tiles):
@@ -64,9 +67,9 @@ class Camera:
         # Identyfikacja zdarzeń rolki myszy
         mouse_roll_up = event.button == 4
         mouse_roll_down = event.button == 5
-        if mouse_roll_up and self.target_zoom_level < 2.0:
+        if mouse_roll_up and self.target_zoom_level < ZOOM_OUT_LIMIT:
             self.target_zoom_level *= 1.2
-        elif mouse_roll_down and self.target_zoom_level > 0.5:
+        elif mouse_roll_down and self.target_zoom_level > ZOOM_IN_LIMIT:
             self.target_zoom_level /= 1.2
 
     def update_camera(self):
