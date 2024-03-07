@@ -51,9 +51,9 @@ class Camera:
     def handle_scroll_zoom(self, event):
         """
         Obsługuje zoom przy użyciu rolki myszy."""
-        if event.button == 4:
+        if event.button == 4 and self.target_zoom_level < 2.0:
             self.target_zoom_level *= 1.2
-        elif event.button == 5:
+        elif event.button == 5 and self.target_zoom_level > 0.5:
             self.target_zoom_level /= 1.2
 
     def update_camera(self):
