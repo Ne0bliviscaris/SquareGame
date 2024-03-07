@@ -66,6 +66,60 @@ class Ground(Tile):
         """Sprawdza, czy ten kafelek koliduje z innym obiektem."""
         return self.rect.colliderect(other.rect)
 
+    def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
+        """Rysuje kafelek na ekranie."""
+        rect = pygame.Rect(
+            (self.x * zoom_level) + camera_offset_x,
+            (self.y * zoom_level) + camera_offset_y,
+            ceil(self.size * zoom_level),  # Ułamki powodują błędy w rysowaniu
+            ceil(self.size * zoom_level),
+        )
+        self.rounded_corners.draw_rounded_rect(
+            screen,
+            rect,
+            self.color,
+            [
+                (self.size // ROUND_CORNER) * zoom_level if corner in self.rounded_corners.bent_corners else 0
+                for corner in ["top_left", "top_right", "bottom_left", "bottom_right"]
+            ],
+            self.rounded_corners.bent_corners,
+        )
+
+
+class RoundedCorners:
+    """Klasa do obsługi zaokrąglania rogów."""
+
+    def __init__(self, x, y, size, grid):
+        """Inicjalizuje zaokrąglanie rogów."""
+        self.x = x
+        self.y = y
+        self.size = size
+        self.grid = grid
+        self.bent_corners = []
+
+    def is_corner_adjacent(self, corner):
+        """Sprawdza, czy do kąta w tile klasy ground przylega drugi tile klasy ground."""
+        corner_tiles = [
+            self.grid[self.y + dy][self.x + dx]
+            for dir in CORNERS[corner]
+            for dx, dy in [DIRECTIONS[dir]]
+            if 0 <= self.y + dy < len(self.grid) and 0 <= self.x + dx < len(self.grid[0])
+        ]
+
+        # Sprawdzamy, czy którykolwiek z kafelków wokół kąta jest kafelkiem klasy Ground.
+        # Jeśli tak, zwracamy True. W przeciwnym razie zwracamy False.
+        return any(isinstance(tile, Ground) for tile in corner_tiles)
+
+    def bend_corner(self, direction):
+        """Zgina kąt, jeśli do niego nie przylega inny kafelek klasy ground."""
+        if direction not in self.bent_corners and not self.is_corner_adjacent(direction):
+            self.bent_corners.append(direction)
+
+    def bend_all_corners(self):
+        """Zgina wszystkie kąty, jeśli do nich nie przylega inny kafelek klasy ground."""
+        for direction in ["top_left", "top_right", "bottom_left", "bottom_right"]:
+            self.bend_corner(direction)
+
     def draw_rounded_rect(self, surface, rect, color, corner_radiuses, corners_to_round):
         """Rysuje zaokrąglony prostokąt."""
         # Rozpakowujemy promienie rogów z listy corner_radiuses
@@ -123,57 +177,3 @@ class Ground(Tile):
                 (rect.right - bottom_right_radius, rect.bottom - bottom_right_radius),
                 bottom_right_radius,
             )
-
-    def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
-        """Rysuje kafelek na ekranie."""
-        rect = pygame.Rect(
-            (self.x * zoom_level) + camera_offset_x,
-            (self.y * zoom_level) + camera_offset_y,
-            ceil(self.size * zoom_level),  # Ułamki powodują błędy w rysowaniu
-            ceil(self.size * zoom_level),
-        )
-        self.draw_rounded_rect(
-            screen,
-            rect,
-            self.color,
-            [
-                (self.size // ROUND_CORNER) * zoom_level if corner in self.rounded_corners.bent_corners else 0
-                for corner in ["top_left", "top_right", "bottom_left", "bottom_right"]
-            ],
-            self.rounded_corners.bent_corners,
-        )
-
-
-class RoundedCorners:
-    """Klasa do obsługi zaokrąglania rogów."""
-
-    def __init__(self, x, y, size, grid):
-        """Inicjalizuje zaokrąglanie rogów."""
-        self.x = x
-        self.y = y
-        self.size = size
-        self.grid = grid
-        self.bent_corners = []
-
-    def is_corner_adjacent(self, corner):
-        """Sprawdza, czy do kąta w tile klasy ground przylega drugi tile klasy ground."""
-        corner_tiles = [
-            self.grid[self.y + dy][self.x + dx]
-            for dir in CORNERS[corner]
-            for dx, dy in [DIRECTIONS[dir]]
-            if 0 <= self.y + dy < len(self.grid) and 0 <= self.x + dx < len(self.grid[0])
-        ]
-
-        # Sprawdzamy, czy którykolwiek z kafelków wokół kąta jest kafelkiem klasy Ground.
-        # Jeśli tak, zwracamy True. W przeciwnym razie zwracamy False.
-        return any(isinstance(tile, Ground) for tile in corner_tiles)
-
-    def bend_corner(self, direction):
-        """Zgina kąt, jeśli do niego nie przylega inny kafelek klasy ground."""
-        if direction not in self.bent_corners and not self.is_corner_adjacent(direction):
-            self.bent_corners.append(direction)
-
-    def bend_all_corners(self):
-        """Zgina wszystkie kąty, jeśli do nich nie przylega inny kafelek klasy ground."""
-        for direction in ["top_left", "top_right", "bottom_left", "bottom_right"]:
-            self.bend_corner(direction)
