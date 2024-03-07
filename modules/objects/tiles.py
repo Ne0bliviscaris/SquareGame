@@ -6,6 +6,7 @@ from modules.world.world import CORNERS, DIRECTIONS, ROUND_CORNER, grid
 
 SKY_COLOR = (40, 40, 140)
 GROUND_COLOR = (90, 45, 45)
+BENT_COLOR = (40, 40, 140)  # Kolor dla zagiętych kątów
 
 
 class Tile:
@@ -49,8 +50,6 @@ class Sky(Tile):
 class Ground(Tile):
     """Klasa dla kafelków ground."""
 
-    BENT_COLOR = (40, 40, 140)  # Kolor dla zagiętych kątów
-
     def __init__(self, x, y, size, grid):
         """Inicjalizuje kafelek ground na podanej pozycji i o podanym rozmiarze."""
         super().__init__(x, y, size, (GROUND_COLOR))  # Kolor brązowy
@@ -68,22 +67,7 @@ class Ground(Tile):
 
     def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
         """Rysuje kafelek na ekranie."""
-        rect = pygame.Rect(
-            (self.x * zoom_level) + camera_offset_x,
-            (self.y * zoom_level) + camera_offset_y,
-            ceil(self.size * zoom_level),  # Ułamki powodują błędy w rysowaniu
-            ceil(self.size * zoom_level),
-        )
-        self.rounded_corners.draw_rounded_rect(
-            screen,
-            rect,
-            self.color,
-            [
-                (self.size // ROUND_CORNER) * zoom_level if corner in self.rounded_corners.bent_corners else 0
-                for corner in ["top_left", "top_right", "bottom_left", "bottom_right"]
-            ],
-            self.rounded_corners.bent_corners,
-        )
+        self.rounded_corners.draw(screen, camera_offset_x, camera_offset_y, zoom_level)
 
 
 class RoundedCorners:
@@ -119,6 +103,25 @@ class RoundedCorners:
         """Zgina wszystkie kąty, jeśli do nich nie przylega inny kafelek klasy ground."""
         for direction in ["top_left", "top_right", "bottom_left", "bottom_right"]:
             self.bend_corner(direction)
+
+    def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
+        """Rysuje zaokrąglone rogi na ekranie."""
+        rect = pygame.Rect(
+            (self.x * zoom_level) + camera_offset_x,
+            (self.y * zoom_level) + camera_offset_y,
+            ceil(self.size * zoom_level),  # Ułamki powodują błędy w rysowaniu
+            ceil(self.size * zoom_level),
+        )
+        self.draw_rounded_rect(
+            screen,
+            rect,
+            GROUND_COLOR,
+            [
+                (self.size // ROUND_CORNER) * zoom_level if corner in self.bent_corners else 0
+                for corner in ["top_left", "top_right", "bottom_left", "bottom_right"]
+            ],
+            self.bent_corners,
+        )
 
     def draw_rounded_rect(self, surface, rect, color, corner_radiuses, corners_to_round):
         """Rysuje zaokrąglony prostokąt."""
