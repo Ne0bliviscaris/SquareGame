@@ -1,4 +1,4 @@
-from modules.objects.tiles import Ground, Sky
+from modules.objects.tiles import Ground, RoundedCorners, Sky
 from modules.world.world import SKY, TILE_SIZE, grid
 
 # Lista przechowująca wszystkie kafelki w grze
@@ -15,5 +15,5 @@ world_list = [
 # Przejście przez wszystkie kafelki Ground i zastosowanie metod is_corner_adjacent i bend_corner
 for tile in world_list:
     if isinstance(tile, Ground):
-        for direction in ["top_left", "top_right", "bottom_left", "bottom_right"]:
-            tile.bend_corner(direction, grid)
+
+        tile.rounded_corners.bend_all_corners()

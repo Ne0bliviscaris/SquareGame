@@ -54,7 +54,6 @@ class Ground(Tile):
     def __init__(self, x, y, size, grid):
         """Inicjalizuje kafelek ground na podanej pozycji i o podanym rozmiarze."""
         super().__init__(x, y, size, (GROUND_COLOR))  # Kolor brązowy
-        self.bent_corners = []
         self.type = "Ground"
         self.rounded_corners = RoundedCorners(x, y, size, grid)
 
@@ -66,11 +65,6 @@ class Ground(Tile):
     def collides_with(self, other):
         """Sprawdza, czy ten kafelek koliduje z innym obiektem."""
         return self.rect.colliderect(other.rect)
-
-    def bend_corner(self, direction, grid):
-        """Zgina kąt, jeśli do niego nie przylega inny kafelek klasy ground."""
-        if direction not in self.bent_corners and not self.rounded_corners.is_corner_adjacent(direction):
-            self.bent_corners.append(direction)
 
     def draw_rounded_rect(self, surface, rect, color, corner_radiuses, corners_to_round):
         """Rysuje zaokrąglony prostokąt."""
@@ -143,10 +137,10 @@ class Ground(Tile):
             rect,
             self.color,
             [
-                (self.size // ROUND_CORNER) * zoom_level if corner in self.bent_corners else 0
+                (self.size // ROUND_CORNER) * zoom_level if corner in self.rounded_corners.bent_corners else 0
                 for corner in ["top_left", "top_right", "bottom_left", "bottom_right"]
             ],
-            self.bent_corners,
+            self.rounded_corners.bent_corners,
         )
 
 
@@ -159,6 +153,7 @@ class RoundedCorners:
         self.y = y
         self.size = size
         self.grid = grid
+        self.bent_corners = []
 
     def is_corner_adjacent(self, corner):
         """Sprawdza, czy do kąta w tile klasy ground przylega drugi tile klasy ground."""
@@ -172,3 +167,13 @@ class RoundedCorners:
         # Sprawdzamy, czy którykolwiek z kafelków wokół kąta jest kafelkiem klasy Ground.
         # Jeśli tak, zwracamy True. W przeciwnym razie zwracamy False.
         return any(isinstance(tile, Ground) for tile in corner_tiles)
+
+    def bend_corner(self, direction):
+        """Zgina kąt, jeśli do niego nie przylega inny kafelek klasy ground."""
+        if direction not in self.bent_corners and not self.is_corner_adjacent(direction):
+            self.bent_corners.append(direction)
+
+    def bend_all_corners(self):
+        """Zgina wszystkie kąty, jeśli do nich nie przylega inny kafelek klasy ground."""
+        for direction in ["top_left", "top_right", "bottom_left", "bottom_right"]:
+            self.bend_corner(direction)
