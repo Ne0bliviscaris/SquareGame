@@ -20,14 +20,19 @@ class Tile:
 
     def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
         """Rysuje kafelek na ekranie."""
+        # Ustalenie pozcji i wymiarów
+        left = (self.x * zoom_level) + camera_offset_x
+        top = (self.y * zoom_level) + camera_offset_y
+        square = ceil(self.size * zoom_level)  # Ułamki powodują błędy w rysowaniu
+
         pygame.draw.rect(
             screen,
             self.color,
             pygame.Rect(
-                (self.x * zoom_level) + camera_offset_x,
-                (self.y * zoom_level) + camera_offset_y,
-                ceil(self.size * zoom_level),  # Ułamki powodują błędy w rysowaniu
-                ceil(self.size * zoom_level),
+                left,
+                top,
+                square,
+                square,
             ),
         )
 
