@@ -22,21 +22,29 @@ class Camera:
 
     def calculate_target_offset(self):
         """Oblicza przesunięcie kamery, aby śledzić kwadrat."""
+        # Ustalenie środkowych pozycji kwadratu i ekranu
         half_screen_width = self.SCREEN_WIDTH / 2
         half_screen_height = self.SCREEN_HEIGHT / 2
-        self.target_offset_x = half_screen_width - (self.square.x + self.square.size / 2) * self.zoom_level
-        self.target_offset_y = half_screen_height - (self.square.y + self.square.size / 2) * self.zoom_level
+        square_center_x = self.square.x + self.square.size / 2
+        square_center_y = self.square.y + self.square.size / 2
+        self.target_offset_x = half_screen_width - square_center_x * self.zoom_level
+        self.target_offset_y = half_screen_height - square_center_y * self.zoom_level
 
     def limit_target_offset(self):
         """Ogranicza przesunięcie kamery, aby nie wyświetlać obszarów poza światem gry."""
+        # Ustalenie przesunięć minimalnych i maksymalnych
         ground_tiles = [tile for tile in self.tiles if isinstance(tile, Ground)]
         lowest_row = max(tile.y for tile in ground_tiles)
-        if self.target_offset_y < -lowest_row * self.zoom_level + self.SCREEN_HEIGHT - TILE_SIZE * self.zoom_level:
-            self.target_offset_y = -lowest_row * self.zoom_level + self.SCREEN_HEIGHT - TILE_SIZE * self.zoom_level
+
+        min_offset_y = -lowest_row * self.zoom_level + self.SCREEN_HEIGHT - TILE_SIZE * self.zoom_level
+        max_offset_x = self.SCREEN_WIDTH - WORLD_WIDTH * self.zoom_level
+
+        if self.target_offset_y < min_offset_y:
+            self.target_offset_y = min_offset_y
         if self.target_offset_x > 0:
             self.target_offset_x = 0
-        elif self.target_offset_x < self.SCREEN_WIDTH - WORLD_WIDTH * self.zoom_level:
-            self.target_offset_x = self.SCREEN_WIDTH - WORLD_WIDTH * self.zoom_level
+        elif self.target_offset_x < max_offset_x:
+            self.target_offset_x = max_offset_x
 
     def update_camera_offset(self):
         """Aktualizuje przesunięcie kamery, interpolując je do docelowego przesunięcia kamery."""
@@ -45,15 +53,20 @@ class Camera:
 
     def update_zoom(self):
         """Aktualizuje poziom zoomu, interpolując go do docelowego poziomu zoomu."""
+        # Szybkość interpolacji, możesz dostosować tę wartość
         lerp_speed = 0.1  # Szybkość interpolacji, możesz dostosować tę wartość
-        self.zoom_level += (self.target_zoom_level - self.zoom_level) * lerp_speed
+        zoom_delta = self.target_zoom_level - self.zoom_level
+        self.zoom_level += zoom_delta * lerp_speed
 
     def handle_scroll_zoom(self, event):
         """
         Obsługuje zoom przy użyciu rolki myszy."""
-        if event.button == 4 and self.target_zoom_level < 2.0:
+        # Identyfikacja zdarzeń rolki myszy
+        mouse_roll_up = event.button == 4
+        mouse_roll_down = event.button == 5
+        if mouse_roll_up and self.target_zoom_level < 2.0:
             self.target_zoom_level *= 1.2
-        elif event.button == 5 and self.target_zoom_level > 0.5:
+        elif mouse_roll_down and self.target_zoom_level > 0.5:
             self.target_zoom_level /= 1.2
 
     def update_camera(self):
