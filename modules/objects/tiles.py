@@ -56,6 +56,7 @@ class Ground(Tile):
         super().__init__(x, y, size, (GROUND_COLOR))  # Kolor brązowy
         self.bent_corners = []
         self.type = "Ground"
+        self.rounded_corners = RoundedCorners(x, y, size, grid)
 
     @property
     def rect(self):
@@ -66,22 +67,9 @@ class Ground(Tile):
         """Sprawdza, czy ten kafelek koliduje z innym obiektem."""
         return self.rect.colliderect(other.rect)
 
-    def is_corner_adjacent(self, corner, grid):
-        """Sprawdza, czy do kąta w tile klasy ground przylega drugi tile klasy ground."""
-        corner_tiles = [
-            grid[self.y + dy][self.x + dx]
-            for dir in CORNERS[corner]
-            for dx, dy in [DIRECTIONS[dir]]
-            if 0 <= self.y + dy < len(grid) and 0 <= self.x + dx < len(grid[0])
-        ]
-
-        # Sprawdzamy, czy którykolwiek z kafelków wokół kąta jest kafelkiem klasy Ground.
-        # Jeśli tak, zwracamy True. W przeciwnym razie zwracamy False.
-        return any(isinstance(tile, Ground) for tile in corner_tiles)
-
     def bend_corner(self, direction, grid):
         """Zgina kąt, jeśli do niego nie przylega inny kafelek klasy ground."""
-        if direction not in self.bent_corners and not self.is_corner_adjacent(direction, grid):
+        if direction not in self.bent_corners and not self.rounded_corners.is_corner_adjacent(direction):
             self.bent_corners.append(direction)
 
     def draw_rounded_rect(self, surface, rect, color, corner_radiuses, corners_to_round):
@@ -160,3 +148,27 @@ class Ground(Tile):
             ],
             self.bent_corners,
         )
+
+
+class RoundedCorners:
+    """Klasa do obsługi zaokrąglania rogów."""
+
+    def __init__(self, x, y, size, grid):
+        """Inicjalizuje zaokrąglanie rogów."""
+        self.x = x
+        self.y = y
+        self.size = size
+        self.grid = grid
+
+    def is_corner_adjacent(self, corner):
+        """Sprawdza, czy do kąta w tile klasy ground przylega drugi tile klasy ground."""
+        corner_tiles = [
+            self.grid[self.y + dy][self.x + dx]
+            for dir in CORNERS[corner]
+            for dx, dy in [DIRECTIONS[dir]]
+            if 0 <= self.y + dy < len(self.grid) and 0 <= self.x + dx < len(self.grid[0])
+        ]
+
+        # Sprawdzamy, czy którykolwiek z kafelków wokół kąta jest kafelkiem klasy Ground.
+        # Jeśli tak, zwracamy True. W przeciwnym razie zwracamy False.
+        return any(isinstance(tile, Ground) for tile in corner_tiles)
