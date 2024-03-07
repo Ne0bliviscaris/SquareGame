@@ -1,8 +1,8 @@
 from modules.objects.tiles import Ground
 from modules.world.world import TILE_SIZE, WORLD_WIDTH
 
-ZOOM_OUT_LIMIT = 0.5
-ZOOM_IN_LIMIT = 2.0
+ZOOM_OUT_LIMIT = 2.0
+ZOOM_IN_LIMIT = 0.5
 
 
 class Camera:
