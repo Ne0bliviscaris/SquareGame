@@ -28,25 +28,24 @@ class Collisions:
 
     def handle_rising_collision(self, tile):
         """Obsługuje kolizję kwadratu z danym kafelkiem podczas skoku."""
-        # Sprawdzenie pozycji kwadratu względem kafelka
-        center_diff = (self.square.x + self.square.size / 2) - (tile.x + tile.size / 2)
-        is_blocked_from_above = -CANT_JUMP * tile.size < center_diff < CANT_JUMP * tile.size
-        is_below_ground = self.square.y >= tile.y + tile.size
+        is_below_ground = self.square.y > tile.y + tile.size
 
-        left_offset_above_threshold = center_diff < -GRID_PULLING_RANGE * tile.size
+        left_threshold = tile.x - self.square.size * GRID_PULLING_RANGE
+        left_offset_above_threshold = self.square.x < left_threshold
         grid_pull_left = (self.square.x // tile.size) * tile.size
 
-        right_offset_above_threshold = center_diff > GRID_PULLING_RANGE * tile.size
+        right_threshold = tile.x + tile.size + self.square.size * GRID_PULLING_RANGE
+        right_offset_above_threshold = self.square.x + self.square.size > right_threshold
         grid_pull_right = (self.square.x // tile.size + 1) * tile.size
 
-        if not is_blocked_from_above and not is_below_ground:
+        if not is_below_ground:
             if left_offset_above_threshold:
                 self.square.x = grid_pull_left
             elif right_offset_above_threshold:
                 self.square.x = grid_pull_right
-        else:
-            self.square.y = tile.y + tile.size
-            self.square.velocity_y = 0
+            else:
+                self.square.y = tile.y + tile.size
+                self.square.velocity_y = 0
 
     def handle_horizontal_collision(self, tile, is_moving_left):
         """Obsługuje kolizję kwadratu z danym kafelkiem podczas ruchu poziomego."""
