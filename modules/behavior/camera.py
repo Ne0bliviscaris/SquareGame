@@ -38,12 +38,17 @@ class Camera:
         # Ustalenie przesunięć minimalnych i maksymalnych
         ground_tiles = [tile for tile in self.tiles if isinstance(tile, Ground)]
         lowest_row = max(tile.y for tile in ground_tiles)
+        highest_row = min(tile.y for tile in ground_tiles)
 
         min_offset_y = -lowest_row * self.zoom_level + self.SCREEN_HEIGHT - TILE_SIZE * self.zoom_level
+        max_offset_y = -highest_row * self.zoom_level
         max_offset_x = self.SCREEN_WIDTH - WORLD_WIDTH * self.zoom_level
 
         if self.target_offset_y < min_offset_y:
             self.target_offset_y = min_offset_y
+        elif self.target_offset_y > max_offset_y:
+            self.target_offset_y = max_offset_y
+
         if self.target_offset_x > 0:
             self.target_offset_x = 0
         elif self.target_offset_x < max_offset_x:
