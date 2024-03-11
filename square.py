@@ -13,9 +13,9 @@ class Square:
         self.x = x
         self.y = y
         self.size = size
-        self.velocity_y = 5
+        self.velocity_y = 0
         self.velocity_x = 0  # Dodajemy prędkość w osi x
-        self.gravity = 0.07
+        self.gravity = 0.12
 
     def move(self, dx, dy):
         """Przesuwa kwadrat o daną ilość pikseli."""
@@ -62,7 +62,8 @@ class Player(Square):
 
     def jump(self):
         """Sprawia, że kwadrat skacze."""
-        self.velocity_y = -4
+        if self.velocity_y == 0:
+            self.velocity_y = -8
 
 
 class AI(Square):
