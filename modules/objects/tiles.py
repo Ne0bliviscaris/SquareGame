@@ -64,7 +64,3 @@ class Ground(Tile):
     def collides_with(self, other):
         """Sprawdza, czy ten kafelek koliduje z innym obiektem."""
         return self.rect.colliderect(other.rect)
-
-    def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
-        """Rysuje kafelek na ekranie."""
-        self.rounded_corners.draw(screen, camera_offset_x, camera_offset_y, zoom_level)
