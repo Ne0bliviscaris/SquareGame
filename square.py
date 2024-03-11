@@ -36,7 +36,7 @@ class Square:
         # Ustalenie pozcji i wymiarów
         left = int(self.x * zoom_level) + camera_offset_x + 1
         top = int(self.y * zoom_level) + camera_offset_y + 1
-        square = int(self.size * zoom_level)
+        square = round(self.size * zoom_level)
         draw.rect(
             screen,
             SQUARE_COLOR,
