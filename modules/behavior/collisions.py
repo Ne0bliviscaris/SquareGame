@@ -1,5 +1,7 @@
 import math
 
+from pygame import time
+
 from modules.objects.tiles import Ground
 
 GRID_PULLING_RANGE = 0.5
@@ -76,10 +78,16 @@ class Collisions:
 
     def handle_square_collisions(self, squares):
         """Sprawdza kolizje między kwadratem a wszystkimi innymi kwadratami."""
+        if time.get_ticks() < self.square.collision_cooldown:  # Jeśli licznik czasu nie upłynął, nie sprawdzamy kolizji
+            return
+
         for other_square in squares:
             if other_square is not self.square and self.square.mode != other_square.mode and self.square.collides_with(other_square):
                 self.square.change_mode()
                 other_square.change_mode()
+                # Ustawiamy licznik czasu na 3 sekundy od teraz
+                self.square.collision_cooldown = time.get_ticks() + 3000
+                other_square.collision_cooldown = time.get_ticks() + 3000
 
                 # Przesuń kwadraty tak, aby nie były w stanie kolizji
                 dx = self.square.x - other_square.x
@@ -93,10 +101,10 @@ class Collisions:
                     push_y = dy * push
 
                     # Przesuń kwadraty
-                    self.square.x += push_x
-                    self.square.y += push_y
-                    other_square.x -= push_x
-                    other_square.y -= push_y
+                    self.square.x += push_x * 0.01
+                    self.square.y += push_y * 0.01
+                    other_square.x -= push_x * 0.01
+                    other_square.y -= push_y * 0.01
 
     def handle_collisions_around(self, tiles, squares):
         """Sprawdza kolizje między kwadratem a wszystkimi kafelkami i innymi kwadratami."""
