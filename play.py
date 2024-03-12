@@ -12,18 +12,21 @@ from modules.world.world_builder import world_list
 from square import Player
 
 FPS_LIMIT = 250
+RUNNERS = 10
+CATCHERS = 10
 
 
 class RunningGameState(GameState):
     """Stan gry reprezentujący działającą grę."""
 
-    def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT, num_squares=5):
+    def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT):
         """Inicjalizuje stan gry jako działający."""
         self.pause_menu_state = None
         self.speed = 3
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.tiles = world_list
+        num_squares = RUNNERS + CATCHERS
 
         # Znajdź najniższy rząd kafelków Ground
         ground_tiles = [tile for tile in self.tiles if isinstance(tile, Ground)]
@@ -34,13 +37,16 @@ class RunningGameState(GameState):
         for _ in range(num_squares):
             x = random.randint(0, WORLD_WIDTH - TILE_SIZE)  # Losowa pozycja x
             y = random.randint(0, lowest_row + TILE_SIZE)  # Pozycja y na dolnym rzędzie
-            square = Player(x, y, TILE_SIZE) if not self.squares else Ai(x, y, TILE_SIZE)  # Pierwszy kwadrat to Player, reszta to AI
+            square = (
+                Player(x, y, TILE_SIZE, "observer") if not self.squares else Ai(x, y, TILE_SIZE)
+            )  # Pierwszy kwadrat to Player, reszta to AI
             self.squares.append(square)
         self.drawables = self.tiles + self.squares  # Dodajemy kwadraty do listy obiektów do narysowania
 
         # Losowo wybieramy jednego kwadratu, który będzie w trybie 'catch'
-        catcher = random.choice(self.squares)
-        catcher.change_mode()
+        for _ in range(CATCHERS):
+            catcher = random.choice(self.squares)
+            catcher.change_mode()
 
         # Utwórz instancję Collisions dla każdego kwadratu
         self.collisions = [Collisions(square) for square in self.squares]
@@ -119,8 +125,10 @@ class RunningGameState(GameState):
 
         # Narysuj wszystkie obiekty z uwzględnieniem przesunięcia kamery i poziomu zoomu
         for drawable in self.drawables:
-            drawable.draw(screen, self.camera.camera_offset_x, self.camera.camera_offset_y, self.camera.zoom_level)
-
+            if drawable is not self.squares[0]:  # Nie rysuj self.squares[0] jeszcze
+                drawable.draw(screen, self.camera.camera_offset_x, self.camera.camera_offset_y, self.camera.zoom_level)
+        # Rysuj self.squares[0] na wierzchu
+        self.squares[0].draw(screen, self.camera.camera_offset_x, self.camera.camera_offset_y, self.camera.zoom_level)
         pygame.display.update()
 
 
