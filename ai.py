@@ -1,6 +1,6 @@
 from pygame import Rect, draw
 
-from square import CATCH_COLOR, FLEE_COLOR, PLAYER_COLOR, Square
+from square import CATCH_COLOR, FLEE_COLOR, Square
 
 
 class Ai(Square):
@@ -16,15 +16,6 @@ class Ai(Square):
         """Zmienia tryb AI."""
         super().change_mode()
         self.color = CATCH_COLOR if self.mode == "catch" else FLEE_COLOR
-
-    def update(self):
-        """Aktualizuje pozycję kwadratu, dodając do niej prędkość."""
-        super().update()
-        if self.mode == "catch":
-            ...
-        else:
-            ...
-        # Dodaj tutaj logikę AI, która steruje ruchem przeciwnika
 
     def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
         """Rysuje kwadrat na ekranie."""
@@ -42,3 +33,12 @@ class Ai(Square):
                 square,
             ),
         )
+
+    def update(self):
+        """Aktualizuje pozycję kwadratu, dodając do niej prędkość."""
+        super().update()
+        if self.mode == "catch":
+            ...
+        else:
+            ...
+        # Dodaj tutaj logikę AI, która steruje ruchem przeciwnika
