@@ -3,8 +3,9 @@ from math import ceil, floor
 from pygame import Rect, draw
 
 PLAYER_COLOR = (0, 180, 0)
-CATCH_COLOR = (180, 0, 0)
-FLEE_COLOR = (0, 0, 180)
+CATCH_COLOR = (180, 50, 0)
+FLEE_COLOR = (0, 100, 180)
+OBSERVER_COLOR = (180, 180, 180)
 
 
 class Square:
@@ -26,6 +27,19 @@ class Square:
         """Przesuwa kwadrat o daną ilość pikseli."""
         self.x += dx
         self.y += ceil(dy)
+
+    def move_left(self, speed):
+        """Przesuwa kwadrat w lewo."""
+        self.velocity_x = -speed
+
+    def move_right(self, speed):
+        """Przesuwa kwadrat w prawo."""
+        self.velocity_x = speed
+
+    def jump(self):
+        """Sprawia, że kwadrat skacze."""
+        if self.velocity_y == 0:
+            self.velocity_y = -8
 
     def change_mode(self):
         """Zmienia tryb kwadratu."""
@@ -79,27 +93,19 @@ class Player(Square):
         """Zmienia tryb gracza."""
         super().change_mode()
 
-    def move_left(self, speed):
-        """Przesuwa kwadrat w lewo."""
-        self.velocity_x = -speed
-
-    def move_right(self, speed):
-        """Przesuwa kwadrat w prawo."""
-        self.velocity_x = speed
-
-    def jump(self):
-        """Sprawia, że kwadrat skacze."""
-        if self.velocity_y == 0:
-            self.velocity_y = -8
-
     def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
         """Rysuje kwadrat na ekranie."""
         # Ustalenie pozcji i wymiarów
         left = int(self.x * zoom_level) + camera_offset_x + 1
         top = int(self.y * zoom_level) + camera_offset_y + 1
         square = round(self.size * zoom_level)
-        inner_color = CATCH_COLOR if self.mode == "catch" else FLEE_COLOR  # Używamy koloru zależnego od trybu
 
+        if self.mode == "catch":
+            inner_color = CATCH_COLOR
+        elif self.mode == "observer":
+            inner_color = OBSERVER_COLOR
+        else:
+            inner_color = FLEE_COLOR
         # Rysowanie kwadratu
         draw.rect(
             screen,
@@ -122,5 +128,5 @@ class Player(Square):
                 square,
                 square,
             ),
-            int(9 * zoom_level),  # Szerokość obramowania
+            int(10 * zoom_level),  # Szerokość obramowania
         )
