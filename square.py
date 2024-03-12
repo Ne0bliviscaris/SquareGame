@@ -20,6 +20,7 @@ class Square:
         self.gravity = 0.12
         self.mode = mode
         self.color = PLAYER_COLOR if mode == "catch" else FLEE_COLOR
+        self.collision_cooldown = 3
 
     def move(self, dx, dy):
         """Przesuwa kwadrat o daną ilość pikseli."""
@@ -63,7 +64,12 @@ class Square:
 
     def collides_with(self, other):
         """Sprawdza, czy kwadrat koliduje z innym obiektem."""
-        return self.rect.colliderect(other.rect)
+        return not (
+            self.x + self.size <= other.x
+            or self.x >= other.x + other.size
+            or self.y + self.size <= other.y
+            or self.y >= other.y + other.size
+        )
 
 
 class Player(Square):
