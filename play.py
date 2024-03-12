@@ -91,7 +91,7 @@ class RunningGameState(GameState):
 
         for key, handler in key_handlers.items():
             if keys[key]:
-                handler(self.speed)
+                handler()
 
     def handle_key_press_actions(self, event):
         """Obsługuje zdarzenia związane z naciśnięciem klawisza."""

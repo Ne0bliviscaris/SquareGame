@@ -1,3 +1,5 @@
+import random
+
 from pygame import Rect, draw
 
 from square import CATCH_COLOR, FLEE_COLOR, Square
@@ -38,7 +40,19 @@ class Ai(Square):
         """Aktualizuje pozycję kwadratu, dodając do niej prędkość."""
         super().update()
         if self.mode == "catch":
-            ...
+            action = random.choice(["jump"] + ["move_left"] * 100 + ["move_right"] * 100)
+            if action == "jump":
+                self.jump()
+            elif action == "move_left":
+                self.move_left()
+            elif action == "move_right":
+                self.move_right()
         else:
-            ...
+            action = random.choice(["jump"] + ["move_left"] * 100 + ["move_right"] * 100)
+            if action == "jump":
+                self.jump()
+            elif action == "move_left":
+                self.move_left()
+            elif action == "move_right":
+                self.move_right()
         # Dodaj tutaj logikę AI, która steruje ruchem przeciwnika
