@@ -22,24 +22,24 @@ class Square:
         self.mode = mode
         self.color = PLAYER_COLOR if mode == "catch" else FLEE_COLOR
         self.collision_cooldown = 3
+        self.speed = 5
 
     def move(self, dx, dy):
         """Przesuwa kwadrat o daną ilość pikseli."""
         self.x += dx
         self.y += ceil(dy)
 
-    def move_left(self, speed):
+    def move_left(self):
         """Przesuwa kwadrat w lewo."""
-        self.velocity_x = -speed
+        self.velocity_x = -self.speed
 
-    def move_right(self, speed):
+    def move_right(self):
         """Przesuwa kwadrat w prawo."""
-        self.velocity_x = speed
+        self.velocity_x = self.speed
 
     def jump(self):
         """Sprawia, że kwadrat skacze."""
-        if self.velocity_y == 0:
-            self.velocity_y = -8
+        self.velocity_y = -8
 
     def change_mode(self):
         """Zmienia tryb kwadratu."""
