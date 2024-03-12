@@ -116,7 +116,7 @@ class Player(Square):
         )
 
 
-class AI(Square):
+class Ai(Square):
     """Klasa reprezentująca kwadrat przeciwnika."""
 
     def __init__(self, x, y, size, mode):
