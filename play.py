@@ -1,5 +1,8 @@
+import random
+
 import pygame
 
+from ai import Ai
 from modules.behavior.camera import Camera
 from modules.behavior.collisions import Collisions
 from modules.objects.tiles import Ground
@@ -14,7 +17,7 @@ FPS_LIMIT = 250
 class RunningGameState(GameState):
     """Stan gry reprezentujący działającą grę."""
 
-    def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT):
+    def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT, num_squares=5):
         """Inicjalizuje stan gry jako działający."""
         self.pause_menu_state = None
         self.speed = 3
@@ -26,15 +29,25 @@ class RunningGameState(GameState):
         ground_tiles = [tile for tile in self.tiles if isinstance(tile, Ground)]
         lowest_row = max(tile.y for tile in ground_tiles)
 
-        # Ustaw pozycję kwadratu na środku świata gry i na dolnym rzędzie
-        self.square = Player(WORLD_WIDTH / 2, lowest_row - TILE_SIZE, TILE_SIZE)
-        self.drawables = self.tiles + [self.square]  # Dodajemy kwadrat do listy obiektów do narysowania
+        # Ustaw pozycję kwadratów na losowych pozycjach w świecie gry i na dolnym rzędzie
+        self.squares = []
+        for _ in range(num_squares):
+            x = random.randint(0, WORLD_WIDTH - TILE_SIZE)  # Losowa pozycja x
+            y = random.randint(0, lowest_row + TILE_SIZE)  # Pozycja y na dolnym rzędzie
+            square = Player(x, y, TILE_SIZE) if not self.squares else Ai(x, y, TILE_SIZE)  # Pierwszy kwadrat to Player, reszta to AI
+            self.squares.append(square)
+        self.drawables = self.tiles + self.squares  # Dodajemy kwadraty do listy obiektów do narysowania
 
-        # Utwórz instancję Collisions
-        self.collisions = Collisions(self.square)
-        # Utwórz instancję Camera
-        self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, self.square, self.tiles, ground_tiles)
+        # Losowo wybieramy jednego kwadratu, który będzie w trybie 'catch'
+        catcher = random.choice(self.squares)
+        catcher.change_mode()
 
+        # Utwórz instancję Collisions dla każdego kwadratu
+        self.collisions = [Collisions(square) for square in self.squares]
+        # Utwórz instancję Camera dla kwadratu gracza
+        self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, self.squares[0], self.tiles, ground_tiles)
+
+    # Reszta OK
     def set_pause_state(self, pause_state):
         """Ustawia stan pauzy dla stanu gry."""
         self.pause_menu_state = pause_state
@@ -64,10 +77,10 @@ class RunningGameState(GameState):
         keys = pygame.key.get_pressed()
 
         key_handlers = {
-            pygame.K_a: self.square.move_left,
-            pygame.K_LEFT: self.square.move_left,
-            pygame.K_d: self.square.move_right,
-            pygame.K_RIGHT: self.square.move_right,
+            pygame.K_a: self.squares[0].move_left,
+            pygame.K_LEFT: self.squares[0].move_left,
+            pygame.K_d: self.squares[0].move_right,
+            pygame.K_RIGHT: self.squares[0].move_right,
         }
 
         for key, handler in key_handlers.items():
@@ -79,12 +92,12 @@ class RunningGameState(GameState):
         if event.key == pygame.K_ESCAPE:
             return self.pause_menu_state
         elif event.key == pygame.K_SPACE:
-            self.square.jump()
+            self.squares[0].jump()
 
     def handle_key_release(self, event):
         """Obsługuje zdarzenia związane z puszczeniem klawisza."""
         if event.key in (pygame.K_a, pygame.K_LEFT, pygame.K_d, pygame.K_RIGHT):
-            self.square.velocity_x = 0  # Zresetuj prędkość x kwadratu
+            self.squares[0].velocity_x = 0  # Zresetuj prędkość x kwadratu
 
     def handle_quit_event(self, event):
         """Obsługuje zdarzenie wyjścia z gry."""
@@ -93,10 +106,12 @@ class RunningGameState(GameState):
 
     def update(self):
         """Aktualizuje logikę gry dla bieżącego stanu gry."""
-        self.square.update()  # Aktualizacja kwadratu
+        for square in self.squares:
+            square.update()  # Aktualizacja kwadratu
         self.camera.update_zoom()  # Aktualizacja zoomu
         self.camera.update_camera()  # Aktualizacja kamery
-        self.collisions.handle_collisions_around(self.tiles)  # Sprawdź kolizje między kwadratem a wszystkimi kafelkami
+        for collision in self.collisions:
+            collision.handle_collisions_around(self.tiles, self.squares)  # Sprawdź kolizje między kwadratem a wszystkimi kafelkami
 
     def draw(self, screen):
         """Rysuje elementy gry na ekranie dla bieżącego stanu gry."""
