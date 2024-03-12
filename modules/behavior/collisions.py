@@ -82,7 +82,13 @@ class Collisions:
             return
 
         for other_square in squares:
-            if other_square is not self.square and self.square.mode != other_square.mode and self.square.collides_with(other_square):
+            if (
+                other_square is not self.square
+                and self.square.mode != other_square.mode
+                and self.square.mode != "observer"
+                and other_square.mode != "observer"
+                and self.square.collides_with(other_square)
+            ):
                 self.square.change_mode()
                 other_square.change_mode()
                 # Ustawiamy licznik czasu na 3 sekundy od teraz
