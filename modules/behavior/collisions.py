@@ -1,3 +1,5 @@
+import math
+
 from modules.objects.tiles import Ground
 
 GRID_PULLING_RANGE = 0.5
@@ -72,9 +74,34 @@ class Collisions:
         elif is_moving_horizontally:
             self.handle_horizontal_collision(tile, is_moving_left)
 
-    def handle_collisions_around(self, tiles):
-        """Sprawdza kolizje między kwadratem a wszystkimi kafelkami."""
+    def handle_square_collisions(self, squares):
+        """Sprawdza kolizje między kwadratem a wszystkimi innymi kwadratami."""
+        for other_square in squares:
+            if other_square is not self.square and self.square.mode != other_square.mode and self.square.collides_with(other_square):
+                self.square.change_mode()
+                other_square.change_mode()
+
+                # Przesuń kwadraty tak, aby nie były w stanie kolizji
+                dx = self.square.x - other_square.x
+                dy = self.square.y - other_square.y
+                distance = math.sqrt(dx**2 + dy**2)
+                min_distance = self.square.size + other_square.size
+                if distance < min_distance:
+                    # Oblicz wektor przesunięcia
+                    push = (min_distance - distance) / distance
+                    push_x = dx * push
+                    push_y = dy * push
+
+                    # Przesuń kwadraty
+                    self.square.x += push_x
+                    self.square.y += push_y
+                    other_square.x -= push_x
+                    other_square.y -= push_y
+
+    def handle_collisions_around(self, tiles, squares):
+        """Sprawdza kolizje między kwadratem a wszystkimi kafelkami i innymi kwadratami."""
         nearby_tiles = self.get_nearby_tiles(tiles, self.square.size * 2)  # Użyj rozmiaru kwadratu jako dystansu
         for tile in nearby_tiles:
             if isinstance(tile, Ground) and tile.collides_with(self.square):
                 self.handle_collision(tile)
+        self.handle_square_collisions(squares)
