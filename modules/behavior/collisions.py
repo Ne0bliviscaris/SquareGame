@@ -86,7 +86,6 @@ class Collisions:
 
     def handle_square_collisions(self, squares):
         """Sprawdza kolizje między kwadratem a wszystkimi innymi kwadratami."""
-
         for other_square in squares:
             if (
                 other_square is not self.square
@@ -95,6 +94,7 @@ class Collisions:
                 and other_square.mode != "observer"
                 and self.square.collides_with(other_square)
             ):
+
                 self.square.collide = True
                 other_square.collide = True
 
@@ -114,6 +114,3 @@ class Collisions:
                     self.square.y += push_y * 0.01
                     other_square.x -= push_x * 0.01
                     other_square.y -= push_y * 0.01
-            else:
-                self.square.collide = False
-                other_square.collide = False

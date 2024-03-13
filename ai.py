@@ -45,7 +45,7 @@ class Ai(Square):
                     square,
                     square,
                 ),
-                10,  # Szerokość ramki
+                5,  # Szerokość ramki
             )
 
     def update(self):

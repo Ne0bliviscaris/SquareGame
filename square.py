@@ -76,7 +76,6 @@ class Square:
                 square,
             ),
         )
-        # Rysujemy białą ramkę, jeśli kwadrat jest w kolizji
 
     def collides_with(self, other):
         """Sprawdza, czy kwadrat koliduje z innym obiektem."""
