@@ -86,8 +86,6 @@ class Collisions:
 
     def handle_square_collisions(self, squares):
         """Sprawdza kolizje między kwadratem a wszystkimi innymi kwadratami."""
-        # if time.get_ticks() < self.square.collision_cooldown:  # Jeśli licznik czasu nie upłynął, nie sprawdzamy kolizji
-        #     return
 
         for other_square in squares:
             if (
@@ -99,10 +97,6 @@ class Collisions:
             ):
                 self.square.collide = True
                 other_square.collide = True
-
-                # # Ustawiamy licznik czasu na 3 sekundy od teraz
-                # self.square.collision_cooldown = time.get_ticks() + 3000
-                # other_square.collision_cooldown = time.get_ticks() + 3000
 
                 # Przesuń kwadraty tak, aby nie były w stanie kolizji
                 dx = self.square.x - other_square.x
