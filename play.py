@@ -13,7 +13,7 @@ from modules.world.world import TILE_SIZE, WORLD_WIDTH
 from modules.world.world_builder import world_list
 
 FPS_LIMIT = 250
-RUNNERS = 2
+RUNNERS = 1
 CATCHERS = 0
 
 
