@@ -13,8 +13,8 @@ from modules.world.world import TILE_SIZE, WORLD_WIDTH
 from modules.world.world_builder import world_list
 
 FPS_LIMIT = 250
-RUNNERS = 1
-CATCHERS = 0
+RUNNERS = 8
+CATCHERS = 8
 
 
 class RunningGameState(GameState):
@@ -39,7 +39,7 @@ class RunningGameState(GameState):
             x = random.randint(0, WORLD_WIDTH - TILE_SIZE)  # Losowa pozycja x
             y = random.randint(0, lowest_row + TILE_SIZE)  # Pozycja y na dolnym rzędzie
             square = (
-                Player(x, y, TILE_SIZE, "catch") if not self.squares else Ai(x, y, TILE_SIZE)
+                Player(x, y, TILE_SIZE, "observer") if not self.squares else Ai(x, y, TILE_SIZE)
             )  # Pierwszy kwadrat to Player, reszta to AI
             self.squares.append(square)
         self.drawables = self.tiles + self.squares  # Dodajemy kwadraty do listy obiektów do narysowania
