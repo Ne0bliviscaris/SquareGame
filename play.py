@@ -6,11 +6,11 @@ from ai import Ai
 from modules.ai.vectors import VectorCalculator
 from modules.behavior.camera import Camera
 from modules.behavior.collisions import Collisions
+from modules.objects.player import Player
 from modules.objects.tiles import Ground
 from modules.state import GameState
 from modules.world.world import TILE_SIZE, WORLD_WIDTH
 from modules.world.world_builder import world_list
-from square import Player
 
 FPS_LIMIT = 250
 RUNNERS = 2
