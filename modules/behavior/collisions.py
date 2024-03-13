@@ -76,10 +76,18 @@ class Collisions:
         elif is_moving_horizontally:
             self.handle_horizontal_collision(tile, is_moving_left)
 
+    def handle_collisions_around(self, tiles, squares):
+        """Sprawdza kolizje między kwadratem a wszystkimi kafelkami i innymi kwadratami."""
+        nearby_tiles = self.get_nearby_tiles(tiles, self.square.size * 2)  # Użyj rozmiaru kwadratu jako dystansu
+        for tile in nearby_tiles:
+            if isinstance(tile, Ground) and tile.collides_with(self.square):
+                self.handle_collision(tile)
+        self.handle_square_collisions(squares)
+
     def handle_square_collisions(self, squares):
         """Sprawdza kolizje między kwadratem a wszystkimi innymi kwadratami."""
-        if time.get_ticks() < self.square.collision_cooldown:  # Jeśli licznik czasu nie upłynął, nie sprawdzamy kolizji
-            return
+        # if time.get_ticks() < self.square.collision_cooldown:  # Jeśli licznik czasu nie upłynął, nie sprawdzamy kolizji
+        #     return
 
         for other_square in squares:
             if (
@@ -89,11 +97,12 @@ class Collisions:
                 and other_square.mode != "observer"
                 and self.square.collides_with(other_square)
             ):
-                self.square.change_mode()
-                other_square.change_mode()
-                # Ustawiamy licznik czasu na 3 sekundy od teraz
-                self.square.collision_cooldown = time.get_ticks() + 3000
-                other_square.collision_cooldown = time.get_ticks() + 3000
+                self.square.collide = True
+                other_square.collide = True
+
+                # # Ustawiamy licznik czasu na 3 sekundy od teraz
+                # self.square.collision_cooldown = time.get_ticks() + 3000
+                # other_square.collision_cooldown = time.get_ticks() + 3000
 
                 # Przesuń kwadraty tak, aby nie były w stanie kolizji
                 dx = self.square.x - other_square.x
@@ -111,11 +120,6 @@ class Collisions:
                     self.square.y += push_y * 0.01
                     other_square.x -= push_x * 0.01
                     other_square.y -= push_y * 0.01
-
-    def handle_collisions_around(self, tiles, squares):
-        """Sprawdza kolizje między kwadratem a wszystkimi kafelkami i innymi kwadratami."""
-        nearby_tiles = self.get_nearby_tiles(tiles, self.square.size * 2)  # Użyj rozmiaru kwadratu jako dystansu
-        for tile in nearby_tiles:
-            if isinstance(tile, Ground) and tile.collides_with(self.square):
-                self.handle_collision(tile)
-        self.handle_square_collisions(squares)
+            else:
+                self.square.collide = False
+                other_square.collide = False

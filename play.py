@@ -14,7 +14,7 @@ from square import Player
 
 FPS_LIMIT = 250
 RUNNERS = 2
-CATCHERS = 2
+CATCHERS = 0
 
 
 class RunningGameState(GameState):
@@ -39,7 +39,7 @@ class RunningGameState(GameState):
             x = random.randint(0, WORLD_WIDTH - TILE_SIZE)  # Losowa pozycja x
             y = random.randint(0, lowest_row + TILE_SIZE)  # Pozycja y na dolnym rzędzie
             square = (
-                Player(x, y, TILE_SIZE, "observer") if not self.squares else Ai(x, y, TILE_SIZE)
+                Player(x, y, TILE_SIZE, "catch") if not self.squares else Ai(x, y, TILE_SIZE)
             )  # Pierwszy kwadrat to Player, reszta to AI
             self.squares.append(square)
         self.drawables = self.tiles + self.squares  # Dodajemy kwadraty do listy obiektów do narysowania
@@ -121,7 +121,9 @@ class RunningGameState(GameState):
         self.camera.update_zoom()  # Aktualizacja zoomu
         self.camera.update_camera()  # Aktualizacja kamery
         for collision in self.collisions:
-            collision.handle_collisions_around(self.tiles, self.squares)  # Sprawdź kolizje między kwadratem a wszystkimi kafelkami
+            collision.handle_collisions_around(
+                self.tiles, self.squares
+            )  # Sprawdź kolizje między kwadratem a wszystkimi kafelkami
 
     def draw(self, screen):
         """Rysuje elementy gry na ekranie dla bieżącego stanu gry."""
@@ -135,7 +137,9 @@ class RunningGameState(GameState):
         self.squares[0].draw(screen, self.camera.camera_offset_x, self.camera.camera_offset_y, self.camera.zoom_level)
 
         # Rysuj wektory
-        self.vector_calculator.draw_vectors(screen, self.camera.zoom_level, self.camera.camera_offset_x, self.camera.camera_offset_y)
+        self.vector_calculator.draw_vectors(
+            screen, self.camera.zoom_level, self.camera.camera_offset_x, self.camera.camera_offset_y
+        )
         pygame.display.update()
 
 

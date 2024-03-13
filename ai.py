@@ -22,8 +22,8 @@ class Ai(Square):
     def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
         """Rysuje kwadrat na ekranie."""
         # Ustalenie pozcji i wymiarów
-        left = int(self.x * zoom_level) + camera_offset_x + 1
-        top = int(self.y * zoom_level) + camera_offset_y + 1
+        left = int(self.x * zoom_level) + camera_offset_x
+        top = int(self.y * zoom_level) + camera_offset_y
         square = round(self.size * zoom_level)
         draw.rect(
             screen,
@@ -35,6 +35,18 @@ class Ai(Square):
                 square,
             ),
         )
+        if self.collide:
+            draw.rect(
+                screen,
+                (255, 255, 255),  # Biały kolor
+                Rect(
+                    left,
+                    top,
+                    square,
+                    square,
+                ),
+                10,  # Szerokość ramki
+            )
 
     def update(self):
         """Aktualizuje pozycję kwadratu, dodając do niej prędkość."""

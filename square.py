@@ -23,6 +23,7 @@ class Square:
         self.color = PLAYER_COLOR if mode == "catch" else FLEE_COLOR
         self.collision_cooldown = 3
         self.speed = 5
+        self.collide = False  # Dodajemy atrybut kolizji
 
     def move(self, dx, dy):
         """Przesuwa kwadrat o daną ilość pikseli."""
@@ -75,14 +76,24 @@ class Square:
                 square,
             ),
         )
+        # Rysujemy białą ramkę, jeśli kwadrat jest w kolizji
 
     def collides_with(self, other):
         """Sprawdza, czy kwadrat koliduje z innym obiektem."""
+        # Pozycje i wymiary
+        self_right = self.x + self.size
+        other_left = other.x
+        left_left = self.x
+        other_right = other.x + other.size
+        self_bottom = self.y + self.size
+        other_top = other.y
+        self_top = self.y
+        other_bottom = other.y + other.size
         return not (
-            self.x + self.size <= other.x
-            or self.x >= other.x + other.size
-            or self.y + self.size <= other.y
-            or self.y >= other.y + other.size
+            self_right <= other_left
+            or left_left >= other_right
+            or self_bottom <= other_top
+            or self_top >= other_bottom
         )
 
 
@@ -117,6 +128,18 @@ class Player(Square):
                 square,
             ),
         )
+        if self.collide:
+            draw.rect(
+                screen,
+                (255, 255, 255),  # Biały kolor
+                Rect(
+                    left,
+                    top,
+                    square,
+                    square,
+                ),
+                50,  # Szerokość ramki
+            )
 
         # Rysowanie obramowania
         draw.rect(
