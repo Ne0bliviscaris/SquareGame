@@ -3,6 +3,7 @@ import random
 import pygame
 
 from ai import Ai
+from modules.ai.vectors import VectorCalculator
 from modules.behavior.camera import Camera
 from modules.behavior.collisions import Collisions
 from modules.objects.tiles import Ground
@@ -34,7 +35,7 @@ class RunningGameState(GameState):
 
         # Ustaw pozycję kwadratów na losowych pozycjach w świecie gry i na dolnym rzędzie
         self.squares = []
-        for _ in range(num_squares):
+        for _ in range(1 + num_squares):
             x = random.randint(0, WORLD_WIDTH - TILE_SIZE)  # Losowa pozycja x
             y = random.randint(0, lowest_row + TILE_SIZE)  # Pozycja y na dolnym rzędzie
             square = (
@@ -43,9 +44,12 @@ class RunningGameState(GameState):
             self.squares.append(square)
         self.drawables = self.tiles + self.squares  # Dodajemy kwadraty do listy obiektów do narysowania
 
+        # Utwórz instancję VectorCalculator dla modelu AI
+        self.vector_calculator = VectorCalculator(self.squares)
+
         # Losowo wybieramy jednego kwadratu, który będzie w trybie 'catch'
         for _ in range(CATCHERS):
-            catcher = random.choice(self.squares)
+            catcher = random.choice(self.squares[1:])
             catcher.change_mode()
 
         # Utwórz instancję Collisions dla każdego kwadratu
@@ -129,6 +133,9 @@ class RunningGameState(GameState):
                 drawable.draw(screen, self.camera.camera_offset_x, self.camera.camera_offset_y, self.camera.zoom_level)
         # Rysuj self.squares[0] na wierzchu
         self.squares[0].draw(screen, self.camera.camera_offset_x, self.camera.camera_offset_y, self.camera.zoom_level)
+
+        # Rysuj wektory
+        self.vector_calculator.draw_vectors(screen, self.camera.zoom_level, self.camera.camera_offset_x, self.camera.camera_offset_y)
         pygame.display.update()
 
 
