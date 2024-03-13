@@ -12,8 +12,8 @@ from modules.world.world_builder import world_list
 from square import Player
 
 FPS_LIMIT = 250
-RUNNERS = 10
-CATCHERS = 10
+RUNNERS = 2
+CATCHERS = 2
 
 
 class RunningGameState(GameState):
