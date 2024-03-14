@@ -4,7 +4,7 @@ import pygame
 
 from modules.ai.ai import Ai
 
-# from modules.ai.model import Catch, Flee
+# from modules.ai.model import Flee
 from modules.ai.vectors import VectorCalculator
 from modules.behavior.camera import Camera
 from modules.behavior.collisions import Collisions
@@ -37,7 +37,7 @@ class RunningGameState(GameState):
             x = random.randint(0, WORLD_WIDTH - TILE_SIZE)  # Losowa pozycja x
             y = random.randint(0, lowest_row + TILE_SIZE)  # Pozycja y na dolnym rzędzie
             square = (
-                Player(x, y, TILE_SIZE, "observer") if not self.squares else Ai(x, y, TILE_SIZE)
+                Player(x, y, TILE_SIZE, "catch") if not self.squares else Ai(x, y, TILE_SIZE)
             )  # Pierwszy kwadrat to Player, reszta to AI
             self.squares.append(square)
         self.drawables = self.tiles + self.squares  # Dodajemy kwadraty do listy obiektów do narysowania

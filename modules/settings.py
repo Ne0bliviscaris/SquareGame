@@ -1,8 +1,8 @@
 from pygame import display
 
 # Liczba NPC
-RUNNERS = 15
-CATCHERS = 15
+RUNNERS = 3
+CATCHERS = 0
 
 
 FPS_LIMIT = 60
