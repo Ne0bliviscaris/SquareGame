@@ -27,7 +27,7 @@ class Catch(Ai):
 
 
 class Flee(Ai):
-    def __init__(self, x, y, size, mode="catch"):
+    def __init__(self, x, y, size, mode="flee"):
         super().__init__(x, y, size, mode)
 
     def predict(self, state):

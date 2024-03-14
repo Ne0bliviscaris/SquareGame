@@ -1,11 +1,11 @@
 from pygame import display
 
-# play.py
-FPS_LIMIT = 60
+# Liczba NPC
 RUNNERS = 15
 CATCHERS = 15
 
-# game.py
+
+FPS_LIMIT = 60
 SCREEN_WIDTH = 1505  # Szerokość ekranu
 SCREEN_HEIGHT = 800  # Wysokość ekranu
 SCREEN = display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # Utworzenie ekranu o określonych wymiarach
