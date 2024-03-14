@@ -863,10 +863,8 @@ grid = [
 ]
 SKY = 0
 GROUND = 1
-TILE_SIZE = 80
-GRID_HEIGHT = len(grid)
-GRID_WIDTH = len(grid[0])
-WORLD_WIDTH = GRID_WIDTH * TILE_SIZE
+
+
 ROUND_CORNER = 8
 
 CORNERS = {

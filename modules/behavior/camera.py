@@ -1,5 +1,6 @@
 from modules.objects.tiles import Ground
-from modules.world.world import TILE_SIZE, WORLD_WIDTH
+from modules.settings import TILE_SIZE
+from modules.world.world_builder import WORLD_WIDTH
 
 ZOOM_OUT_LIMIT = 2.0
 ZOOM_IN_LIMIT = 0.5

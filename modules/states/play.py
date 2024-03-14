@@ -8,10 +8,9 @@ from modules.behavior.camera import Camera
 from modules.behavior.collisions import Collisions
 from modules.objects.player import Player
 from modules.objects.tiles import Ground
-from modules.settings import CATCHERS, FPS_LIMIT, RUNNERS
+from modules.settings import CATCHERS, FPS_LIMIT, RUNNERS, TILE_SIZE
 from modules.states.state import GameState
-from modules.world.world import TILE_SIZE, WORLD_WIDTH
-from modules.world.world_builder import world_list
+from modules.world.world_builder import WORLD_WIDTH, world_list
 
 
 class RunningGameState(GameState):

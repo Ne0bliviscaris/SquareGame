@@ -1,6 +1,6 @@
 from pygame import draw
 
-from modules.world.world import TILE_SIZE
+from modules.settings import TILE_SIZE
 
 
 class VectorCalculator:

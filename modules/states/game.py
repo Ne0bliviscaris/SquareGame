@@ -6,16 +6,16 @@ os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 
 import pygame
 
+from modules.settings import (
+    FPS_LIMIT,
+    SCREEN,
+    SCREEN_HEIGHT,
+    SCREEN_WIDTH,
+    WINDOW_TITLE,
+)
 from modules.states.menu import MainMenuState, PauseMenuState
 from modules.states.play import RunningGameState
 from modules.states.state import GameState
-
-# Stałe wartości
-SCREEN_WIDTH = 1600  # Szerokość ekranu
-SCREEN_HEIGHT = 850  # Wysokość ekranu
-SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # Utworzenie ekranu o określonych wymiarach
-WINDOW_TITLE = "Squaregame"  # Tytuł okna
-FPS_CAP = 200  # Maksymalna liczba klatek na sekundę
 
 
 class Game:
@@ -59,7 +59,7 @@ class Game:
             self.current_state.update()
             self.current_state.draw(self.screen)
             pygame.display.flip()
-            clock.tick(FPS_CAP)
+            clock.tick(FPS_LIMIT)
 
 
 def launch():
