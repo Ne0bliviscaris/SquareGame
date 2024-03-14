@@ -63,4 +63,3 @@ def launch():
     pygame.init()
     game = Game()
     game.run()
-    pygame.quit()
