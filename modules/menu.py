@@ -115,6 +115,7 @@ class PauseMenuState:
         Ustawia stan gry.
         """
         self.running_game_state = running_game_state
+        self.resume_button.action = running_game_state
 
 
 def display_logo(screen, logo):
