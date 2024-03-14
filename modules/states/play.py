@@ -47,6 +47,9 @@ class RunningGameState(GameState):
             catcher = random.choice(self.squares[1:])
             catcher.change_mode()
 
+        # Utwórz instancję kontrolera
+        self.controller = Controller(self.squares[0])
+
         # Utwórz instancję VectorCalculator dla modelu AI
         self.vector_calculator = VectorCalculator(self.squares)
 
@@ -76,24 +79,9 @@ class RunningGameState(GameState):
                 if new_state is not None:
                     return new_state
 
-        self.handle_movement()
+        self.controller.handle_movement()
 
         return self
-
-    def handle_movement(self):
-        """Obsługuje zdarzenia związane z ciągłym naciśnięciem klawisza."""
-        keys = pygame.key.get_pressed()
-
-        key_handlers = {
-            pygame.K_a: self.squares[0].move_left,
-            pygame.K_LEFT: self.squares[0].move_left,
-            pygame.K_d: self.squares[0].move_right,
-            pygame.K_RIGHT: self.squares[0].move_right,
-        }
-
-        for key, handler in key_handlers.items():
-            if keys[key]:
-                handler()
 
     def handle_key_press_actions(self, event):
         """Obsługuje zdarzenia związane z naciśnięciem klawisza."""
@@ -114,6 +102,7 @@ class RunningGameState(GameState):
 
     def update(self):
         """Aktualizuje logikę gry dla bieżącego stanu gry."""
+        self.controller.handle_movement()
         for square in self.squares:
             square.update()  # Aktualizacja kwadratu
         self.camera.update_zoom()  # Aktualizacja zoomu
@@ -139,3 +128,26 @@ class RunningGameState(GameState):
             screen, self.camera.zoom_level, self.camera.camera_offset_x, self.camera.camera_offset_y
         )
         pygame.display.update()
+
+
+class Controller:
+    """Obsługa sterowania w grze."""
+
+    def __init__(self, squares):
+        """Inicjalizuje kontroler z danymi kwadratami."""
+        self.squares = squares
+
+    def handle_movement(self):
+        """Obsługuje zdarzenia związane z ciągłym naciśnięciem klawisza."""
+        keys = pygame.key.get_pressed()
+
+        key_handlers = {
+            pygame.K_a: self.squares.move_left,
+            pygame.K_LEFT: self.squares.move_left,
+            pygame.K_d: self.squares.move_right,
+            pygame.K_RIGHT: self.squares.move_right,
+        }
+
+        for key, handler in key_handlers.items():
+            if keys[key]:
+                handler()
