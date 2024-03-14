@@ -137,21 +137,3 @@ class RunningGameState(GameState):
             screen, self.camera.zoom_level, self.camera.camera_offset_x, self.camera.camera_offset_y
         )
         pygame.display.update()
-
-
-if __name__ == "__main__":
-    pygame.init()
-
-    SCREEN_WIDTH, SCREEN_HEIGHT = 1500, 800
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-
-    running_game_state = RunningGameState(SCREEN_WIDTH, SCREEN_HEIGHT)
-    clock = pygame.time.Clock()
-    while True:
-        events = pygame.event.get()
-        new_state = running_game_state.handle_events(events)
-        if new_state is not None:
-            running_game_state = new_state
-        running_game_state.update()
-        running_game_state.draw(screen)
-        clock.tick(FPS_LIMIT)

@@ -2,6 +2,8 @@ from math import ceil, floor
 
 from pygame import Rect, draw
 
+from modules.settings import GRAVITY, JUMP_HEIGHT, SPEED
+
 PLAYER_COLOR = (0, 180, 0)
 CATCH_COLOR = (180, 50, 0)
 FLEE_COLOR = (0, 100, 180)
@@ -18,11 +20,10 @@ class Square:
         self.size = size
         self.velocity_y = 0
         self.velocity_x = 0  # Dodajemy prędkość w osi x
-        self.gravity = 0.12
+        self.gravity = GRAVITY * 0.01
         self.mode = mode
         self.color = PLAYER_COLOR if mode == "catch" else FLEE_COLOR
-        self.collision_cooldown = 3
-        self.speed = 5
+        self.speed = SPEED
         self.collide = False  # Dodajemy atrybut kolizji
 
     def move(self, dx, dy):
@@ -40,7 +41,7 @@ class Square:
 
     def jump(self):
         """Sprawia, że kwadrat skacze."""
-        self.velocity_y = -8
+        self.velocity_y = -JUMP_HEIGHT
 
     def change_mode(self):
         """Zmienia tryb kwadratu."""

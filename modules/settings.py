@@ -1,13 +1,18 @@
 from pygame import display
 
 # play.py
-FPS_LIMIT = 250
+FPS_LIMIT = 60
 RUNNERS = 8
 CATCHERS = 8
+
 # game.py
 SCREEN_WIDTH = 1505  # Szerokość ekranu
-SCREEN_HEIGHT = 850  # Wysokość ekranu
+SCREEN_HEIGHT = 800  # Wysokość ekranu
 SCREEN = display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # Utworzenie ekranu o określonych wymiarach
 WINDOW_TITLE = "Squaregame"  # Tytuł okna
 
 TILE_SIZE = 80
+
+GRAVITY = 140
+JUMP_HEIGHT = 25
+SPEED = 9
