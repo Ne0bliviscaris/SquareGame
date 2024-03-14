@@ -3,7 +3,7 @@ import sys
 import pygame
 
 from modules.objects.button import Button
-from modules.state import GameState
+from modules.states.state import GameState
 
 BUTTON_WIDTH = 200
 BUTTON_HEIGHT = 50

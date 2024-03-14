@@ -2,19 +2,16 @@ import random
 
 import pygame
 
-from ai import Ai
+from modules.ai.ai import Ai
 from modules.ai.vectors import VectorCalculator
 from modules.behavior.camera import Camera
 from modules.behavior.collisions import Collisions
 from modules.objects.player import Player
 from modules.objects.tiles import Ground
-from modules.state import GameState
+from modules.settings import CATCHERS, FPS_LIMIT, RUNNERS
+from modules.states.state import GameState
 from modules.world.world import TILE_SIZE, WORLD_WIDTH
 from modules.world.world_builder import world_list
-
-FPS_LIMIT = 250
-RUNNERS = 15
-CATCHERS = 15
 
 
 class RunningGameState(GameState):

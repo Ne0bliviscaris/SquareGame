@@ -1,6 +1,12 @@
 from pygame import Rect, draw
 
-from square import CATCH_COLOR, FLEE_COLOR, OBSERVER_COLOR, PLAYER_COLOR, Square
+from modules.objects.square import (
+    CATCH_COLOR,
+    FLEE_COLOR,
+    OBSERVER_COLOR,
+    PLAYER_COLOR,
+    Square,
+)
 
 
 class Player(Square):
