@@ -1,8 +1,8 @@
 from modules.objects.tiles import Ground, Sky
 from modules.settings import TILE_SIZE
 from modules.world.grids import grid1, grid2
+from modules.world.random_world_generator import generate_random_grid
 from modules.world.world import SKY
-from modules.world.world_generator import generate_random_grid
 
 # Lista przechowująca wszystkie kafelki w grze
 # grid = generate_random_grid(39, 21)  # Random Grid Generator
@@ -22,9 +22,3 @@ world_list = [
     for y, row in enumerate(grid)
     for x, tile_type in enumerate(row)
 ]
-
-# Przejście przez wszystkie kafelki Ground i zastosowanie metod is_corner_adjacent i bend_corner
-for tile in world_list:
-    if isinstance(tile, Ground):
-
-        tile.rounded_corners.bend_all_corners()

@@ -2,9 +2,6 @@ from math import ceil
 
 import pygame
 
-from modules.behavior.corners import RoundCorners
-from modules.world.world import CORNERS, DIRECTIONS, ROUND_CORNER, grid
-
 SKY_COLOR = (40, 40, 140)
 GROUND_COLOR = (90, 45, 45)
 
@@ -54,7 +51,6 @@ class Ground(Tile):
         """Inicjalizuje kafelek ground na podanej pozycji i o podanym rozmiarze."""
         super().__init__(x, y, size, (GROUND_COLOR))  # Kolor brązowy
         self.type = "Ground"
-        self.rounded_corners = RoundCorners(x, y, size, grid)
 
     @property
     def rect(self):

@@ -865,8 +865,6 @@ SKY = 0
 GROUND = 1
 
 
-ROUND_CORNER = 8
-
 CORNERS = {
     "top_left": [
         "top",

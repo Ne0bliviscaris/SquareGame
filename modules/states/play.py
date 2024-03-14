@@ -10,7 +10,7 @@ from modules.objects.player import Player
 from modules.objects.tiles import Ground
 from modules.settings import CATCHERS, FPS_LIMIT, RUNNERS, TILE_SIZE
 from modules.states.state import GameState
-from modules.world.world_builder import WORLD_WIDTH, world_list
+from modules.world.grid_builder import WORLD_WIDTH, world_list
 
 
 class RunningGameState(GameState):
