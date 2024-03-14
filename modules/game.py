@@ -7,8 +7,8 @@ os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 import pygame
 
 from modules.menu import MainMenuState, PauseMenuState
-from modules.play import RunningGameState
 from modules.state import GameState
+from play import RunningGameState
 
 # Stałe wartości
 SCREEN_WIDTH = 1600  # Szerokość ekranu
