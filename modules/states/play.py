@@ -68,7 +68,7 @@ class RunningGameState(GameState):
         event_handlers = {
             pygame.QUIT: self.handle_quit_event,
             pygame.KEYDOWN: self.handle_key_press_actions,
-            pygame.KEYUP: self.handle_key_release,
+            pygame.KEYUP: self.controller.handle_key_release,
             pygame.MOUSEBUTTONDOWN: self.camera.handle_scroll_zoom,
         }
 
@@ -89,11 +89,6 @@ class RunningGameState(GameState):
             return self.pause_menu_state
         elif event.key == pygame.K_SPACE:
             self.squares[0].jump()
-
-    def handle_key_release(self, event):
-        """Obsługuje zdarzenia związane z puszczeniem klawisza."""
-        if event.key in (pygame.K_a, pygame.K_LEFT, pygame.K_d, pygame.K_RIGHT):
-            self.squares[0].velocity_x = 0  # Zresetuj prędkość x kwadratu
 
     def handle_quit_event(self, event):
         """Obsługuje zdarzenie wyjścia z gry."""
@@ -151,3 +146,8 @@ class Controller:
         for key, handler in key_handlers.items():
             if keys[key]:
                 handler()
+
+    def handle_key_release(self, event):
+        """Obsługuje zdarzenia związane z puszczeniem klawisza."""
+        if event.key in (pygame.K_a, pygame.K_LEFT, pygame.K_d, pygame.K_RIGHT):
+            self.squares.velocity_x = 0  # Zresetuj prędkość x kwadratu
