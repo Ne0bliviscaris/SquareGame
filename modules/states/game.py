@@ -22,7 +22,7 @@ class Game:
         pygame.display.set_caption(WINDOW_TITLE)
 
         # Inicjalizacja stanów
-        self.running_game_state = RunningGameState(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.running_game_state = RunningGameState()
         self.main_menu_state = MainMenuState(self.screen, self.running_game_state)
         self.pause_menu_state = PauseMenuState(self.screen, self.running_game_state)
 
@@ -42,7 +42,7 @@ class Game:
             events = pygame.event.get()
             new_state = self.current_state.handle_events(events)
             if new_state is GameState.RESET:  # Jeśli zwrócona wartość to GameState.RESET, resetuj stan gry
-                self.running_game_state = RunningGameState(SCREEN_WIDTH, SCREEN_HEIGHT)
+                self.running_game_state = RunningGameState()
                 self.running_game_state.set_pause_state(self.pause_menu_state)
                 self.pause_menu_state.set_running_game_state(
                     self.running_game_state

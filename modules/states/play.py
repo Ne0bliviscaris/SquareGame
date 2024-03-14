@@ -10,7 +10,7 @@ from modules.behavior.camera import Camera
 from modules.behavior.collisions import Collisions
 from modules.objects.player import Player
 from modules.objects.tiles import Ground
-from modules.settings import CATCHERS, RUNNERS, TILE_SIZE
+from modules.settings import CATCHERS, RUNNERS, SCREEN_HEIGHT, SCREEN_WIDTH, TILE_SIZE
 from modules.states.state import GameState
 from modules.world.grid_builder import WORLD_WIDTH, world_list
 
@@ -18,12 +18,10 @@ from modules.world.grid_builder import WORLD_WIDTH, world_list
 class RunningGameState(GameState):
     """Stan gry reprezentujący działającą grę."""
 
-    def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT):
+    def __init__(self):
         """Inicjalizuje stan gry jako działający."""
         self.pause_menu_state = None
         self.speed = 3
-        self.SCREEN_HEIGHT = SCREEN_HEIGHT
-        self.SCREEN_WIDTH = SCREEN_WIDTH
         self.tiles = world_list
         num_squares = RUNNERS + CATCHERS
 
