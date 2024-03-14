@@ -3,12 +3,14 @@ import random
 import pygame
 
 from modules.ai.ai import Ai
+
+# from modules.ai.model import Catch, Flee
 from modules.ai.vectors import VectorCalculator
 from modules.behavior.camera import Camera
 from modules.behavior.collisions import Collisions
 from modules.objects.player import Player
 from modules.objects.tiles import Ground
-from modules.settings import CATCHERS, FPS_LIMIT, RUNNERS, TILE_SIZE
+from modules.settings import CATCHERS, RUNNERS, TILE_SIZE
 from modules.states.state import GameState
 from modules.world.grid_builder import WORLD_WIDTH, world_list
 
@@ -40,13 +42,13 @@ class RunningGameState(GameState):
             self.squares.append(square)
         self.drawables = self.tiles + self.squares  # Dodajemy kwadraty do listy obiektów do narysowania
 
-        # Utwórz instancję VectorCalculator dla modelu AI
-        self.vector_calculator = VectorCalculator(self.squares)
-
         # Losowo wybieramy jednego kwadratu, który będzie w trybie 'catch'
         for _ in range(CATCHERS):
             catcher = random.choice(self.squares[1:])
             catcher.change_mode()
+
+        # Utwórz instancję VectorCalculator dla modelu AI
+        self.vector_calculator = VectorCalculator(self.squares)
 
         # Utwórz instancję Collisions dla każdego kwadratu
         self.collisions = [Collisions(square) for square in self.squares]

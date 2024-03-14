@@ -2,8 +2,8 @@ from pygame import display
 
 # play.py
 FPS_LIMIT = 60
-RUNNERS = 8
-CATCHERS = 8
+RUNNERS = 15
+CATCHERS = 15
 
 # game.py
 SCREEN_WIDTH = 1505  # Szerokość ekranu
