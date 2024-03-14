@@ -6,16 +6,10 @@ os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 
 import pygame
 
-from modules.settings import (
-    FPS_LIMIT,
-    SCREEN,
-    SCREEN_HEIGHT,
-    SCREEN_WIDTH,
-    WINDOW_TITLE,
-)
-from modules.states.menu import MainMenuState, PauseMenuState
-from modules.states.play import RunningGameState
-from modules.states.state import GameState
+from ..settings import FPS_LIMIT, SCREEN, SCREEN_HEIGHT, SCREEN_WIDTH, WINDOW_TITLE
+from ..states.menu import MainMenuState, PauseMenuState
+from ..states.state import GameState
+from .play import RunningGameState
 
 
 class Game:
@@ -70,13 +64,3 @@ def launch():
     game = Game()
     game.run()
     pygame.quit()
-
-
-try:
-    launch()
-except SystemExit:
-    pass
-except Exception:
-    exc_type, exc_value, exc_traceback = sys.exc_info()
-    formatted_traceback = traceback.format_exception(exc_type, exc_value, exc_traceback)
-    print("".join(formatted_traceback[2:]))  # Drukuj traceback, pomijając pierwsze dwa wiersze

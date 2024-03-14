@@ -5,6 +5,8 @@ import pygame
 from modules.objects.button import Button
 from modules.states.state import GameState
 
+from ..settings import SCREEN_HEIGHT, SCREEN_WIDTH
+
 BUTTON_WIDTH = 200
 BUTTON_HEIGHT = 50
 BUTTON_Y_START = 300  # Możesz zmienić tę wartość na tę, którą chcesz
@@ -27,7 +29,7 @@ class MainMenuState(GameState):
         for event in events:
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 pygame.quit()
-                sys.exit()
+                quit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 action = self.start_button.update()
                 if action is not None:
@@ -35,7 +37,7 @@ class MainMenuState(GameState):
                 action = self.quit_button.update()
                 if action is not None:
                     pygame.quit()
-                    sys.exit()
+                    quit()
 
     def update(self):
         """
@@ -64,14 +66,14 @@ class PauseMenuState:
         self.quit_button = Button.create_from_screen_size(self.screen, 2, "Quit", GameState.QUIT)
         self.running_game_state = running_game_state
         self.logo = pygame.image.load("assets/logo.png")  # Załaduj obraz logo na początku gry
-        self.pause_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+        self.pause_surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
         self.pause_surface.fill((0, 60, 0, 255))  # Półprzezroczyste zielone tło
 
     def handle_events(self, events, screen=None):
         for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
-                sys.exit()
+                quit()
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 return self.running_game_state  # Zwróć running_game_state zamiast main_menu_state
             elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -85,7 +87,7 @@ class PauseMenuState:
                 action = self.quit_button.update()
                 if action is not None:
                     pygame.quit()
-                    sys.exit()
+                    quit()
         return self
 
     def update(self):
