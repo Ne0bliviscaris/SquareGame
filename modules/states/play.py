@@ -3,8 +3,9 @@ import pygame
 # from modules.ai.model import Flee
 from modules.ai.vectors import VectorCalculator
 from modules.behavior.camera import Camera
-from modules.behavior.collisions import SquareCollisions, WorldCollisions
 from modules.behavior.controller import Controller
+from modules.behavior.square_collisions import SquareCollisions
+from modules.behavior.world_collisions import WorldCollisions
 from modules.objects.sqare_generator import SquareGenerator
 from modules.objects.tiles import Ground
 from modules.settings import SCREEN_HEIGHT, SCREEN_WIDTH
