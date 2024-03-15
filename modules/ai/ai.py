@@ -14,10 +14,10 @@ class Ai(Square):
         self.mode = mode  # Dodajemy tryb
         self.color = CATCH_COLOR if mode == "catch" else FLEE_COLOR  # Ustalamy kolor na podstawie trybu
 
-    # def change_mode(self):
-    #     """Zmienia tryb AI."""
-    #     super().change_mode()
-    #     self.color = CATCH_COLOR if self.mode == "catch" else FLEE_COLOR
+    def change_mode(self):
+        """Zmienia tryb AI."""
+        super().change_mode()
+        self.color = CATCH_COLOR if self.mode == "catch" else FLEE_COLOR
 
     def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
         """Rysuje kwadrat na ekranie."""
