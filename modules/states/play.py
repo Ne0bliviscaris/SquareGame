@@ -14,6 +14,11 @@ from modules.settings import CATCHERS, RUNNERS, SCREEN_HEIGHT, SCREEN_WIDTH, TIL
 from modules.states.state import GameState
 from modules.world.grid_builder import WORLD_WIDTH, world_list
 
+# Ustaw tryb gracza
+PLAYER_MODE = "catch"
+# PLAYER_MODE = "flee"
+# PLAYER_MODE = "observer"
+
 
 class RunningGameState(GameState):
     """Stan gry reprezentujący działającą grę."""
@@ -94,20 +99,22 @@ class RunningGameState(GameState):
 
     def create_squares(self):
         """Tworzy kwadraty dla gry."""
-        npc_squares = RUNNERS + CATCHERS
-
-        # Znajdź najniższy rząd kafelków Ground
-
-        lowest_row = max(tile.y for tile in self.ground_tiles)
+        npc_squares = RUNNERS + CATCHERS  # Ilość kwadratów AI
+        lowest_row = max(tile.y for tile in self.ground_tiles)  # Najniższy rząd Ground
 
         # Ustaw pozycję kwadratów na losowych pozycjach w świecie gry i na dolnym rzędzie
+        min_x = TILE_SIZE
+        max_x = WORLD_WIDTH - TILE_SIZE
+        min_y = TILE_SIZE
+        max_y = lowest_row - TILE_SIZE
+
         squares = []
         for i in range(1 + npc_squares):
-            x = random.randint(TILE_SIZE, WORLD_WIDTH - TILE_SIZE)  # Losowa pozycja x
-            y = random.randint(TILE_SIZE, lowest_row + TILE_SIZE)  # Pozycja y na dolnym rzędzie
-            mode = "catch" if i <= CATCHERS else "flee"
+            x = random.randint(min_x, max_x)  # Losowa pozycja x
+            y = random.randint(min_y, max_y)  # Pozycja y na dolnym rzędzie
+            npc_mode = "catch" if i <= CATCHERS else "flee"
             square = (
-                Player(x, y, TILE_SIZE, mode) if not squares else Ai(x, y, TILE_SIZE, mode)
+                Player(x, y, TILE_SIZE, PLAYER_MODE) if not squares else Ai(x, y, TILE_SIZE, npc_mode)
             )  # Pierwszy kwadrat to Player, reszta to AI
             squares.append(square)
 
