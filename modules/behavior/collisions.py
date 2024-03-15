@@ -8,7 +8,7 @@ GRID_PULLING_RANGE = 0.5
 CANT_JUMP = 1 - GRID_PULLING_RANGE
 
 
-class Collisions:
+class WorldCollisions:
     """Klasa do obsługi kolizji kwadratu."""
 
     def __init__(self, square):
@@ -82,7 +82,14 @@ class Collisions:
         for tile in nearby_tiles:
             if isinstance(tile, Ground) and tile.collides_with(self.square):
                 self.handle_collision(tile)
-        self.handle_square_collisions(squares)
+
+
+class SquareCollisions:
+    """Klasa do obsługi kolizji między kwadratami."""
+
+    def __init__(self, square):
+        """Inicjalizuje obiekt kolizji dla danego kwadratu."""
+        self.square = square
 
     def handle_square_collisions(self, squares):
         """Sprawdza kolizje między kwadratem a wszystkimi innymi kwadratami."""

@@ -1,27 +1,15 @@
-import random
-
 import pygame
-
-from modules.ai.ai import Ai
 
 # from modules.ai.model import Flee
 from modules.ai.vectors import VectorCalculator
 from modules.behavior.camera import Camera
-from modules.behavior.collisions import Collisions
+from modules.behavior.collisions import SquareCollisions, WorldCollisions
 from modules.behavior.controller import Controller
-from modules.objects.player import Player
 from modules.objects.sqare_generator import SquareGenerator
 from modules.objects.tiles import Ground
-from modules.settings import (
-    CATCHERS,
-    PLAYER_MODE,
-    RUNNERS,
-    SCREEN_HEIGHT,
-    SCREEN_WIDTH,
-    TILE_SIZE,
-)
+from modules.settings import SCREEN_HEIGHT, SCREEN_WIDTH
 from modules.states.state import GameState
-from modules.world.grid_builder import WORLD_WIDTH, world_list
+from modules.world.grid_builder import world_list
 
 
 class RunningGameState(GameState):
@@ -45,8 +33,9 @@ class RunningGameState(GameState):
         # Utwórz instancję VectorCalculator dla modelu AI
         self.vector_calculator = VectorCalculator(self.squares)
 
-        # Utwórz instancję Collisions dla każdego kwadratu
-        self.collisions = [Collisions(square) for square in self.squares]
+        # Utwórz instancje Collisions dla każdego kwadratu
+        self.world_collisions = [WorldCollisions(square) for square in self.squares]
+        self.square_collisions = [SquareCollisions(square) for square in self.squares]
 
         # Utwórz instancję Camera dla kwadratu gracza
         self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, self.squares[0], self.tiles, self.ground_tiles)
@@ -80,14 +69,16 @@ class RunningGameState(GameState):
     def update(self):
         """Aktualizuje logikę gry dla bieżącego stanu gry."""
         self.controller.handle_movement()
-        for square in self.squares:
-            square.update()  # Aktualizacja kwadratu
         self.camera.update_zoom()  # Aktualizacja zoomu
         self.camera.update_camera()  # Aktualizacja kamery
-        for collision in self.collisions:
-            collision.handle_collisions_around(
+        for square, world_collision, square_collision in zip(
+            self.squares, self.world_collisions, self.square_collisions
+        ):
+            square.update()  # Aktualizacja kwadratu
+            world_collision.handle_collisions_around(
                 self.tiles, self.squares
-            )  # Sprawdź kolizje między kwadratem a wszystkimi kafelkami
+            )  # Kolizje między kwadratem a ground_tiles
+            square_collision.handle_square_collisions(self.squares)  # Kolizje między kwadratem a innymi kwadratami
 
     def draw(self, screen):
         """Rysuje elementy gry na ekranie dla bieżącego stanu gry."""
