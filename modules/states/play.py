@@ -18,9 +18,6 @@ class RunningGameState(GameState):
 
     def __init__(self, game_state):
         """Inicjalizuje stan gry jako działający."""
-        self.pause_menu_state = None
-        self.speed = 3
-
         # Utwórz listę kafelków Ground
         self.tiles = world_list
         self.ground_tiles = [tile for tile in self.tiles if isinstance(tile, Ground)]  # Najniższy rząd kafelków Ground
@@ -45,7 +42,7 @@ class RunningGameState(GameState):
         self.controller = Controller(self.squares[0], game_state, self.camera)
 
         # Dodaj kafelki do listy obiektów do narysowania
-        self.drawables = self.tiles + self.squares  # Dodajemy kwadraty do listy obiektów do narysowania
+        self.drawables = self.tiles + self.squares
 
     def handle_events(self, events):
         """Obsługuje zdarzenia dla bieżącego stanu gry."""
@@ -70,16 +67,14 @@ class RunningGameState(GameState):
     def update(self):
         """Aktualizuje logikę gry dla bieżącego stanu gry."""
         self.controller.handle_movement()
-        self.camera.update_zoom()  # Aktualizacja zoomu
-        self.camera.update_camera()  # Aktualizacja kamery
+        self.camera.update_zoom()
+        self.camera.update_camera()
         for square, world_collision, square_collision in zip(
             self.squares, self.world_collisions, self.square_collisions
         ):
-            square.update(self.squares)  # Aktualizacja kwadratu
-            world_collision.handle_collisions_around(
-                self.tiles, self.squares
-            )  # Kolizje między kwadratem a ground_tiles
-            square_collision.handle_square_collisions(self.squares)  # Kolizje między kwadratem a innymi kwadratami
+            square.update(self.squares)  # Aktualizacja kwadratów
+            world_collision.handle_collisions_around(self.tiles, self.squares)  # Kolizje z ground_tiles
+            square_collision.handle_square_collisions(self.squares)  # Kolizje między kwadratami
 
     def draw(self, screen):
         """Rysuje elementy gry na ekranie dla bieżącego stanu gry."""
