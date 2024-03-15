@@ -28,9 +28,6 @@ class RunningGameState(GameState):
         # Tworzenie kwadratów
         self.squares = self.create_squares()
 
-        # Utwórz instancję kontrolera
-        self.controller = Controller(self.squares[0], game_state)
-
         # Utwórz instancję VectorCalculator dla modelu AI
         self.vector_calculator = VectorCalculator(self.squares)
 
@@ -39,6 +36,9 @@ class RunningGameState(GameState):
 
         # Utwórz instancję Camera dla kwadratu gracza
         self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, self.squares[0], self.tiles, self.ground_tiles)
+
+        # Utwórz instancję kontrolera
+        self.controller = Controller(self.squares[0], game_state, self.camera)
 
         # Dodaj kafelki do listy obiektów do narysowania
         self.drawables = self.tiles + self.squares  # Dodajemy kwadraty do listy obiektów do narysowania
@@ -117,10 +117,11 @@ class RunningGameState(GameState):
 class Controller:
     """Obsługa sterowania w grze."""
 
-    def __init__(self, squares, game_state):
+    def __init__(self, squares, game_state, camera):
         """Inicjalizuje kontroler z danymi kwadratami."""
         self.squares = squares
         self.game_state = game_state
+        self.camera = camera
 
     def handle_movement(self):
         """Obsługuje zdarzenia związane z ciągłym naciśnięciem klawisza."""
