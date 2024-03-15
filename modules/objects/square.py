@@ -94,4 +94,4 @@ class Square:
             or left_left >= other_right
             or self_bottom <= other_top
             or self_top >= other_bottom
-        )
+        )  # Zwróć True, jeśli występuje kolizja
