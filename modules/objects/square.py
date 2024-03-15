@@ -97,9 +97,10 @@ class Square:
         other_top = other.y
         self_top = self.y
         other_bottom = other.y + other.size
-        return not (
-            self_right <= other_left
-            or left_left >= other_right
-            or self_bottom <= other_top
-            or self_top >= other_bottom
-        )  # Zwróć True, jeśli występuje kolizja
+        if self.mode != other.mode and self.mode != "observer" and other.mode != "observer":
+            return not (
+                self_right <= other_left
+                or left_left >= other_right
+                or self_bottom <= other_top
+                or self_top >= other_bottom
+            )  # Zwróć True, jeśli występuje kolizja
