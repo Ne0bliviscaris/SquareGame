@@ -48,9 +48,9 @@ class Ai(Square):
                 5,  # Szerokość ramki
             )
 
-    def update(self):
+    def update(self, squares):
         """Aktualizuje pozycję kwadratu, dodając do niej prędkość."""
-        super().update()
+        super().update(squares)
         if self.mode == "catch":
             action = random.choice(["jump"] + ["move_left"] * 100 + ["move_right"] * 100)
             if action == "jump":

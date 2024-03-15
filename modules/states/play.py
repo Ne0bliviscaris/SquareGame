@@ -75,7 +75,7 @@ class RunningGameState(GameState):
         for square, world_collision, square_collision in zip(
             self.squares, self.world_collisions, self.square_collisions
         ):
-            square.update()  # Aktualizacja kwadratu
+            square.update(self.squares)  # Aktualizacja kwadratu
             world_collision.handle_collisions_around(
                 self.tiles, self.squares
             )  # Kolizje między kwadratem a ground_tiles

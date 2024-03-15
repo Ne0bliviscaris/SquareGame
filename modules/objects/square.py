@@ -56,10 +56,18 @@ class Square:
     def rect(self):
         return Rect(self.x, self.y, self.size, self.size)
 
-    def update(self):
+    def update(self, squares):
         """Aktualizuje pozycję kwadratu, dodając do niej prędkość."""
         self.velocity_y += self.gravity
         self.move(self.velocity_x, self.velocity_y)
+
+        # Sprawdź kolizje z innymi kwadratami
+        for other_square in squares:
+            if self is not other_square and self.collides_with(other_square):
+                self.collide = True
+                break
+        else:
+            self.collide = False
 
     def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
         """Rysuje kwadrat na ekranie."""
