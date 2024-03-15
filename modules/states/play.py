@@ -57,9 +57,6 @@ class RunningGameState(GameState):
         self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, self.squares[0], self.tiles, ground_tiles)
 
     # Reszta OK
-    def set_pause_state(self, pause_state):
-        """Ustawia stan pauzy dla stanu gry."""
-        self.pause_menu_state = pause_state
 
     def handle_events(self, events):
         """Obsługuje zdarzenia dla bieżącego stanu gry."""
@@ -150,3 +147,7 @@ class Controller:
         """Obsługuje zdarzenie wyjścia z gry."""
         pygame.quit()
         quit()
+
+    def set_pause_state(self, pause_state):
+        """Ustawia stan pauzy dla stanu gry."""
+        self.pause_state = pause_state
