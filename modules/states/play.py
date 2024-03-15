@@ -23,27 +23,10 @@ class RunningGameState(GameState):
         self.pause_menu_state = None
         self.speed = 3
         self.tiles = world_list
-        num_squares = RUNNERS + CATCHERS
+        self.ground_tiles = [tile for tile in self.tiles if isinstance(tile, Ground)]  # Najniższy rząd kafelków Ground
 
-        # Znajdź najniższy rząd kafelków Ground
-        ground_tiles = [tile for tile in self.tiles if isinstance(tile, Ground)]
-        lowest_row = max(tile.y for tile in ground_tiles)
-
-        # Ustaw pozycję kwadratów na losowych pozycjach w świecie gry i na dolnym rzędzie
-        self.squares = []
-        for _ in range(1 + num_squares):
-            x = random.randint(0, WORLD_WIDTH - TILE_SIZE)  # Losowa pozycja x
-            y = random.randint(0, lowest_row + TILE_SIZE)  # Pozycja y na dolnym rzędzie
-            square = (
-                Player(x, y, TILE_SIZE, "catch") if not self.squares else Ai(x, y, TILE_SIZE)
-            )  # Pierwszy kwadrat to Player, reszta to AI
-            self.squares.append(square)
-        self.drawables = self.tiles + self.squares  # Dodajemy kwadraty do listy obiektów do narysowania
-
-        # Losowo wybieramy jednego kwadratu, który będzie w trybie 'catch'
-        for _ in range(CATCHERS):
-            catcher = random.choice(self.squares[1:])
-            catcher.change_mode()
+        # Tworzenie kwadratów
+        self.squares = self.create_squares()
 
         # Utwórz instancję kontrolera
         self.controller = Controller(self.squares[0], game_state)
@@ -53,10 +36,12 @@ class RunningGameState(GameState):
 
         # Utwórz instancję Collisions dla każdego kwadratu
         self.collisions = [Collisions(square) for square in self.squares]
-        # Utwórz instancję Camera dla kwadratu gracza
-        self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, self.squares[0], self.tiles, ground_tiles)
 
-    # Reszta OK
+        # Utwórz instancję Camera dla kwadratu gracza
+        self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, self.squares[0], self.tiles, self.ground_tiles)
+
+        # Dodaj kafelki do listy obiektów do narysowania
+        self.drawables = self.tiles + self.squares  # Dodajemy kwadraty do listy obiektów do narysowania
 
     def handle_events(self, events):
         """Obsługuje zdarzenia dla bieżącego stanu gry."""
@@ -106,6 +91,27 @@ class RunningGameState(GameState):
             screen, self.camera.zoom_level, self.camera.camera_offset_x, self.camera.camera_offset_y
         )
         pygame.display.update()
+
+    def create_squares(self):
+        """Tworzy kwadraty dla gry."""
+        npc_squares = RUNNERS + CATCHERS
+
+        # Znajdź najniższy rząd kafelków Ground
+
+        lowest_row = max(tile.y for tile in self.ground_tiles)
+
+        # Ustaw pozycję kwadratów na losowych pozycjach w świecie gry i na dolnym rzędzie
+        squares = []
+        for i in range(1 + npc_squares):
+            x = random.randint(TILE_SIZE, WORLD_WIDTH - TILE_SIZE)  # Losowa pozycja x
+            y = random.randint(TILE_SIZE, lowest_row + TILE_SIZE)  # Pozycja y na dolnym rzędzie
+            mode = "catch" if i <= CATCHERS else "flee"
+            square = (
+                Player(x, y, TILE_SIZE, mode) if not squares else Ai(x, y, TILE_SIZE, mode)
+            )  # Pierwszy kwadrat to Player, reszta to AI
+            squares.append(square)
+
+        return squares
 
 
 class Controller:
