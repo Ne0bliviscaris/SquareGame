@@ -10,15 +10,18 @@ from modules.behavior.camera import Camera
 from modules.behavior.collisions import Collisions
 from modules.behavior.controller import Controller
 from modules.objects.player import Player
+from modules.objects.sqare_generator import SquareGenerator
 from modules.objects.tiles import Ground
-from modules.settings import CATCHERS, RUNNERS, SCREEN_HEIGHT, SCREEN_WIDTH, TILE_SIZE
+from modules.settings import (
+    CATCHERS,
+    PLAYER_MODE,
+    RUNNERS,
+    SCREEN_HEIGHT,
+    SCREEN_WIDTH,
+    TILE_SIZE,
+)
 from modules.states.state import GameState
 from modules.world.grid_builder import WORLD_WIDTH, world_list
-
-# Ustaw tryb gracza
-PLAYER_MODE = "catch"
-# PLAYER_MODE = "flee"
-# PLAYER_MODE = "observer"
 
 
 class RunningGameState(GameState):
@@ -28,11 +31,16 @@ class RunningGameState(GameState):
         """Inicjalizuje stan gry jako działający."""
         self.pause_menu_state = None
         self.speed = 3
+
+        # Utwórz listę kafelków Ground
         self.tiles = world_list
         self.ground_tiles = [tile for tile in self.tiles if isinstance(tile, Ground)]  # Najniższy rząd kafelków Ground
 
-        # Tworzenie kwadratów
-        self.squares = self.create_squares()
+        # Utwórz instancję SquareGenerator
+        self.square_generator = SquareGenerator(self.ground_tiles)
+
+        # Utwórz kwadraty
+        self.squares = self.square_generator.create_squares()
 
         # Utwórz instancję VectorCalculator dla modelu AI
         self.vector_calculator = VectorCalculator(self.squares)
@@ -97,26 +105,3 @@ class RunningGameState(GameState):
             screen, self.camera.zoom_level, self.camera.camera_offset_x, self.camera.camera_offset_y
         )
         pygame.display.update()
-
-    def create_squares(self):
-        """Tworzy kwadraty dla gry."""
-        npc_squares = RUNNERS + CATCHERS  # Ilość kwadratów AI
-        lowest_row = max(tile.y for tile in self.ground_tiles)  # Najniższy rząd Ground
-
-        # Ustaw pozycję kwadratów na losowych pozycjach w świecie gry i na dolnym rzędzie
-        min_x = TILE_SIZE
-        max_x = WORLD_WIDTH - TILE_SIZE
-        min_y = TILE_SIZE
-        max_y = lowest_row - TILE_SIZE
-
-        squares = []
-        for i in range(1 + npc_squares):
-            x = random.randint(min_x, max_x)  # Losowa pozycja x
-            y = random.randint(min_y, max_y)  # Pozycja y na dolnym rzędzie
-            npc_mode = "catch" if i <= CATCHERS else "flee"
-            square = (
-                Player(x, y, TILE_SIZE, PLAYER_MODE) if not squares else Ai(x, y, TILE_SIZE, npc_mode)
-            )  # Pierwszy kwadrat to Player, reszta to AI
-            squares.append(square)
-
-        return squares

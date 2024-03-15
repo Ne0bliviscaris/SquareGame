@@ -1,5 +1,11 @@
 from pygame import display
 
+# Ustaw tryb gracza
+PLAYER_MODE = "catch"
+# PLAYER_MODE = "flee"
+# PLAYER_MODE = "observer"
+
+
 # Liczba NPC
 RUNNERS = 3
 CATCHERS = 0
