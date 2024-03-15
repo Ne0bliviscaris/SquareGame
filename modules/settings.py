@@ -5,6 +5,10 @@ PLAYER_MODE = "catch"
 # PLAYER_MODE = "flee"
 # PLAYER_MODE = "observer"
 
+# Rysyowanie wektorów pomiędzy kwadratami
+# DRAW_VECTORS = True
+DRAW_VECTORS = False
+
 
 # Liczba NPC
 RUNNERS = 3

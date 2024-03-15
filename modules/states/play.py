@@ -8,7 +8,7 @@ from modules.behavior.square_collisions import SquareCollisions
 from modules.behavior.world_collisions import WorldCollisions
 from modules.objects.sqare_generator import SquareGenerator
 from modules.objects.tiles import Ground
-from modules.settings import SCREEN_HEIGHT, SCREEN_WIDTH
+from modules.settings import DRAW_VECTORS, SCREEN_HEIGHT, SCREEN_WIDTH
 from modules.states.state import GameState
 from modules.world.grid_builder import world_list
 
@@ -93,7 +93,8 @@ class RunningGameState(GameState):
         self.squares[0].draw(screen, self.camera.camera_offset_x, self.camera.camera_offset_y, self.camera.zoom_level)
 
         # Rysuj wektory
-        self.vector_calculator.draw_vectors(
-            screen, self.camera.zoom_level, self.camera.camera_offset_x, self.camera.camera_offset_y
-        )
+        if DRAW_VECTORS:
+            self.vector_calculator.draw_vectors(
+                screen, self.camera.zoom_level, self.camera.camera_offset_x, self.camera.camera_offset_y
+            )
         pygame.display.update()
