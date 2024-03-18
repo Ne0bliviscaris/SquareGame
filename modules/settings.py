@@ -1,9 +1,11 @@
 from pygame import display
 
+from modules.objects.square import CATCH_MODE, FLEE_MODE, OBSERVER_MODE
+
 # Ustaw tryb gracza
-PLAYER_MODE = "catch"
-# PLAYER_MODE = "flee"
-# PLAYER_MODE = "observer"
+# PLAYER_MODE = 0 # FLEE_MODE
+PLAYER_MODE = 1  # CATCH_MODE
+# PLAYER_MODE = 2  # OBSERVER_MODE
 
 # Rysyowanie wektorów pomiędzy kwadratami
 # DRAW_VECTORS = True
@@ -26,3 +28,9 @@ TILE_SIZE = 80
 GRAVITY = 140
 JUMP_HEIGHT = 25
 SPEED = 9
+
+
+# Tryb gracza
+CATCH_MODE = 0
+FLEE_MODE = 1
+OBSERVER_MODE = 2

@@ -2,18 +2,22 @@ from math import ceil, floor
 
 from pygame import Rect, draw
 
-from modules.settings import GRAVITY, JUMP_HEIGHT, SPEED
+from ..settings import GRAVITY, JUMP_HEIGHT, SPEED
 
 PLAYER_COLOR = (0, 180, 0)
 CATCH_COLOR = (180, 50, 0)
 FLEE_COLOR = (0, 100, 180)
 OBSERVER_COLOR = (180, 180, 180)
 
+FLEE_MODE = 0
+CATCH_MODE = 1
+OBSERVER_MODE = 2
+
 
 class Square:
     """Klasa reprezentująca kwadrat na ekranie."""
 
-    def __init__(self, x, y, size, mode="flee"):
+    def __init__(self, x, y, size, mode=FLEE_MODE):
         """Inicjalizuje kwadrat na podanej pozycji i o podanym rozmiarze."""
         self.x = x
         self.y = y
@@ -22,7 +26,7 @@ class Square:
         self.velocity_x = 0  # Dodajemy prędkość w osi x
         self.gravity = GRAVITY * 0.01
         self.mode = mode
-        self.color = PLAYER_COLOR if mode == "catch" else FLEE_COLOR
+        self.color = PLAYER_COLOR if mode == CATCH_MODE else FLEE_COLOR
         self.speed = SPEED
         self.collide = False  # Dodajemy atrybut kolizji
 
@@ -45,11 +49,11 @@ class Square:
 
     def change_mode(self):
         """Zmienia tryb kwadratu."""
-        if self.mode == "catch":
-            self.mode = "flee"
+        if self.mode == CATCH_MODE:
+            self.mode = FLEE_MODE
             self.color = FLEE_COLOR
         else:
-            self.mode = "catch"
+            self.mode = CATCH_MODE
             self.color = CATCH_COLOR
 
     @property
@@ -97,7 +101,7 @@ class Square:
         other_top = other.y
         self_top = self.y
         other_bottom = other.y + other.size
-        if self.mode != other.mode and self.mode != "observer" and other.mode != "observer":
+        if self.mode != other.mode and self.mode != OBSERVER_MODE and other.mode != OBSERVER_MODE:
             return not (
                 self_right <= other_left
                 or left_left >= other_right

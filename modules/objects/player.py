@@ -2,8 +2,10 @@ from pygame import Rect, draw
 
 from modules.objects.square import (
     CATCH_COLOR,
+    CATCH_MODE,
     FLEE_COLOR,
     OBSERVER_COLOR,
+    OBSERVER_MODE,
     PLAYER_COLOR,
     Square,
 )
@@ -23,9 +25,9 @@ class Player(Square):
         top = int(self.y * zoom_level) + camera_offset_y + 1
         square = round(self.size * zoom_level)
 
-        if self.mode == "catch":
+        if self.mode == CATCH_MODE:
             inner_color = CATCH_COLOR
-        elif self.mode == "observer":
+        elif self.mode == OBSERVER_MODE:
             inner_color = OBSERVER_COLOR
         else:
             inner_color = FLEE_COLOR
