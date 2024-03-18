@@ -17,7 +17,7 @@ OBSERVER_MODE = 2
 class Square:
     """Klasa reprezentująca kwadrat na ekranie."""
 
-    def __init__(self, x, y, size, mode=FLEE_MODE):
+    def __init__(self, x, y, size, mode):
         """Inicjalizuje kwadrat na podanej pozycji i o podanym rozmiarze."""
         self.x = x
         self.y = y
@@ -26,9 +26,10 @@ class Square:
         self.velocity_x = 0  # Dodajemy prędkość w osi x
         self.gravity = GRAVITY * 0.01
         self.mode = mode
-        self.color = PLAYER_COLOR if mode == CATCH_MODE else FLEE_COLOR
+        self.color = CATCH_COLOR if mode == CATCH_MODE else FLEE_COLOR
         self.speed = SPEED
         self.collide = False  # Dodajemy atrybut kolizji
+        self.score = 0  # Wynik gracza
 
     def move(self, dx, dy):
         """Przesuwa kwadrat o daną ilość pikseli."""

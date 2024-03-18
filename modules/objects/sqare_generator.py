@@ -2,8 +2,8 @@ from random import randint
 
 from ..ai.ai import Ai
 from ..objects.player import Player
-from ..objects.square import CATCH_MODE, FLEE_MODE, OBSERVER_MODE
-from ..settings import CATCHERS, PLAYER_MODE, RUNNERS, TILE_SIZE
+from ..objects.square import CATCH_MODE, FLEE_MODE
+from ..settings import CATCHERS, PLAYER_MODE, TILE_SIZE, TOTAL_SQUARES
 from ..world.grid_builder import WORLD_WIDTH
 
 
@@ -16,7 +16,6 @@ class SquareGenerator:
 
     def create_squares(self):
         """Tworzy kwadraty dla gry."""
-        npc_squares = RUNNERS + CATCHERS  # Ilość kwadratów AI
         lowest_row = max(tile.y for tile in self.ground_tiles)  # Najniższy rząd Ground
 
         # Ustaw pozycję kwadratów na losowych pozycjach w świecie gry i na dolnym rzędzie
@@ -26,7 +25,7 @@ class SquareGenerator:
         max_y = lowest_row - TILE_SIZE
 
         squares = []
-        for i in range(1 + npc_squares):
+        for i in range(TOTAL_SQUARES):
             x = randint(min_x, max_x)  # Losowa pozycja x
             y = randint(min_y, max_y)  # Pozycja y na dolnym rzędzie
             npc_mode = CATCH_MODE if i <= CATCHERS else FLEE_MODE

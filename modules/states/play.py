@@ -1,6 +1,5 @@
 import pygame
 
-from modules.ai.ai import Ai
 from modules.ai.deep_learning_data import DeepLearningData
 
 # from modules.ai.vectors import VectorCalculator
@@ -13,6 +12,8 @@ from modules.objects.tiles import Ground
 from modules.settings import DRAW_VECTORS, SCREEN_HEIGHT, SCREEN_WIDTH
 from modules.states.state import GameState
 from modules.world.grid_builder import world_list
+
+from ..ai.ai import Ai
 
 # from modules.ai.model import Flee
 
