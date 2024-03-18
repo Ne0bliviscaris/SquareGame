@@ -17,7 +17,7 @@ CATCHERS = 0
 
 FPS_LIMIT = 60
 SCREEN_WIDTH = 1505  # Szerokość ekranu
-SCREEN_HEIGHT = 800  # Wysokość ekranu
+SCREEN_HEIGHT = 750  # Wysokość ekranu
 SCREEN = display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # Utworzenie ekranu o określonych wymiarach
 WINDOW_TITLE = "Squaregame"  # Tytuł okna
 
