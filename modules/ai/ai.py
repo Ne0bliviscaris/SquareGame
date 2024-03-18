@@ -1,5 +1,3 @@
-import random
-
 import torch
 import torch.nn as nn
 from pygame import Rect, draw
@@ -15,6 +13,7 @@ from modules.objects.square import (
 
 from ..settings import TOTAL_SQUARES
 from .deep_learning_data import PARAMETERS_LENGTH
+from .score import Score
 
 JUMP = 0
 LEFT = 1
@@ -31,6 +30,7 @@ class Ai(Square):
         self.color = CATCH_COLOR if self.mode == CATCH_MODE else FLEE_COLOR  # Ustalamy kolor na podstawie trybu
         self.network = self.network()  # Stworzenie sieci neuronowej
         self.score = 0  # Wynik AI
+        self.score_calculator = Score(self.score)
 
     def change_mode(self):
         """Zmienia tryb AI."""
@@ -70,7 +70,9 @@ class Ai(Square):
         """Aktualizuje pozycję kwadratu, dodając do niej prędkość."""
         super().update(squares)
         self.game_state = game_state
-        self.update_score()  # Aktualizacja wyniku
+        self.score_calculator.update(
+            self.mode, self.collide, self.move_left, self.move_right, self.jump
+        )  # Aktualizuj wynik
         action = self.predict(self.game_state)  # Predykcja kolejnego ruchu
         if action == JUMP:
             self.jump()
@@ -79,7 +81,7 @@ class Ai(Square):
         elif action == RIGHT:
             self.move_right()
         else:
-            self.score -= 2  # Karanie za nieprawidłową akcję
+            self.score -= 50  # Karanie za nieprawidłową akcję
 
     def predict(self, game_state):
         """Wykonuje predykcję na podstawie stanu."""
@@ -94,23 +96,27 @@ class Ai(Square):
 
         return nn.Sequential(nn.Linear(data_matrix_length, 256), nn.ReLU(), nn.Linear(256, 3), nn.Softmax(dim=-1))
 
-    def update_score(self):
-        """Aktualizuje wynik AI."""
-        if self.move_left or self.move_right:
+
+class Score:
+    def __init__(self, score):
+        self.score = score
+
+    def update(self, mode, collide, move_left, move_right, jump):
+        if move_left or move_right:
             self.score += 2
-        if self.jump:
+        if jump:
             self.score += 1
         else:
             self.score -= 1
 
-        if self.mode == CATCH_MODE:
-            if self.collide:
+        if mode == CATCH_MODE:
+            if collide:
                 self.score += 50
             else:
                 self.score -= 0
 
-        elif self.mode == FLEE_MODE:
-            if self.collide:
+        elif mode == FLEE_MODE:
+            if collide:
                 self.score -= 50
             else:
                 self.score += 1

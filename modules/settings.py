@@ -25,10 +25,11 @@ TILE_SIZE = 80
 
 GRAVITY = 140
 JUMP_HEIGHT = 25
+JUMP_COOLDOWN = 0.45
 SPEED = 9
 
 
-# Tryb gracza
+# Tryby kwadratów
 CATCH_MODE = 0
 FLEE_MODE = 1
 OBSERVER_MODE = 2

@@ -1,8 +1,9 @@
 from math import ceil, floor
+from time import time
 
 from pygame import Rect, draw
 
-from ..settings import GRAVITY, JUMP_HEIGHT, SPEED
+from ..settings import GRAVITY, JUMP_COOLDOWN, JUMP_HEIGHT, SPEED
 
 PLAYER_COLOR = (0, 180, 0)
 CATCH_COLOR = (180, 50, 0)
@@ -30,6 +31,7 @@ class Square:
         self.speed = SPEED
         self.collide = False  # Dodajemy atrybut kolizji
         self.score = 0  # Wynik gracza
+        self.last_jump_time = 0
 
     def move(self, dx, dy):
         """Przesuwa kwadrat o daną ilość pikseli."""
@@ -46,7 +48,10 @@ class Square:
 
     def jump(self):
         """Sprawia, że kwadrat skacze."""
-        self.velocity_y = -JUMP_HEIGHT
+        now = time()
+        if now - self.last_jump_time > JUMP_COOLDOWN:
+            self.velocity_y = -JUMP_HEIGHT
+            self.last_jump_time = now
 
     def change_mode(self):
         """Zmienia tryb kwadratu."""
