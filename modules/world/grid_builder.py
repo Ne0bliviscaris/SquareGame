@@ -11,6 +11,7 @@ grid = grid2  # Static Grid 2
 GRID_HEIGHT = len(grid)
 GRID_WIDTH = len(grid[0])
 WORLD_WIDTH = GRID_WIDTH * TILE_SIZE
+WORLD_HEIGHT = GRID_HEIGHT * TILE_SIZE
 
 SKY = 0
 GROUND = 1
