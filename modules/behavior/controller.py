@@ -4,11 +4,12 @@ import pygame
 class Controller:
     """Obsługa sterowania w grze."""
 
-    def __init__(self, squares, game_state, camera):
+    def __init__(self, squares, game_state, camera, agent):
         """Inicjalizuje kontroler z danymi kwadratami."""
         self.squares = squares
         self.game_state = game_state
         self.camera = camera
+        self.agent = agent
 
     def handle_movement(self):
         """Obsługuje zdarzenia związane z ciągłym naciśnięciem klawisza."""
@@ -39,6 +40,7 @@ class Controller:
 
     def handle_quit_event(self, event):
         """Obsługuje zdarzenie wyjścia z gry."""
+        self.agent.save_model()
         pygame.quit()
         quit()
 

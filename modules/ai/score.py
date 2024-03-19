@@ -13,18 +13,19 @@ class Score:
         self.x = x
         self.y = y
         # Ruch
-        if move_left or move_right and self.x != self.previous_x:
-            self.score += 3
+        if move_left or move_right:
+            if self.x != self.previous_x:
+                self.score += 3
         if jump:
-            self.score += 1
+            self.score += 0
         else:
-            self.score -= 3
+            self.score -= 5
         # Kolizje
         if mode == CATCH_MODE:
             if collide:
-                self.score += 10
+                self.score += 20
             else:
-                self.score -= 2
+                self.score -= 5
 
         elif mode == FLEE_MODE:
             if collide:

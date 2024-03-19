@@ -26,6 +26,7 @@ class RunningGameState(GameState):
         """Inicjalizuje stan gry jako działający."""
         # Utwórz agenta AI
         self.agent = DeepLearningAgent()
+        self.agent.load_model()
 
         # Utwórz listę kafelków Ground
         self.tiles = world_list
@@ -47,7 +48,7 @@ class RunningGameState(GameState):
         self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, self.squares[0], self.tiles, self.ground_tiles)
 
         # Utwórz instancję kontrolera
-        self.controller = Controller(self.squares[0], game_state, self.camera)
+        self.controller = Controller(self.squares[0], game_state, self.camera, self.agent)
 
         # Dodaj kafelki do listy obiektów do narysowania
         self.drawables = self.tiles + self.squares
