@@ -76,7 +76,6 @@ class RunningGameState(GameState):
 
         # Pobranie stanu dla modelu
         self.state_for_model = self.deep_learning_data.get_state()
-
         # Aktualizacja kwadratów AI z uwzględnieniem stanu dla modelu
         for square in self.squares:
             if isinstance(square, Npc):

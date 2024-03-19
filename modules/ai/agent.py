@@ -10,6 +10,8 @@ class DeepLearningAgent:
 
     def __init__(self):
         self.network = self.create_network()
+        self.optimizer = torch.optim.Adam(self.network.parameters())
+        self.loss_function = nn.MSELoss()
         self.load_model()
 
     def create_network(self):
@@ -30,3 +32,14 @@ class DeepLearningAgent:
             self.network.load_state_dict(torch.load("model.pth"))
         except FileNotFoundError:
             pass  # Jeśli plik modelu nie istnieje, po prostu kontynuuj
+        except RuntimeError:
+            print("Niewłaściwy rozmiar modelu, tworzę nowy model")
+
+    def train(self, game_state, target):
+        self.optimizer.zero_grad()  # Zeruj gradienty
+        state_tensor = torch.tensor(game_state, dtype=torch.float32)
+        target_tensor = torch.full((3,), target, dtype=torch.float32)
+        output = self.network(state_tensor)  # Przewidywania modelu
+        loss = self.loss_function(output, target_tensor)  # Oblicz strate
+        loss.backward()  # Oblicz gradienty
+        self.optimizer.step()  # Aktualizuj wagi

@@ -12,12 +12,12 @@ class Score:
     def update(self, x, y, mode, collide, move_left, move_right, jump):
         self.x = x
         self.y = y
+        moved = self.x != self.previous_x
         # Ruch
         if move_left or move_right:
-            if self.x != self.previous_x:
-                self.score += 3
+            self.score += 5
         if jump:
-            self.score += 0
+            self.score -= 2
         else:
             self.score -= 5
         # Kolizje
@@ -25,13 +25,13 @@ class Score:
             if collide:
                 self.score += 20
             else:
-                self.score -= 5
+                self.score -= 0
 
         elif mode == FLEE_MODE:
             if collide:
                 self.score -= 10
             else:
-                self.score += 3
+                self.score += 0
         # Pozycja
         on_left_edge = self.x <= TILE_SIZE + 1
         on_right_edge = self.x >= WORLD_WIDTH - TILE_SIZE - 1

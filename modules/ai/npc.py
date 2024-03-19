@@ -85,3 +85,7 @@ class Npc(Square):
             self.move_left()
         elif action == RIGHT:
             self.move_right()
+
+        # Po wykonaniu akcji, oblicz target na podstawie zdobytych punktów
+        target = self.score
+        self.agent.train(self.game_state, target)
