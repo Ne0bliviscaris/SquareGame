@@ -13,6 +13,7 @@ from modules.settings import DRAW_VECTORS, SCREEN_HEIGHT, SCREEN_WIDTH
 from modules.states.state import GameState
 from modules.world.grid_builder import world_list
 
+from ..ai.agent import DeepLearningAgent
 from ..ai.npc import Npc
 
 # from modules.ai.model import Flee
@@ -23,11 +24,14 @@ class RunningGameState(GameState):
 
     def __init__(self, game_state):
         """Inicjalizuje stan gry jako działający."""
+        # Utwórz agenta AI
+        self.agent = DeepLearningAgent()
+
         # Utwórz listę kafelków Ground
         self.tiles = world_list
         self.ground_tiles = [tile for tile in self.tiles if isinstance(tile, Ground)]  # Najniższy rząd kafelków Ground
         # Utwórz instancję SquareGenerator
-        self.square_generator = SquareGenerator(self.ground_tiles)
+        self.square_generator = SquareGenerator(self.ground_tiles, self.agent)
 
         # Utwórz kwadraty
         self.squares = self.square_generator.create_squares()

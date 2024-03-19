@@ -24,7 +24,7 @@ RIGHT = 2
 class Npc(Square):
     """Klasa reprezentująca kwadrat przeciwnika."""
 
-    def __init__(self, x, y, size, mode):
+    def __init__(self, agent, x, y, size, mode):
         """Inicjalizuje kwadrat na podanej pozycji i o podanym rozmiarze."""
         super().__init__(x, y, size, mode)
         self.x = x
@@ -35,7 +35,7 @@ class Npc(Square):
         self.score = 0  # Q-learning
         self.score_calculator = Score(self.score)
 
-        self.agent = DeepLearningAgent()
+        self.agent = agent
 
     def change_mode(self):
         """Zmienia tryb AI."""

@@ -10,9 +10,10 @@ from ..world.grid_builder import WORLD_WIDTH
 class SquareGenerator:
     """Klasa odpowiedzialna za tworzenie kwadratów."""
 
-    def __init__(self, ground_tiles):
+    def __init__(self, ground_tiles, agent):
         """Inicjalizuje SquareGenerator z danymi ground_tiles."""
         self.ground_tiles = ground_tiles
+        self.agent = agent
 
     def create_squares(self):
         """Tworzy kwadraty dla gry."""
@@ -30,7 +31,7 @@ class SquareGenerator:
             y = randint(min_y, max_y)  # Pozycja y na dolnym rzędzie
             npc_mode = CATCH_MODE if i <= CATCHERS else FLEE_MODE
             square = (
-                Player(x, y, TILE_SIZE, PLAYER_MODE) if not squares else Npc(x, y, TILE_SIZE, npc_mode)
+                Player(x, y, TILE_SIZE, PLAYER_MODE) if not squares else Npc(self.agent, x, y, TILE_SIZE, npc_mode)
             )  # Pierwszy kwadrat to Player, reszta to AI
             squares.append(square)
 
