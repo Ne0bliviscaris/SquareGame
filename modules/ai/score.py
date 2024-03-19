@@ -4,16 +4,17 @@ from ..world.grid_builder import WORLD_HEIGHT, WORLD_WIDTH
 
 
 class Score:
-    def __init__(self, x, y, score):
+    def __init__(self, score):
         self.score = score
-        super().__init__(x, y)
-        self.previous_x = self.x
-        self.previous_y = self.y
+        self.previous_x = None
+        self.previous_y = None
 
-    def update(self, mode, collide, move_left, move_right, jump):
+    def update(self, x, y, mode, collide, move_left, move_right, jump):
+        self.x = x
+        self.y = y
         # Ruch
-        if move_left or move_right:
-            self.score += 2
+        if move_left or move_right and self.x != self.previous_x:
+            self.score += 1
         if jump:
             self.score += 1
         else:

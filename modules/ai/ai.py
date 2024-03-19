@@ -26,10 +26,12 @@ class Ai(Square):
     def __init__(self, x, y, size, mode):
         """Inicjalizuje kwadrat na podanej pozycji i o podanym rozmiarze."""
         super().__init__(x, y, size, mode)
-        self.mode = mode  # Dodajemy tryb
-        self.color = CATCH_COLOR if self.mode == CATCH_MODE else FLEE_COLOR  # Ustalamy kolor na podstawie trybu
+        self.x = x
+        self.y = y
+        self.mode = mode
+        self.color = CATCH_COLOR if self.mode == CATCH_MODE else FLEE_COLOR
         self.network = self.network()  # Stworzenie sieci neuronowej
-        self.score = 0  # Wynik AI
+        self.score = 0  # Q-learning
         self.score_calculator = Score(self.score)
 
     def change_mode(self):
@@ -71,7 +73,7 @@ class Ai(Square):
         super().update(squares)
         self.game_state = game_state
         self.score_calculator.update(
-            self.mode, self.collide, self.move_left, self.move_right, self.jump
+            self.x, self.y, self.mode, self.collide, self.move_left, self.move_right, self.jump
         )  # Aktualizuj wynik
         action = self.predict(self.game_state)  # Predykcja kolejnego ruchu
         if action == JUMP:
@@ -80,8 +82,6 @@ class Ai(Square):
             self.move_left()
         elif action == RIGHT:
             self.move_right()
-        else:
-            self.score -= 50  # Karanie za nieprawidłową akcję
 
     def predict(self, game_state):
         """Wykonuje predykcję na podstawie stanu."""
@@ -95,28 +95,3 @@ class Ai(Square):
         data_matrix_length = PARAMETERS_LENGTH * TOTAL_SQUARES
 
         return nn.Sequential(nn.Linear(data_matrix_length, 256), nn.ReLU(), nn.Linear(256, 3), nn.Softmax(dim=-1))
-
-
-class Score:
-    def __init__(self, score):
-        self.score = score
-
-    def update(self, mode, collide, move_left, move_right, jump):
-        if move_left or move_right:
-            self.score += 2
-        if jump:
-            self.score += 1
-        else:
-            self.score -= 1
-
-        if mode == CATCH_MODE:
-            if collide:
-                self.score += 50
-            else:
-                self.score -= 0
-
-        elif mode == FLEE_MODE:
-            if collide:
-                self.score -= 50
-            else:
-                self.score += 1
