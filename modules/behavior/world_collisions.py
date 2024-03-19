@@ -4,7 +4,7 @@ GRID_PULLING_RANGE = 0.5
 CANT_JUMP = 1 - GRID_PULLING_RANGE
 
 
-class Collisions:
+class WorldCollisions:
     """Klasa do obsługi kolizji kwadratu."""
 
     def __init__(self, square):
@@ -28,25 +28,24 @@ class Collisions:
 
     def handle_rising_collision(self, tile):
         """Obsługuje kolizję kwadratu z danym kafelkiem podczas skoku."""
-        # Sprawdzenie pozycji kwadratu względem kafelka
-        center_diff = (self.square.x + self.square.size / 2) - (tile.x + tile.size / 2)
-        is_blocked_from_above = -CANT_JUMP * tile.size < center_diff < CANT_JUMP * tile.size
-        is_below_ground = self.square.y > tile.y
+        is_below_ground = self.square.y > tile.y + tile.size
 
-        left_offset_above_threshold = center_diff < -GRID_PULLING_RANGE * tile.size
+        left_threshold = tile.x - self.square.size * GRID_PULLING_RANGE
+        left_offset_above_threshold = self.square.x < left_threshold
         grid_pull_left = (self.square.x // tile.size) * tile.size
 
-        right_offset_above_threshold = center_diff > GRID_PULLING_RANGE * tile.size
+        right_threshold = tile.x + tile.size + self.square.size * GRID_PULLING_RANGE
+        right_offset_above_threshold = self.square.x + self.square.size > right_threshold
         grid_pull_right = (self.square.x // tile.size + 1) * tile.size
 
-        if not is_blocked_from_above and is_below_ground:
+        if not is_below_ground:
             if left_offset_above_threshold:
                 self.square.x = grid_pull_left
             elif right_offset_above_threshold:
                 self.square.x = grid_pull_right
-        elif is_blocked_from_above:
-            self.square.y = tile.y + tile.size
-            self.square.velocity_y = 0
+            else:
+                self.square.y = tile.y + tile.size
+                self.square.velocity_y = 0
 
     def handle_horizontal_collision(self, tile, is_moving_left):
         """Obsługuje kolizję kwadratu z danym kafelkiem podczas ruchu poziomego."""
@@ -73,8 +72,8 @@ class Collisions:
         elif is_moving_horizontally:
             self.handle_horizontal_collision(tile, is_moving_left)
 
-    def handle_collisions_around(self, tiles):
-        """Sprawdza kolizje między kwadratem a wszystkimi kafelkami."""
+    def handle_collisions_around(self, tiles, squares):
+        """Sprawdza kolizje między kwadratem a wszystkimi kafelkami i innymi kwadratami."""
         nearby_tiles = self.get_nearby_tiles(tiles, self.square.size * 2)  # Użyj rozmiaru kwadratu jako dystansu
         for tile in nearby_tiles:
             if isinstance(tile, Ground) and tile.collides_with(self.square):

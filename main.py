@@ -1,3 +1,3 @@
-import modules.game as game
+from modules.states import game
 
 game.launch()

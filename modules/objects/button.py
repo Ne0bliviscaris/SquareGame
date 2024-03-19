@@ -1,5 +1,7 @@
 import pygame
 
+from modules.settings import SCREEN_WIDTH
+
 BUTTON_WIDTH = 200
 BUTTON_HEIGHT = 50
 BUTTON_Y_START = 300  # Możesz zmienić tę wartość na tę, którą chcesz
@@ -40,8 +42,7 @@ class Button:
         """
         Tworzy przycisk z określonymi stałymi wartościami.
         """
-        screen_width, _ = screen.get_size()
-        button_x = (screen_width - BUTTON_WIDTH) / 2
+        button_x = (SCREEN_WIDTH - BUTTON_WIDTH) / 2
         return Button(button_x, BUTTON_Y_START + y_offset * BUTTON_Y_GAP, text, action)
 
     def draw(self, screen):
@@ -49,6 +50,9 @@ class Button:
         Rysuje przycisk na ekranie.
         """
         # Zmień kolor przycisku, gdy kursor myszy jest nad nim
+        if not pygame.display.get_init():
+            return
+
         if self.is_hovered:
             color = self.hover_color
         else:

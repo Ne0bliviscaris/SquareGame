@@ -2,9 +2,6 @@ from math import ceil
 
 import pygame
 
-from modules.behavior.corners import RoundCorners
-from modules.world.world import CORNERS, DIRECTIONS, ROUND_CORNER, grid
-
 SKY_COLOR = (40, 40, 140)
 GROUND_COLOR = (90, 45, 45)
 
@@ -54,7 +51,6 @@ class Ground(Tile):
         """Inicjalizuje kafelek ground na podanej pozycji i o podanym rozmiarze."""
         super().__init__(x, y, size, (GROUND_COLOR))  # Kolor brązowy
         self.type = "Ground"
-        self.rounded_corners = RoundCorners(x, y, size, grid)
 
     @property
     def rect(self):
@@ -64,7 +60,3 @@ class Ground(Tile):
     def collides_with(self, other):
         """Sprawdza, czy ten kafelek koliduje z innym obiektem."""
         return self.rect.colliderect(other.rect)
-
-    def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
-        """Rysuje kafelek na ekranie."""
-        self.rounded_corners.draw(screen, camera_offset_x, camera_offset_y, zoom_level)
