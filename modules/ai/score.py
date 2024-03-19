@@ -7,8 +7,8 @@ class Score:
     def __init__(self, x, y, score):
         self.score = score
         super().__init__(x, y)
-        prev_x = self.x
-        prev_y = self.y
+        self.previous_x = self.x
+        self.previous_y = self.y
 
     def update(self, mode, collide, move_left, move_right, jump):
         # Ruch
@@ -21,27 +21,27 @@ class Score:
         # Kolizje
         if mode == CATCH_MODE:
             if collide:
-                self.score += 500
+                self.score += 3
             else:
-                self.score -= 20
+                self.score -= 1
 
         elif mode == FLEE_MODE:
             if collide:
-                self.score -= 500
+                self.score -= 3
             else:
-                self.score += 20
+                self.score += 1
         # Pozycja
-        beyond_left_edge = self.x <= TILE_SIZE
-        beyond_right_edge = self.x >= WORLD_WIDTH - TILE_SIZE
-        beyond_top_edge = self.y <= TILE_SIZE
-        beyont_floor = self.y >= WORLD_HEIGHT - TILE_SIZE
-        if beyond_left_edge or beyond_right_edge or beyond_top_edge or beyont_floor:
-            self.score -= 1000
+        on_left_edge = self.x <= TILE_SIZE + 1
+        on_right_edge = self.x >= WORLD_WIDTH - TILE_SIZE - 1
+        on_top_edge = self.y <= TILE_SIZE + 1
+        below_floor = self.y >= WORLD_HEIGHT - TILE_SIZE + 1
+        if on_left_edge or on_right_edge or on_top_edge or below_floor:
+            self.score -= 10
 
         # Ruch
-        if self.prev_x == self.x:
-            self.score -= 50
+        if self.previous_x == self.x:
+            self.score -= 3
 
         # Aktualizacja pozycji
-        self.prev_x = self.x
-        self.prev_y = self.y
+        self.previous_x = self.x
+        self.previous_y = self.y
