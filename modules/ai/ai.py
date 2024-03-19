@@ -12,6 +12,7 @@ from modules.objects.square import (
 )
 
 from ..settings import TOTAL_SQUARES
+from .agent import DeepLearningAgent
 from .deep_learning_data import PARAMETERS_LENGTH
 from .score import Score
 
@@ -29,10 +30,12 @@ class Ai(Square):
         self.x = x
         self.y = y
         self.mode = mode
+
         self.color = CATCH_COLOR if self.mode == CATCH_MODE else FLEE_COLOR
-        self.network = self.network()  # Stworzenie sieci neuronowej
         self.score = 0  # Q-learning
         self.score_calculator = Score(self.score)
+
+        self.agent = DeepLearningAgent()
 
     def change_mode(self):
         """Zmienia tryb AI."""
@@ -75,23 +78,10 @@ class Ai(Square):
         self.score_calculator.update(
             self.x, self.y, self.mode, self.collide, self.move_left, self.move_right, self.jump
         )  # Aktualizuj wynik
-        action = self.predict(self.game_state)  # Predykcja kolejnego ruchu
+        action = self.agent.predict(self.game_state)  # Predykcja kolejnego ruchu
         if action == JUMP:
             self.jump()
         elif action == LEFT:
             self.move_left()
         elif action == RIGHT:
             self.move_right()
-
-    def predict(self, game_state):
-        """Wykonuje predykcję na podstawie stanu."""
-        state_tensor = torch.tensor(game_state, dtype=torch.float32)  # Przekształć stan gry na tensor
-        action_probabilities = self.network(state_tensor)  # Przepuść stan przez sieć neuronową
-        action = torch.argmax(action_probabilities).item()  # Wybierz akcję z największym prawdopodobieństwem
-        return action
-
-    def network(self):
-        # data_matrix = len(self.game_state) * TOTAL_SQUARES
-        data_matrix_length = PARAMETERS_LENGTH * TOTAL_SQUARES
-
-        return nn.Sequential(nn.Linear(data_matrix_length, 256), nn.ReLU(), nn.Linear(256, 3), nn.Softmax(dim=-1))
