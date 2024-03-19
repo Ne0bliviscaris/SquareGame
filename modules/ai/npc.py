@@ -21,7 +21,7 @@ LEFT = 1
 RIGHT = 2
 
 
-class Ai(Square):
+class Npc(Square):
     """Klasa reprezentująca kwadrat przeciwnika."""
 
     def __init__(self, x, y, size, mode):

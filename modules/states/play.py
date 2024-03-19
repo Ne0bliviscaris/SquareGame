@@ -13,7 +13,7 @@ from modules.settings import DRAW_VECTORS, SCREEN_HEIGHT, SCREEN_WIDTH
 from modules.states.state import GameState
 from modules.world.grid_builder import world_list
 
-from ..ai.ai import Ai
+from ..ai.npc import Npc
 
 # from modules.ai.model import Flee
 
@@ -62,7 +62,7 @@ class RunningGameState(GameState):
         for square, world_collision, square_collision in zip(
             self.squares, self.world_collisions, self.square_collisions
         ):
-            if isinstance(square, Ai):
+            if isinstance(square, Npc):
                 square.update(self.squares, self.state_for_model)
             else:
                 square.update(self.squares)  # Aktualizacja kwadratów
@@ -74,7 +74,7 @@ class RunningGameState(GameState):
 
         # Aktualizacja kwadratów AI z uwzględnieniem stanu dla modelu
         for square in self.squares:
-            if isinstance(square, Ai):
+            if isinstance(square, Npc):
                 square.update(self.squares, self.state_for_model)
 
     def draw(self, screen):

@@ -1,6 +1,6 @@
 from random import randint
 
-from ..ai.ai import Ai
+from ..ai.npc import Npc
 from ..objects.player import Player
 from ..objects.square import CATCH_MODE, FLEE_MODE
 from ..settings import CATCHERS, PLAYER_MODE, TILE_SIZE, TOTAL_SQUARES
@@ -30,7 +30,7 @@ class SquareGenerator:
             y = randint(min_y, max_y)  # Pozycja y na dolnym rzędzie
             npc_mode = CATCH_MODE if i <= CATCHERS else FLEE_MODE
             square = (
-                Player(x, y, TILE_SIZE, PLAYER_MODE) if not squares else Ai(x, y, TILE_SIZE, npc_mode)
+                Player(x, y, TILE_SIZE, PLAYER_MODE) if not squares else Npc(x, y, TILE_SIZE, npc_mode)
             )  # Pierwszy kwadrat to Player, reszta to AI
             squares.append(square)
 
