@@ -1,17 +1,14 @@
 import pygame
 
 from modules.ai.deep_learning_data import DeepLearningData
-from modules.settings import DRAW_VECTORS, SCREEN_HEIGHT, SCREEN_WIDTH
-
-if DRAW_VECTORS:
-    from modules.ai.vectors import VectorCalculator
-
+from modules.ai.vectors import VectorCalculator
 from modules.behavior.camera import Camera
 from modules.behavior.controller import Controller
 from modules.behavior.square_collisions import SquareCollisions
 from modules.behavior.world_collisions import WorldCollisions
 from modules.objects.sqare_generator import SquareGenerator
 from modules.objects.tiles import Ground
+from modules.settings import DRAW_VECTORS, SCREEN_HEIGHT, SCREEN_WIDTH
 from modules.states.state import GameState
 from modules.world.grid_builder import world_list
 
@@ -40,8 +37,7 @@ class RunningGameState(GameState):
         self.squares = self.square_generator.create_squares()
 
         # # Utwórz instancję VectorCalculator dla modelu AI
-        if DRAW_VECTORS:
-            self.vector_calculator = VectorCalculator(self.squares)
+        self.vector_calculator = VectorCalculator(self.squares)
 
         # Utwórz instancje Collisions dla każdego kwadratu
         self.world_collisions = [WorldCollisions(square) for square in self.squares]
