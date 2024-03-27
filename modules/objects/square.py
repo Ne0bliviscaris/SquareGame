@@ -3,16 +3,20 @@ from time import time
 
 from pygame import Rect, draw
 
-from ..settings import GRAVITY, JUMP_COOLDOWN, JUMP_HEIGHT, SPEED
+from ..settings import (
+    CATCH_MODE,
+    FLEE_MODE,
+    GRAVITY,
+    JUMP_COOLDOWN,
+    JUMP_HEIGHT,
+    OBSERVER_MODE,
+    SPEED,
+)
 
 PLAYER_COLOR = (0, 180, 0)
 CATCH_COLOR = (180, 50, 0)
 FLEE_COLOR = (0, 100, 180)
 OBSERVER_COLOR = (180, 180, 180)
-
-FLEE_MODE = 0
-CATCH_MODE = 1
-OBSERVER_MODE = 2
 
 
 class Square:
