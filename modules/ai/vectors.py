@@ -38,7 +38,6 @@ class VectorCalculator:
 
     def draw_vectors(self, screen, zoom, cam_x, cam_y):
         """Rysuje wektory na ekranie."""
-        print("Drawing vectors initiated")
         for vector in self.calculate_vectors():
             start_pos = (
                 vector[0] * zoom + cam_x,
@@ -48,5 +47,4 @@ class VectorCalculator:
                 start_pos[0] + vector[2] * zoom,
                 start_pos[1] + vector[3] * zoom,
             )
-            print(f"Drawing vector from {start_pos} to {end_pos}")
             draw.line(screen, (255, 0, 0), start_pos, end_pos)
