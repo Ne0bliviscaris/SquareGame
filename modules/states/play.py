@@ -1,15 +1,17 @@
 import pygame
 
 from modules.ai.deep_learning_data import DeepLearningData
+from modules.settings import DRAW_VECTORS, SCREEN_HEIGHT, SCREEN_WIDTH
 
-# from modules.ai.vectors import VectorCalculator
+if DRAW_VECTORS:
+    from modules.ai.vectors import VectorCalculator
+
 from modules.behavior.camera import Camera
 from modules.behavior.controller import Controller
 from modules.behavior.square_collisions import SquareCollisions
 from modules.behavior.world_collisions import WorldCollisions
 from modules.objects.sqare_generator import SquareGenerator
 from modules.objects.tiles import Ground
-from modules.settings import DRAW_VECTORS, SCREEN_HEIGHT, SCREEN_WIDTH
 from modules.states.state import GameState
 from modules.world.grid_builder import world_list
 
@@ -38,7 +40,8 @@ class RunningGameState(GameState):
         self.squares = self.square_generator.create_squares()
 
         # # Utwórz instancję VectorCalculator dla modelu AI
-        # self.vector_calculator = VectorCalculator(self.squares)
+        if DRAW_VECTORS:
+            self.vector_calculator = VectorCalculator(self.squares)
 
         # Utwórz instancje Collisions dla każdego kwadratu
         self.world_collisions = [WorldCollisions(square) for square in self.squares]
@@ -93,10 +96,10 @@ class RunningGameState(GameState):
         self.squares[0].draw(screen, self.camera.camera_offset_x, self.camera.camera_offset_y, self.camera.zoom_level)
 
         # Rysuj wektory
-        # if DRAW_VECTORS or self.vector_calculator is not None:
-        #     self.vector_calculator.draw_vectors(
-        #         screen, self.camera.zoom_level, self.camera.camera_offset_x, self.camera.camera_offset_y
-        #     )
+        if DRAW_VECTORS or self.vector_calculator is not None:
+            self.vector_calculator.draw_vectors(
+                screen, self.camera.zoom_level, self.camera.camera_offset_x, self.camera.camera_offset_y
+            )
         pygame.display.update()
 
     def handle_events(self, events):
