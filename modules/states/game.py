@@ -6,7 +6,7 @@ os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 
 import pygame
 
-from ..settings import FPS_LIMIT, SCREEN, SCREEN_HEIGHT, SCREEN_WIDTH, WINDOW_TITLE
+from ..settings import FPS_LIMIT, SCREEN, WINDOW_TITLE
 from ..states.menu import MainMenuState, PauseMenuState
 from ..states.state import GameState
 from .play import RunningGameState
