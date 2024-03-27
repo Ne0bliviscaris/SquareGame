@@ -2,6 +2,8 @@ from pygame import draw
 
 from modules.settings import TILE_SIZE
 
+from ..settings import CATCH_MODE, FLEE_MODE
+
 
 class VectorCalculator:
     """Klasa do obliczania wektorów i dystansów między kwadratami."""
@@ -12,8 +14,8 @@ class VectorCalculator:
 
     def calculate_vectors(self):
         """Oblicza wektory od kwadratów typu 'catch' do kwadratów typu 'flee' i odwrotnie."""
-        catch_squares = [square for square in self.squares if square.mode == "catch"]
-        flee_squares = [square for square in self.squares if square.mode == "flee"]
+        catch_squares = [square for square in self.squares if square.mode == CATCH_MODE]
+        flee_squares = [square for square in self.squares if square.mode == FLEE_MODE]
 
         vectors = []
         for catch_square in catch_squares:
@@ -36,6 +38,7 @@ class VectorCalculator:
 
     def draw_vectors(self, screen, zoom, cam_x, cam_y):
         """Rysuje wektory na ekranie."""
+        print("Drawing vectors initiated")
         for vector in self.calculate_vectors():
             start_pos = (
                 vector[0] * zoom + cam_x,
@@ -45,4 +48,5 @@ class VectorCalculator:
                 start_pos[0] + vector[2] * zoom,
                 start_pos[1] + vector[3] * zoom,
             )
+            print(f"Drawing vector from {start_pos} to {end_pos}")
             draw.line(screen, (255, 0, 0), start_pos, end_pos)
