@@ -96,7 +96,7 @@ class RunningGameState(GameState):
         self.squares[0].draw(screen, self.camera.camera_offset_x, self.camera.camera_offset_y, self.camera.zoom_level)
 
         # Rysuj wektory
-        if DRAW_VECTORS or self.vector_calculator is not None:
+        if DRAW_VECTORS:
             self.vector_calculator.draw_vectors(
                 screen, self.camera.zoom_level, self.camera.camera_offset_x, self.camera.camera_offset_y
             )
