@@ -26,11 +26,11 @@ class DeepLearningAgent:
         return action
 
     def save_model(self):
-        torch.save(self.network.state_dict(), "model.pth")
+        torch.save(self.network.state_dict(), "modules/ai/model.pth")
 
     def load_model(self):
         try:
-            self.network.load_state_dict(torch.load("model.pth"))
+            self.network.load_state_dict(torch.load("modules/ai/model.pth"))
         except FileNotFoundError:
             pass  # Jeśli plik modelu nie istnieje, po prostu kontynuuj
         except RuntimeError:
