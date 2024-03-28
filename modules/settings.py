@@ -1,13 +1,13 @@
 from pygame import display
 
 # Ustaw tryb gracza
-# PLAYER_MODE = 2 # FLEE_MODE
-# PLAYER_MODE = 1  # CATCH_MODE
-PLAYER_MODE = 0  # OBSERVER_MODE
+PLAYER_MODE = 2  # CATCH_MODE
+# PLAYER_MODE = 1  # FLEE_MODE
+# PLAYER_MODE = 0  # OBSERVER_MODE
 
 # Rysyowanie wektorów pomiędzy kwadratami
-DRAW_VECTORS = True
-# DRAW_VECTORS = False
+# DRAW_VECTORS = True
+DRAW_VECTORS = False
 
 
 # Liczba NPC
