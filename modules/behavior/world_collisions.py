@@ -1,5 +1,5 @@
 from modules.objects.tiles import Ground
-from modules.settings import GRID_PULLING_RANGE, SQUARE_SIZE
+from modules.settings import GRID_PULLING_RANGE, SQUARE_SIZE, TILE_SIZE
 
 CANT_JUMP = 1 - GRID_PULLING_RANGE
 
@@ -28,15 +28,15 @@ class WorldCollisions:
 
     def handle_rising_collision(self, tile):
         """Obsługuje kolizję kwadratu z danym kafelkiem podczas skoku."""
-        is_below_ground = self.square.y > tile.y + tile.size
+        is_below_ground = self.square.y > tile.y + TILE_SIZE
 
         left_threshold = tile.x - SQUARE_SIZE * GRID_PULLING_RANGE
         left_offset_above_threshold = self.square.x < left_threshold
-        grid_pull_left = (self.square.x // tile.size) * tile.size
+        grid_pull_left = (self.square.x // TILE_SIZE) * TILE_SIZE
 
-        right_threshold = tile.x + tile.size + SQUARE_SIZE * GRID_PULLING_RANGE
+        right_threshold = tile.x + TILE_SIZE + SQUARE_SIZE * GRID_PULLING_RANGE
         right_offset_above_threshold = self.square.x + SQUARE_SIZE > right_threshold
-        grid_pull_right = (self.square.x // tile.size + 1) * tile.size
+        grid_pull_right = (self.square.x // TILE_SIZE + 1) * TILE_SIZE
 
         if not is_below_ground:
             if left_offset_above_threshold:
@@ -44,7 +44,7 @@ class WorldCollisions:
             elif right_offset_above_threshold:
                 self.square.x = grid_pull_right
             else:
-                self.square.y = tile.y + tile.size
+                self.square.y = tile.y + TILE_SIZE
                 self.square.velocity_y = 0
 
     def handle_horizontal_collision(self, tile, is_moving_left):

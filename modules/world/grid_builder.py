@@ -17,11 +17,7 @@ SKY = 0
 GROUND = 1
 
 world_list = [
-    (
-        Sky(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE)
-        if tile_type == SKY
-        else Ground(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, grid)
-    )
+    (Sky(x * TILE_SIZE, y * TILE_SIZE) if tile_type == SKY else Ground(x * TILE_SIZE, y * TILE_SIZE))
     for y, row in enumerate(grid)
     for x, tile_type in enumerate(row)
 ]
