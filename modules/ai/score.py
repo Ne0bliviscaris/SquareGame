@@ -1,5 +1,4 @@
-from modules.objects.square import CATCH_MODE, FLEE_MODE
-from modules.settings import TILE_SIZE
+from modules.settings import CATCH_MODE, FLEE_MODE, TILE_SIZE
 from modules.world.grid_builder import WORLD_HEIGHT, WORLD_WIDTH
 
 
@@ -15,21 +14,19 @@ class Score:
         moved = self.x != self.previous_x
         # Ruch
         if move_left or move_right:
-            self.score += 5
+            self.score += 2000
         if jump:
-            self.score -= 2
-        else:
-            self.score -= 5
+            self.score -= 100
         # Kolizje
         if mode == CATCH_MODE:
             if collide:
-                self.score += 20
+                self.score += 100
             else:
                 self.score -= 0
 
         elif mode == FLEE_MODE:
             if collide:
-                self.score -= 10
+                self.score -= 20
             else:
                 self.score += 0
         # Pozycja
