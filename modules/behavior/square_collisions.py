@@ -1,5 +1,7 @@
 import math
 
+from modules.settings import SQUARE_SIZE
+
 
 class SquareCollisions:
     """Klasa do obsługi kolizji między kwadratami."""
@@ -26,7 +28,7 @@ class SquareCollisions:
                 dx = self.square.x - other_square.x
                 dy = self.square.y - other_square.y
                 distance = math.sqrt(dx**2 + dy**2)
-                min_distance = self.square.size + other_square.size
+                min_distance = SQUARE_SIZE + SQUARE_SIZE
                 if distance < min_distance:
                     # Oblicz wektor przesunięcia
                     push = (min_distance - distance) / distance

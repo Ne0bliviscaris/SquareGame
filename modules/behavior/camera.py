@@ -1,5 +1,5 @@
 from modules.objects.tiles import Ground
-from modules.settings import TILE_SIZE
+from modules.settings import SCREEN_HEIGHT, SCREEN_WIDTH, SQUARE_SIZE, TILE_SIZE
 from modules.world.grid_builder import WORLD_WIDTH
 
 ZOOM_OUT_LIMIT = 2.0
@@ -7,10 +7,8 @@ ZOOM_IN_LIMIT = 0.5
 
 
 class Camera:
-    def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT, square, tiles, ground_tiles):
+    def __init__(self, square, tiles, ground_tiles):
         """Inicjalizuje kamerę."""
-        self.SCREEN_WIDTH = SCREEN_WIDTH
-        self.SCREEN_HEIGHT = SCREEN_HEIGHT
         self.square = square
         self.tiles = tiles
         self.zoom_level = 1
@@ -27,10 +25,10 @@ class Camera:
     def calculate_target_offset(self):
         """Oblicza przesunięcie kamery, aby śledzić kwadrat."""
         # Ustalenie środkowych pozycji kwadratu i ekranu
-        half_screen_width = self.SCREEN_WIDTH / 2
-        half_screen_height = self.SCREEN_HEIGHT / 2
-        square_center_x = self.square.x + self.square.size / 2
-        square_center_y = self.square.y + self.square.size / 2
+        half_screen_width = SCREEN_WIDTH / 2
+        half_screen_height = SCREEN_HEIGHT / 2
+        square_center_x = self.square.x + SQUARE_SIZE / 2
+        square_center_y = self.square.y + SQUARE_SIZE / 2
         self.target_offset_x = half_screen_width - square_center_x * self.zoom_level
         self.target_offset_y = half_screen_height - square_center_y * self.zoom_level
 
@@ -41,9 +39,9 @@ class Camera:
         lowest_row = max(tile.y for tile in ground_tiles)
         highest_row = min(tile.y for tile in ground_tiles)
 
-        min_offset_y = -lowest_row * self.zoom_level + self.SCREEN_HEIGHT - TILE_SIZE * self.zoom_level
+        min_offset_y = -lowest_row * self.zoom_level + SCREEN_HEIGHT - TILE_SIZE * self.zoom_level
         max_offset_y = -highest_row * self.zoom_level
-        max_offset_x = self.SCREEN_WIDTH - WORLD_WIDTH * self.zoom_level
+        max_offset_x = SCREEN_WIDTH - WORLD_WIDTH * self.zoom_level
 
         if self.target_offset_y < min_offset_y:
             self.target_offset_y = min_offset_y

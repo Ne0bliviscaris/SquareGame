@@ -9,7 +9,7 @@ from modules.objects.square import (
     PLAYER_COLOR,
     Square,
 )
-from modules.settings import SCREEN
+from modules.settings import SCREEN, SQUARE_SIZE
 
 
 class Player(Square):
@@ -24,7 +24,7 @@ class Player(Square):
         # Ustalenie pozcji i wymiarów
         left = int(self.x * zoom_level) + camera_offset_x + 1
         top = int(self.y * zoom_level) + camera_offset_y + 1
-        square = round(self.size * zoom_level)
+        square = round(SQUARE_SIZE * zoom_level)
 
         if self.mode == CATCH_MODE:
             inner_color = CATCH_COLOR

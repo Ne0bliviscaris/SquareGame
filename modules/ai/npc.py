@@ -10,7 +10,7 @@ from modules.objects.square import (
     Square,
 )
 
-from ..settings import SCREEN
+from ..settings import SCREEN, SQUARE_SIZE
 from .score import Score
 
 JUMP = 0
@@ -21,18 +21,18 @@ RIGHT = 2
 class Npc(Square):
     """Klasa reprezentująca kwadrat przeciwnika."""
 
-    def __init__(self, agent, x, y, size, mode, square_id):
+    def __init__(self, agent, x, y, mode, square_id):
         """Inicjalizuje kwadrat na podanej pozycji i o podanym rozmiarze."""
-        super().__init__(x, y, size, mode)
+        super().__init__(x, y, mode)
         self.x = x
         self.y = y
         self.mode = mode
 
         self.color = CATCH_COLOR if self.mode == CATCH_MODE else FLEE_COLOR
-        self.score = 0  # Q-learning
-        self.score_calculator = Score(self.score)
+        self.score = 0
+        self.score_calculator = Score(self.score)  # Q-learning
 
-        self.agent = agent
+        self.ai_agent = agent
         self.id = square_id
 
     def change_mode(self):
@@ -45,7 +45,7 @@ class Npc(Square):
         # Ustalenie pozcji i wymiarów
         left = int(self.x * zoom_level) + camera_offset_x
         top = int(self.y * zoom_level) + camera_offset_y
-        square = round(self.size * zoom_level)
+        square = round(SQUARE_SIZE * zoom_level)
         draw.rect(
             SCREEN,
             self.color,  # Używamy koloru zależnego od trybu
@@ -85,7 +85,7 @@ class Npc(Square):
             self.x, self.y, self.mode, self.collide, self.move_left, self.move_right, self.jump
         )  # Aktualizuj wynik
         self.draw_score
-        action = self.agent.predict(self.game_state)  # Predykcja kolejnego ruchu
+        action = self.ai_agent.predict(self.game_state)  # Predykcja kolejnego ruchu
         if action == JUMP:
             self.jump()
         elif action == LEFT:
@@ -95,7 +95,7 @@ class Npc(Square):
 
         # Po wykonaniu akcji, oblicz target na podstawie zdobytych punktów
         target = self.score
-        self.agent.train(self.game_state, target)
+        self.ai_agent.train(self.game_state, target)
 
     def draw_score(self, left, top, square):
         """Rysuje wynik na kwadracie."""

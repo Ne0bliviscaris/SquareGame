@@ -42,7 +42,7 @@ class RunningGameState(GameState):
         self.square_collisions = [SquareCollisions(square) for square in self.squares]
 
         # Utwórz instancję Camera dla kwadratu gracza
-        self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, self.squares[0], self.tiles, self.ground_tiles)
+        self.camera = Camera(self.squares[0], self.tiles, self.ground_tiles)
 
         # Utwórz instancję kontrolera
         self.controller = Controller(self.squares[0], game_state, self.camera, self.agent)
@@ -68,7 +68,7 @@ class RunningGameState(GameState):
                 square.update(self.squares, self.state_for_model)
             else:
                 square.update(self.squares)  # Aktualizacja kwadratów
-            world_collision.handle_collisions_around(self.tiles, self.squares)  # Kolizje z ground_tiles
+            world_collision.handle_collisions_around(self.tiles)  # Kolizje z ground_tiles
             square_collision.handle_square_collisions(self.squares)  # Kolizje między kwadratami
 
         # Pobranie stanu dla modelu

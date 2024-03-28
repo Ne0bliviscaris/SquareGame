@@ -31,9 +31,7 @@ class SquareGenerator:
             y = randint(min_y, max_y)  # Pozycja y na dolnym rzędzie
             npc_mode = CATCH_MODE if square_id <= CATCHERS else FLEE_MODE
             square = (
-                Player(x, y, TILE_SIZE, PLAYER_MODE)
-                if not squares
-                else Npc(self.agent, x, y, TILE_SIZE, npc_mode, square_id)
+                Player(x, y, PLAYER_MODE) if not squares else Npc(self.agent, x, y, npc_mode, square_id)
             )  # Pierwszy kwadrat to Player, reszta to AI
             squares.append(square)
 

@@ -11,6 +11,7 @@ from ..settings import (
     JUMP_HEIGHT,
     OBSERVER_MODE,
     SPEED,
+    SQUARE_SIZE,
 )
 
 PLAYER_COLOR = (0, 180, 0)
@@ -22,11 +23,10 @@ OBSERVER_COLOR = (180, 180, 180)
 class Square:
     """Klasa reprezentująca kwadrat na ekranie."""
 
-    def __init__(self, x, y, size, mode):
+    def __init__(self, x, y, mode):
         """Inicjalizuje kwadrat na podanej pozycji i o podanym rozmiarze."""
         self.x = x
         self.y = y
-        self.size = size
         self.velocity_y = 0
         self.velocity_x = 0  # Dodajemy prędkość w osi x
         self.gravity = GRAVITY * 0.01
@@ -68,7 +68,7 @@ class Square:
 
     @property
     def rect(self):
-        return Rect(self.x, self.y, self.size, self.size)
+        return Rect(self.x, self.y, SQUARE_SIZE, SQUARE_SIZE)
 
     def update(self, squares):
         """Aktualizuje pozycję kwadratu, dodając do niej prędkość."""
@@ -88,7 +88,7 @@ class Square:
         # Ustalenie pozcji i wymiarów
         left = int(self.x * zoom_level) + camera_offset_x + 1
         top = int(self.y * zoom_level) + camera_offset_y + 1
-        square = round(self.size * zoom_level)
+        square = round(SQUARE_SIZE * zoom_level)
         draw.rect(
             screen,
             PLAYER_COLOR,
@@ -103,14 +103,14 @@ class Square:
     def collides_with(self, other):
         """Sprawdza, czy kwadrat koliduje z innym obiektem."""
         # Pozycje i wymiary
-        self_right = self.x + self.size
+        self_right = self.x + SQUARE_SIZE
         other_left = other.x
         left_left = self.x
-        other_right = other.x + other.size
-        self_bottom = self.y + self.size
+        other_right = other.x + SQUARE_SIZE
+        self_bottom = self.y + SQUARE_SIZE
         other_top = other.y
         self_top = self.y
-        other_bottom = other.y + other.size
+        other_bottom = other.y + SQUARE_SIZE
         if self.mode != other.mode and self.mode != OBSERVER_MODE and other.mode != OBSERVER_MODE:
             return not (
                 self_right <= other_left
