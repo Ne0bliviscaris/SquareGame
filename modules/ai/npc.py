@@ -10,7 +10,7 @@ from modules.objects.square import (
     OBSERVER_MODE,
     Square,
 )
-from modules.settings import SCREEN, SQUARE_SIZE
+from modules.settings import SCREEN, SHOW_SCORE, SQUARE_SIZE
 
 JUMP = 0
 LEFT = 1
@@ -68,22 +68,17 @@ class Npc(Square):
                 5,  # Szerokość ramki
             )
 
-        # Wyświetl square_id
-        font = pygame.font.Font(None, 24)  # Utwórz czcionkę o rozmiarze 24
-        square_id = font.render(str(self.id), True, (255, 255, 255))  # Wygeneruj powierzchnię z tekstem
-        text_x = left + square / 2 - square_id.get_width() / 2
-        SCREEN.blit(square_id, (text_x, top + square / 8))  # Narysuj powierzchnię z tekstem na ekranie
-
-        self.draw_score(left, top, square)
+        if SHOW_SCORE:
+            self.draw_id(left, top, square)  # Wyświetl id kwadratu
+            self.draw_score(left, top, square)  # Wyświetl punkty kwadratu
 
     def update(self, squares, game_state):
         """Aktualizuje pozycję kwadratu, dodając do niej prędkość."""
         super().update(squares)
         self.game_state = game_state
-        self.score_calculator.update(
+        self.score = self.score_calculator.update(
             self.x, self.y, self.mode, self.collide, self.move_left, self.move_right, self.jump
         )  # Aktualizuj wynik
-        self.draw_score
         action = self.ai_agent.predict(self.game_state)  # Predykcja kolejnego ruchu
         if action == JUMP:
             self.jump()
@@ -101,3 +96,9 @@ class Npc(Square):
         font = pygame.font.Font(None, 24)  # Utwórz czcionkę o rozmiarze 24
         square_score = font.render(str(self.score), True, (200, 200, 200))  # Wygeneruj powierzchnię z tekstem
         SCREEN.blit(square_score, (left, top + square * 5 / 6))  # Narysuj powierzchnię z tekstem na ekranie
+
+    def draw_id(self, left, top, square):
+        font = pygame.font.Font(None, 24)  # Utwórz czcionkę o rozmiarze 24
+        square_id = font.render(str(self.id), True, (255, 255, 255))  # Wygeneruj powierzchnię z tekstem
+        text_x = left + square / 2 - square_id.get_width() / 2
+        SCREEN.blit(square_id, (text_x, top + square / 8))  # Narysuj powierzchnię z tekstem na ekranie

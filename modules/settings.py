@@ -9,6 +9,9 @@ PLAYER_MODE = 2  # CATCH_MODE
 # DRAW_VECTORS = True
 DRAW_VECTORS = False
 
+# Wyświetlanie ID i punktów
+SHOW_SCORE = True
+# SHOW_SCORE = False
 
 # Liczba NPC
 RUNNERS = 1
