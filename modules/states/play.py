@@ -20,6 +20,7 @@ class RunningGameState(GameState):
 
     def __init__(self, game_state):
         """Inicjalizuje stan gry jako działający."""
+        print("RunningGameState")
         # Utwórz agenta AI
         self.agent = DeepLearningAgent()
         self.agent.load_model()
