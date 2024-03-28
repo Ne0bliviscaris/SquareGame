@@ -11,13 +11,13 @@ class DeepLearningAgent:
     def __init__(self):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.network = self.create_network().to(self.device)
-        self.optimizer = torch.optim.Adam(self.network.parameters())
+        self.optimizer = torch.optim.SGD(self.network.parameters(), lr=0.03)
         self.loss_function = nn.MSELoss()
         self.load_model()
 
     def create_network(self):
         data_matrix_length = PARAMETERS_LENGTH * TOTAL_SQUARES
-        return nn.Sequential(nn.Linear(data_matrix_length, 256), nn.ReLU(), nn.Linear(256, 3), nn.Softmax(dim=-1))
+        return nn.Sequential(nn.Linear(data_matrix_length, 256), nn.Sigmoid(), nn.Linear(256, 3), nn.Softmax(dim=-1))
 
     def predict(self, game_state):
         state_tensor = torch.tensor(game_state, dtype=torch.float32).to(self.device)
@@ -27,6 +27,7 @@ class DeepLearningAgent:
 
     def save_model(self):
         torch.save(self.network.state_dict(), "modules/ai/model.pth")
+        print("Zapisano model")
 
     def load_model(self):
         try:
