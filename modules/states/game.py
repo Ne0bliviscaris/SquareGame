@@ -1,15 +1,13 @@
 import os
-import sys
-import traceback
 
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 
 import pygame
 
-from ..settings import FPS_LIMIT, WINDOW_TITLE
-from ..states.menu import MainMenuState, PauseMenuState
-from ..states.state import GameState
-from .play import RunningGameState
+from modules.settings import FPS_LIMIT, WINDOW_TITLE
+from modules.states.menu import MainMenuState, PauseMenuState
+from modules.states.play import RunningGameState
+from modules.states.state import GameState
 
 
 class Game:

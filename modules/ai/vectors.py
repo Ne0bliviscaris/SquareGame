@@ -1,8 +1,6 @@
 from pygame import draw
 
-from modules.settings import TILE_SIZE
-
-from ..settings import CATCH_MODE, FLEE_MODE
+from modules.settings import CATCH_MODE, FLEE_MODE, TILE_SIZE
 
 
 class VectorCalculator:

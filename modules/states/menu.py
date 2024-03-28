@@ -1,11 +1,8 @@
-import sys
-
 import pygame
 
 from modules.objects.button import Button
+from modules.settings import SCREEN, SCREEN_HEIGHT, SCREEN_WIDTH
 from modules.states.state import GameState
-
-from ..settings import SCREEN, SCREEN_HEIGHT, SCREEN_WIDTH
 
 BUTTON_WIDTH = 200
 BUTTON_HEIGHT = 50

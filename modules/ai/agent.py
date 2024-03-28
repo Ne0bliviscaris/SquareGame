@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 
-from ..settings import TOTAL_SQUARES
-from .deep_learning_data import PARAMETERS_LENGTH
+from modules.ai.deep_learning_data import PARAMETERS_LENGTH, DeepLearningData
+from modules.settings import TOTAL_SQUARES
 
 
 class DeepLearningAgent:

@@ -1,6 +1,6 @@
-from ..objects.square import CATCH_MODE, FLEE_MODE
-from ..settings import TILE_SIZE
-from ..world.grid_builder import WORLD_HEIGHT, WORLD_WIDTH
+from modules.objects.square import CATCH_MODE, FLEE_MODE
+from modules.settings import TILE_SIZE
+from modules.world.grid_builder import WORLD_HEIGHT, WORLD_WIDTH
 
 
 class Score:

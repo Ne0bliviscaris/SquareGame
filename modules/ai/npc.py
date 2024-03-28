@@ -1,6 +1,7 @@
 import pygame
 from pygame import Rect, draw
 
+from modules.ai.score import Score
 from modules.objects.square import (
     CATCH_COLOR,
     CATCH_MODE,
@@ -9,9 +10,7 @@ from modules.objects.square import (
     OBSERVER_MODE,
     Square,
 )
-
-from ..settings import SCREEN, SQUARE_SIZE
-from .score import Score
+from modules.settings import SCREEN, SQUARE_SIZE
 
 JUMP = 0
 LEFT = 1

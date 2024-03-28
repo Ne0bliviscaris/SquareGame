@@ -1,10 +1,10 @@
 from random import randint
 
-from ..ai.npc import Npc
-from ..objects.player import Player
-from ..objects.square import CATCH_MODE, FLEE_MODE
-from ..settings import CATCHERS, PLAYER_MODE, TILE_SIZE, TOTAL_SQUARES
-from ..world.grid_builder import WORLD_WIDTH
+from modules.ai.npc import Npc
+from modules.objects.player import Player
+from modules.objects.square import CATCH_MODE, FLEE_MODE
+from modules.settings import CATCHERS, PLAYER_MODE, TILE_SIZE, TOTAL_SQUARES
+from modules.world.grid_builder import WORLD_WIDTH
 
 
 class SquareGenerator:

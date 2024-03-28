@@ -1,9 +1,9 @@
-from math import ceil, floor
+from math import ceil
 from time import time
 
 from pygame import Rect, draw
 
-from ..settings import (
+from modules.settings import (
     CATCH_MODE,
     FLEE_MODE,
     GRAVITY,

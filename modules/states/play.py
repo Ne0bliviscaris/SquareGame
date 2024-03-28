@@ -1,6 +1,8 @@
 import pygame
 
+from modules.ai.agent import DeepLearningAgent
 from modules.ai.deep_learning_data import DeepLearningData
+from modules.ai.npc import Npc
 from modules.ai.vectors import VectorCalculator
 from modules.behavior.camera import Camera
 from modules.behavior.controller import Controller
@@ -8,12 +10,9 @@ from modules.behavior.square_collisions import SquareCollisions
 from modules.behavior.world_collisions import WorldCollisions
 from modules.objects.sqare_generator import SquareGenerator
 from modules.objects.tiles import Ground
-from modules.settings import DRAW_VECTORS, SCREEN, SCREEN_HEIGHT, SCREEN_WIDTH
+from modules.settings import DRAW_VECTORS, SCREEN
 from modules.states.state import GameState
 from modules.world.grid_builder import world_list
-
-from ..ai.agent import DeepLearningAgent
-from ..ai.npc import Npc
 
 
 class RunningGameState(GameState):

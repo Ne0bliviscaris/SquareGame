@@ -5,7 +5,7 @@ import pygame
 SKY_COLOR = (40, 40, 140)
 GROUND_COLOR = (90, 45, 45)
 
-from ..settings import SCREEN, TILE_SIZE
+from modules.settings import SCREEN, TILE_SIZE
 
 
 class Tile:
