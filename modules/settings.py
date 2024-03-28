@@ -22,12 +22,13 @@ SCREEN = display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # Utworzenie ekranu o 
 WINDOW_TITLE = "Squaregame"  # Tytuł okna
 
 TILE_SIZE = 80
+SQUARE_SIZE = TILE_SIZE
 
 GRAVITY = 140
 JUMP_HEIGHT = 25
 JUMP_COOLDOWN = 0.45
 SPEED = 9
-
+GRID_PULLING_RANGE = 0.5
 
 # Tryby kwadratów
 CATCH_MODE = 2
