@@ -8,14 +8,12 @@ from modules.behavior.square_collisions import SquareCollisions
 from modules.behavior.world_collisions import WorldCollisions
 from modules.objects.sqare_generator import SquareGenerator
 from modules.objects.tiles import Ground
-from modules.settings import DRAW_VECTORS, SCREEN_HEIGHT, SCREEN_WIDTH
+from modules.settings import DRAW_VECTORS, SCREEN, SCREEN_HEIGHT, SCREEN_WIDTH
 from modules.states.state import GameState
 from modules.world.grid_builder import world_list
 
 from ..ai.agent import DeepLearningAgent
 from ..ai.npc import Npc
-
-# from modules.ai.model import Flee
 
 
 class RunningGameState(GameState):
@@ -80,21 +78,21 @@ class RunningGameState(GameState):
             if isinstance(square, Npc):
                 square.update(self.squares, self.state_for_model)
 
-    def draw(self, screen):
+    def draw(self):
         """Rysuje elementy gry na ekranie dla bieżącego stanu gry."""
-        screen.fill((0, 38, 52))
+        SCREEN.fill((0, 38, 52))
 
         # Narysuj wszystkie obiekty z uwzględnieniem przesunięcia kamery i poziomu zoomu
         for drawable in self.drawables:
             if drawable is not self.squares[0]:  # Nie rysuj self.squares[0] jeszcze
-                drawable.draw(screen, self.camera.camera_offset_x, self.camera.camera_offset_y, self.camera.zoom_level)
+                drawable.draw(self.camera.camera_offset_x, self.camera.camera_offset_y, self.camera.zoom_level)
         # Rysuj self.squares[0] na wierzchu
-        self.squares[0].draw(screen, self.camera.camera_offset_x, self.camera.camera_offset_y, self.camera.zoom_level)
+        self.squares[0].draw(self.camera.camera_offset_x, self.camera.camera_offset_y, self.camera.zoom_level)
 
         # Rysuj wektory
         if DRAW_VECTORS:
             self.vector_calculator.draw_vectors(
-                screen, self.camera.zoom_level, self.camera.camera_offset_x, self.camera.camera_offset_y
+                self.camera.zoom_level, self.camera.camera_offset_x, self.camera.camera_offset_y
             )
         pygame.display.update()
 

@@ -9,6 +9,7 @@ from modules.objects.square import (
     PLAYER_COLOR,
     Square,
 )
+from modules.settings import SCREEN
 
 
 class Player(Square):
@@ -18,7 +19,7 @@ class Player(Square):
         """Zmienia tryb gracza."""
         super().change_mode()
 
-    def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
+    def draw(self, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
         """Rysuje kwadrat na ekranie."""
         # Ustalenie pozcji i wymiarów
         left = int(self.x * zoom_level) + camera_offset_x + 1
@@ -33,7 +34,7 @@ class Player(Square):
             inner_color = OBSERVER_COLOR
         # Rysowanie kwadratu
         draw.rect(
-            screen,
+            SCREEN,
             inner_color,
             Rect(
                 left,
@@ -44,7 +45,7 @@ class Player(Square):
         )
         if self.collide:
             draw.rect(
-                screen,
+                SCREEN,
                 (255, 255, 255),  # Biały kolor
                 Rect(
                     left,
@@ -57,7 +58,7 @@ class Player(Square):
 
         # Rysowanie obramowania
         draw.rect(
-            screen,
+            SCREEN,
             PLAYER_COLOR,
             Rect(
                 left,

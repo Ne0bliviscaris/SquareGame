@@ -5,6 +5,8 @@ import pygame
 SKY_COLOR = (40, 40, 140)
 GROUND_COLOR = (90, 45, 45)
 
+from ..settings import SCREEN
+
 
 class Tile:
     """Klasa bazowa dla kafelków."""
@@ -16,7 +18,7 @@ class Tile:
         self.size = size
         self.color = color
 
-    def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
+    def draw(self, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
         """Rysuje kafelek na ekranie."""
         # Ustalenie pozcji i wymiarów
         left = (self.x * zoom_level) + camera_offset_x
@@ -24,7 +26,7 @@ class Tile:
         square = ceil(self.size * zoom_level)  # Ułamki powodują błędy w rysowaniu
 
         pygame.draw.rect(
-            screen,
+            SCREEN,
             self.color,
             pygame.Rect(
                 left,

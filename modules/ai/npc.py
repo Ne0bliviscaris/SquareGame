@@ -1,6 +1,4 @@
 import pygame
-import torch
-import torch.nn as nn
 from pygame import Rect, draw
 
 from modules.objects.square import (
@@ -12,9 +10,7 @@ from modules.objects.square import (
     Square,
 )
 
-from ..settings import TOTAL_SQUARES
-from .agent import DeepLearningAgent
-from .deep_learning_data import PARAMETERS_LENGTH
+from ..settings import SCREEN
 from .score import Score
 
 JUMP = 0
@@ -44,14 +40,14 @@ class Npc(Square):
         super().change_mode()
         self.color = CATCH_COLOR if self.mode == CATCH_MODE else FLEE_COLOR
 
-    def draw(self, screen, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
+    def draw(self, camera_offset_x=0, camera_offset_y=0, zoom_level=1):
         """Rysuje kwadrat na ekranie."""
         # Ustalenie pozcji i wymiarów
         left = int(self.x * zoom_level) + camera_offset_x
         top = int(self.y * zoom_level) + camera_offset_y
         square = round(self.size * zoom_level)
         draw.rect(
-            screen,
+            SCREEN,
             self.color,  # Używamy koloru zależnego od trybu
             Rect(
                 left,
@@ -62,7 +58,7 @@ class Npc(Square):
         )
         if self.collide:
             draw.rect(
-                screen,
+                SCREEN,
                 (255, 255, 255),  # Biały kolor
                 Rect(
                     left,
@@ -77,10 +73,9 @@ class Npc(Square):
         font = pygame.font.Font(None, 24)  # Utwórz czcionkę o rozmiarze 24
         square_id = font.render(str(self.id), True, (255, 255, 255))  # Wygeneruj powierzchnię z tekstem
         text_x = left + square / 2 - square_id.get_width() / 2
-        screen.blit(square_id, (text_x, top + square / 8))  # Narysuj powierzchnię z tekstem na ekranie
+        SCREEN.blit(square_id, (text_x, top + square / 8))  # Narysuj powierzchnię z tekstem na ekranie
 
-        square_score = font.render(str(self.score), True, (200, 200, 200))  # Wygeneruj powierzchnię z tekstem
-        screen.blit(square_score, (left, top + square * 5 / 6))  # Narysuj powierzchnię z tekstem na ekranie
+        self.draw_score(left, top, square)
 
     def update(self, squares, game_state):
         """Aktualizuje pozycję kwadratu, dodając do niej prędkość."""
@@ -89,6 +84,7 @@ class Npc(Square):
         self.score_calculator.update(
             self.x, self.y, self.mode, self.collide, self.move_left, self.move_right, self.jump
         )  # Aktualizuj wynik
+        self.draw_score
         action = self.agent.predict(self.game_state)  # Predykcja kolejnego ruchu
         if action == JUMP:
             self.jump()
@@ -100,3 +96,9 @@ class Npc(Square):
         # Po wykonaniu akcji, oblicz target na podstawie zdobytych punktów
         target = self.score
         self.agent.train(self.game_state, target)
+
+    def draw_score(self, left, top, square):
+        """Rysuje wynik na kwadracie."""
+        font = pygame.font.Font(None, 24)  # Utwórz czcionkę o rozmiarze 24
+        square_score = font.render(str(self.score), True, (200, 200, 200))  # Wygeneruj powierzchnię z tekstem
+        SCREEN.blit(square_score, (left, top + square * 5 / 6))  # Narysuj powierzchnię z tekstem na ekranie

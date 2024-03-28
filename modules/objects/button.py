@@ -1,6 +1,6 @@
 import pygame
 
-from modules.settings import SCREEN_WIDTH
+from modules.settings import SCREEN, SCREEN_WIDTH
 
 BUTTON_WIDTH = 200
 BUTTON_HEIGHT = 50
@@ -38,14 +38,14 @@ class Button:
         self.text_surface = self.font.render(self.text, True, self.text_color)  # Przygotuj powierzchnię tekstu
 
     @staticmethod
-    def create_from_screen_size(screen, y_offset, text, action):
+    def create_from_screen_size(y_offset, text, action):
         """
         Tworzy przycisk z określonymi stałymi wartościami.
         """
         button_x = (SCREEN_WIDTH - BUTTON_WIDTH) / 2
         return Button(button_x, BUTTON_Y_START + y_offset * BUTTON_Y_GAP, text, action)
 
-    def draw(self, screen):
+    def draw(self):
         """
         Rysuje przycisk na ekranie.
         """
@@ -59,13 +59,13 @@ class Button:
             color = self.button_color
 
         # Rysuj przycisk
-        pygame.draw.rect(screen, color, self.rect)
+        pygame.draw.rect(SCREEN, color, self.rect)
 
         # Rysuj ramkę przycisku
-        pygame.draw.rect(screen, self.text_color, self.rect, self.border_width)
+        pygame.draw.rect(SCREEN, self.text_color, self.rect, self.border_width)
 
         # Rysuj tekst na przycisku
-        screen.blit(
+        SCREEN.blit(
             self.text_surface,
             (
                 self.rect.x + (self.rect.width - self.text_surface.get_width()) // 2,

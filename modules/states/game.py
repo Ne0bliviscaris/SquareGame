@@ -6,7 +6,7 @@ os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 
 import pygame
 
-from ..settings import FPS_LIMIT, SCREEN, WINDOW_TITLE
+from ..settings import FPS_LIMIT, WINDOW_TITLE
 from ..states.menu import MainMenuState, PauseMenuState
 from ..states.state import GameState
 from .play import RunningGameState
@@ -18,13 +18,12 @@ class Game:
         """
         Inicjalizuje grę, ustawiając stan gry na MENU GŁÓWNE, tworząc ekran o określonych wymiarach.
         """
-        self.screen = SCREEN
         pygame.display.set_caption(WINDOW_TITLE)
 
         # Inicjalizacja stanów
         self.running_game_state = RunningGameState(self)
-        self.main_menu_state = MainMenuState(self.screen, self.running_game_state)
-        self.pause_menu_state = PauseMenuState(self.screen, self.running_game_state)
+        self.main_menu_state = MainMenuState(self.running_game_state)
+        self.pause_menu_state = PauseMenuState(self.running_game_state)
 
         # Ustawienie stanu pauzy dla stanu gry
         self.running_game_state.controller.set_pause_state(self.pause_menu_state)
@@ -51,7 +50,7 @@ class Game:
             elif new_state is not None:
                 self.current_state = new_state
             self.current_state.update()
-            self.current_state.draw(self.screen)
+            self.current_state.draw()
             pygame.display.flip()
             clock.tick(FPS_LIMIT)
 
