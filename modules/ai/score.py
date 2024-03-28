@@ -15,7 +15,7 @@ class Score:
 
         # Ruch
         if move_left:
-            self.score += 10
+            self.score += 1
         if move_right:
             self.score += 1
         if jump:
@@ -24,27 +24,27 @@ class Score:
         # Kolizje
         if mode == CATCH_MODE:
             if collide:
-                self.score += 20
+                self.score += 10
             else:
                 self.score -= 0
 
         elif mode == FLEE_MODE:
             if collide:
-                self.score -= 20
+                self.score -= 10
             else:
                 self.score += 0
 
         # Pozycja
-        on_left_edge = self.x <= TILE_SIZE + 1
-        on_right_edge = self.x <= WORLD_WIDTH - TILE_SIZE - 1
-        on_top_edge = self.y <= TILE_SIZE + 1
-        below_floor = self.y >= WORLD_HEIGHT - TILE_SIZE + 0
+        on_left_edge = self.x <= TILE_SIZE
+        on_right_edge = self.x >= WORLD_WIDTH - TILE_SIZE
+        on_top_edge = self.y <= -TILE_SIZE
+        below_floor = self.y > WORLD_HEIGHT - TILE_SIZE
         if on_left_edge or on_right_edge or on_top_edge or below_floor:
-            self.score -= 1
+            self.score -= 50
 
         # Ruch
-        if self.previous_x == self.x:
-            self.score -= 1
+        if self.previous_x != self.x:
+            self.score += 0
 
         # Aktualizacja pozycji
         self.previous_x = self.x
