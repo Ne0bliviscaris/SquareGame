@@ -1,5 +1,6 @@
 import pygame
 
+from modules.ai.agent import DeepLearningAgent
 from modules.objects.button import Button
 from modules.settings import SCREEN, SCREEN_HEIGHT, SCREEN_WIDTH
 from modules.states.state import GameState
@@ -24,6 +25,7 @@ class MainMenuState(GameState):
     def handle_events(self, events):
         for event in events:
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                DeepLearningAgent().save_model()
                 pygame.quit()
                 quit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -77,10 +79,11 @@ class PauseMenuState:
                     return action
                 action = self.replay_button.update()
                 if action is not None:
-                    if action is not None:
-                        return GameState.RESET  # Zwróć GameState.RESET zamiast resetować stan gry bezpośrednio
+                    DeepLearningAgent().save_model()
+                    return GameState.RESET  # Zwróć GameState.RESET zamiast resetować stan gry bezpośrednio
                 action = self.quit_button.update()
                 if action is not None:
+                    DeepLearningAgent().save_model()
                     pygame.quit()
                     quit()
         return self
