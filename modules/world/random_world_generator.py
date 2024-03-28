@@ -20,7 +20,9 @@ def generate_random_grid(width, height):
             chance_to_place_ground = random.random() < 0.6
             is_space_above = all(grid[i][col] == 0 for i in range(row - 3, row))  # Zwiększ wymagane odstępy
             is_space_below = all(grid[i][col] == 0 for i in range(row + 1, row + 1))  # Zwiększ wymagane odstępy
-            is_neighbour_ground = grid[row][col - 1] == 1 or grid[row][col + 1] == 1  # Sprawdź tylko sąsiednie kafelki po lewej i prawej stronie
+            is_neighbour_ground = (
+                grid[row][col - 1] == 1 or grid[row][col + 1] == 1
+            )  # Sprawdź tylko sąsiednie kafelki po lewej i prawej stronie
             is_neighbour_space = (
                 grid[row][col - 1] == 0 and grid[row][col + 1] == 0
             )  # Sprawdź, czy sąsiednie kafelki po lewej i prawej stronie są puste
@@ -37,5 +39,5 @@ def generate_random_grid(width, height):
 
 
 # Test the function
-for row in generate_random_grid(38, 10):
-    print(row)
+# for row in generate_random_grid(38, 10):
+#     print(row)
