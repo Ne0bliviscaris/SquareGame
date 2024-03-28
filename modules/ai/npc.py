@@ -1,3 +1,4 @@
+import pygame
 import torch
 import torch.nn as nn
 from pygame import Rect, draw
@@ -24,7 +25,7 @@ RIGHT = 2
 class Npc(Square):
     """Klasa reprezentująca kwadrat przeciwnika."""
 
-    def __init__(self, agent, x, y, size, mode):
+    def __init__(self, agent, x, y, size, mode, square_id):
         """Inicjalizuje kwadrat na podanej pozycji i o podanym rozmiarze."""
         super().__init__(x, y, size, mode)
         self.x = x
@@ -36,6 +37,7 @@ class Npc(Square):
         self.score_calculator = Score(self.score)
 
         self.agent = agent
+        self.id = square_id
 
     def change_mode(self):
         """Zmienia tryb AI."""
@@ -70,6 +72,15 @@ class Npc(Square):
                 ),
                 5,  # Szerokość ramki
             )
+
+        # Wyświetl square_id
+        font = pygame.font.Font(None, 24)  # Utwórz czcionkę o rozmiarze 24
+        square_id = font.render(str(self.id), True, (255, 255, 255))  # Wygeneruj powierzchnię z tekstem
+        text_x = left + square / 2 - square_id.get_width() / 2
+        screen.blit(square_id, (text_x, top + square / 8))  # Narysuj powierzchnię z tekstem na ekranie
+
+        square_score = font.render(str(self.score), True, (200, 200, 200))  # Wygeneruj powierzchnię z tekstem
+        screen.blit(square_score, (left, top + square * 5 / 6))  # Narysuj powierzchnię z tekstem na ekranie
 
     def update(self, squares, game_state):
         """Aktualizuje pozycję kwadratu, dodając do niej prędkość."""
