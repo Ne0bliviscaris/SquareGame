@@ -7,20 +7,18 @@ from modules.states.state import GameState
 
 BUTTON_WIDTH = 200
 BUTTON_HEIGHT = 50
-BUTTON_Y_START = 300  # Możesz zmienić tę wartość na tę, którą chcesz
-BUTTON_Y_GAP = 60  # Możesz zmienić tę wartość na tę, którą chcesz
+BUTTON_Y_START = 300
+BUTTON_Y_GAP = 60
 
 
 class MainMenuState(GameState):
-    """
-    Stan gry reprezentujący menu główne.
-    """
+    """Main menu state of the game."""
 
     def __init__(self, running_game_state):
         self.running_game_state = running_game_state
         self.start_button = Button.create_from_screen_size(0, "New Game", running_game_state)
         self.quit_button = Button.create_from_screen_size(1, "Quit", GameState.QUIT)
-        self.logo = pygame.image.load("assets/logo.png")  # Załaduj obraz logo na początku gry
+        self.logo = pygame.image.load("assets/logo.png")
 
     def handle_events(self, events):
         for event in events:
@@ -38,16 +36,12 @@ class MainMenuState(GameState):
                     quit()
 
     def update(self):
-        """
-        Aktualizuje stan przycisków start i quit.
-        """
+        """Update the state of the start and quit buttons."""
         self.start_button.update()
         self.quit_button.update()
 
     def draw(self):
-        """
-        Rysuje przyciski start i quit na ekranie, a następnie wyświetla logo.
-        """
+        """Draw menu on the screen."""
         self.start_button.draw()
         self.quit_button.draw()
         display_logo(self.logo)
@@ -55,16 +49,14 @@ class MainMenuState(GameState):
 
 class PauseMenuState:
     def __init__(self, running_game_state):
-        """
-        Inicjalizuje stan menu pauzy.
-        """
+        """Pause menu state of the game."""
         self.resume_button = Button.create_from_screen_size(0, "Resume", running_game_state)
         self.replay_button = Button.create_from_screen_size(1, "Replay", running_game_state)
         self.quit_button = Button.create_from_screen_size(2, "Quit", GameState.QUIT)
         self.running_game_state = running_game_state
-        self.logo = pygame.image.load("assets/logo.png")  # Załaduj obraz logo na początku gry
+        self.logo = pygame.image.load("assets/logo.png")
         self.pause_surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
-        self.pause_surface.fill((0, 60, 0, 255))  # Półprzezroczyste zielone tło
+        self.pause_surface.fill((0, 60, 0, 255))
 
     def handle_events(self, events):
         for event in events:
@@ -72,7 +64,7 @@ class PauseMenuState:
                 pygame.quit()
                 quit()
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                return self.running_game_state  # Zwróć running_game_state zamiast main_menu_state
+                return self.running_game_state
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 action = self.resume_button.update()
                 if action is not None:
@@ -80,7 +72,7 @@ class PauseMenuState:
                 action = self.replay_button.update()
                 if action is not None:
                     DeepLearningAgent().save_model()
-                    return GameState.RESET  # Zwróć GameState.RESET zamiast resetować stan gry bezpośrednio
+                    return GameState.RESET
                 action = self.quit_button.update()
                 if action is not None:
                     DeepLearningAgent().save_model()
@@ -89,9 +81,7 @@ class PauseMenuState:
         return self
 
     def update(self):
-        """
-        Aktualizuje stan przycisków resume i quit.
-        """
+        """Update the state of resume and quit buttons."""
         resume_action = self.resume_button.update()
         if resume_action is not None:
             return resume_action
@@ -101,80 +91,55 @@ class PauseMenuState:
             return quit_action
 
     def draw(self):
-        """
-        Rysuje przyciski resume i quit na ekranie.
-        """
-        SCREEN.blit(self.pause_surface, (0, 0))  # Rysuj półprzezroczyste tło
-        display_logo(self.logo)  # Wyświetl logo
+        """Draw resume and quit buttons on the screen."""
+        SCREEN.blit(self.pause_surface, (0, 0))
+        display_logo(self.logo)
         self.resume_button.draw()
         self.replay_button.draw()
         self.quit_button.draw()
 
     def set_running_game_state(self, running_game_state):
-        """
-        Ustawia stan gry.
-        """
+        """Set the game state."""
         self.running_game_state = running_game_state
         self.resume_button.action = running_game_state
 
 
 def display_logo(logo):
-    """
-    Wyświetla logo gry.
-    """
-
-    # Oblicz pozycję, na której logo powinno być wyświetlone
+    """Display the game logo."""
     x = (SCREEN.get_width() - logo.get_width()) // 2
     y = 5
-
-    # Wyświetl logo
     SCREEN.blit(logo, (x, y))
 
 
 def main_menu(game_state, logo, start_button, quit_button):
-    """
-    Funkcja obsługująca menu główne gry.
-    """
+    """Handle the main menu of the game."""
     main_menu_state = MainMenuState(start_button, quit_button)
 
-    SCREEN.fill((0, 0, 0))  # Wypełnij ekran kolorem
+    SCREEN.fill((0, 0, 0))
 
-    # Aktualizacja stanu menu głównego
     main_menu_state.update()
-
-    display_logo(logo)  # Wyświetl logo
-
-    # Rysowanie stanu menu głównego
+    display_logo(logo)
     main_menu_state.draw()
-
-    # Wyświetl zmiany na ekranie
     pygame.display.flip()
 
     return game_state
 
 
 def pause_menu(game_state, logo, resume_button, quit_button):
-    """
-    Funkcja obsługująca menu pauzy gry.
-    """
-    # Utwórz przezroczystą powierzchnię dla menu pauzy
+    """Handle the pause menu of the game."""
     pause_surface = pygame.Surface(SCREEN.get_size(), pygame.SRCALPHA)
-    pause_surface.fill((0, 255, 0, 128))  # Półprzezroczysty zielony
+    pause_surface.fill((0, 255, 0, 128))
 
     pause_menu_state = PauseMenuState(resume_button, quit_button)
 
-    display_logo(logo)  # Wyświetl logo
+    display_logo(logo)
 
-    # Aktualizacja i rysowanie stanu menu pauzy
     action = pause_menu_state.update()
     if action is not None:
         return action
 
     pause_menu_state.draw()
-    # Rysuj powierzchnię menu pauzy na ekranie gry
     SCREEN.blit(pause_surface, (0, 0))
-
-    # Wyświetl zmiany na ekranie
     pygame.display.flip()
 
     return game_state
