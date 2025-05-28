@@ -1,9 +1,9 @@
 class GameState:
-    """Enum reprezentujący różne stany gry."""
+    """Base class for game states."""
 
-    # MAIN_MENU = 0
-    # RUNNING = 1
-    # PAUSE = 2
+    MAIN_MENU = 0
+    RUNNING = 1
+    PAUSE = 2
     QUIT = 3
     RESET = 4
 
