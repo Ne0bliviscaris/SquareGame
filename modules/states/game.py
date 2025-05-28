@@ -6,7 +6,7 @@ import pygame
 
 from modules.settings import FPS_LIMIT, WINDOW_TITLE
 from modules.states.menu import MainMenuState, PauseMenuState
-from modules.states.play import RunningGameState
+from modules.states.play import Play
 from modules.states.state import GameState
 
 
@@ -16,7 +16,7 @@ class Game:
         """Initialize the game, set up the display, and initialize game states."""
         pygame.display.set_caption(WINDOW_TITLE)
 
-        self.running_game_state = RunningGameState(self)
+        self.running_game_state = Play(self)
         self.main_menu_state = MainMenuState(self.running_game_state)
         self.pause_menu_state = PauseMenuState(self.running_game_state)
 
@@ -40,7 +40,7 @@ class Game:
             clock.tick(FPS_LIMIT)
 
     def reset_game(self):
-        self.running_game_state = RunningGameState(self)
+        self.running_game_state = Play(self)
         self.running_game_state.controller.set_pause_state(self.pause_menu_state)
         self.pause_menu_state.set_running_game_state(self.running_game_state)
         self.current_state = self.running_game_state
