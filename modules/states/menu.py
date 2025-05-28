@@ -1,7 +1,7 @@
 import pygame
 
 from modules.ai.agent import DeepLearningAgent
-from modules.objects.button import Button
+from modules.objects.menu_button import Button
 from modules.settings import SCREEN, SCREEN_HEIGHT, SCREEN_WIDTH
 from modules.states.state import GameState
 
@@ -16,8 +16,8 @@ class MainMenuState(GameState):
 
     def __init__(self, running_game_state):
         self.running_game_state = running_game_state
-        self.start_button = Button.create_from_screen_size(0, "New Game", running_game_state)
-        self.quit_button = Button.create_from_screen_size(1, "Quit", GameState.QUIT)
+        self.start_button = Button.create(0, "New Game", running_game_state)
+        self.quit_button = Button.create(1, "Quit", GameState.QUIT)
         self.logo = pygame.image.load("assets/logo.png")
 
     def handle_events(self, events):
@@ -50,9 +50,9 @@ class MainMenuState(GameState):
 class PauseMenuState:
     def __init__(self, running_game_state):
         """Pause menu state of the game."""
-        self.resume_button = Button.create_from_screen_size(0, "Resume", running_game_state)
-        self.replay_button = Button.create_from_screen_size(1, "Replay", running_game_state)
-        self.quit_button = Button.create_from_screen_size(2, "Quit", GameState.QUIT)
+        self.resume_button = Button.create(0, "Resume", running_game_state)
+        self.replay_button = Button.create(1, "Replay", running_game_state)
+        self.quit_button = Button.create(2, "Quit", GameState.QUIT)
         self.running_game_state = running_game_state
         self.logo = pygame.image.load("assets/logo.png")
         self.pause_surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)

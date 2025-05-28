@@ -4,8 +4,8 @@ from modules.settings import SCREEN, SCREEN_WIDTH
 
 BUTTON_WIDTH = 200
 BUTTON_HEIGHT = 50
-BUTTON_Y_START = 300  # Możesz zmienić tę wartość na tę, którą chcesz
-BUTTON_Y_GAP = 60  # Możesz zmienić tę wartość na tę, którą chcesz
+BUTTON_Y_START = 300
+BUTTON_Y_GAP = 60
 
 
 class Button:
@@ -24,9 +24,7 @@ class Button:
         hover_color=(100, 100, 100),
         border_width=2,
     ):
-        """
-        Inicjalizacja przycisku.
-        """
+        """Initialize button with position, text and styling."""
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         self.action = action
@@ -35,21 +33,16 @@ class Button:
         self.button_color = button_color
         self.hover_color = hover_color
         self.border_width = border_width
-        self.text_surface = self.font.render(self.text, True, self.text_color)  # Przygotuj powierzchnię tekstu
+        self.text_surface = self.font.render(self.text, True, self.text_color)
 
     @staticmethod
-    def create_from_screen_size(y_offset, text, action):
-        """
-        Tworzy przycisk z określonymi stałymi wartościami.
-        """
+    def create(y_offset, text, action):
+        """Create button with predefined screen-based positioning."""
         button_x = (SCREEN_WIDTH - BUTTON_WIDTH) / 2
         return Button(button_x, BUTTON_Y_START + y_offset * BUTTON_Y_GAP, text, action)
 
     def draw(self):
-        """
-        Rysuje przycisk na ekranie.
-        """
-        # Zmień kolor przycisku, gdy kursor myszy jest nad nim
+        """Draw button on screen."""
         if not pygame.display.get_init():
             return
 
@@ -58,13 +51,9 @@ class Button:
         else:
             color = self.button_color
 
-        # Rysuj przycisk
         pygame.draw.rect(SCREEN, color, self.rect)
-
-        # Rysuj ramkę przycisku
         pygame.draw.rect(SCREEN, self.text_color, self.rect, self.border_width)
 
-        # Rysuj tekst na przycisku
         SCREEN.blit(
             self.text_surface,
             (
@@ -75,15 +64,10 @@ class Button:
 
     @property
     def is_hovered(self):
-        """
-        Sprawdza, czy kursor myszy jest nad przyciskiem.
-        """
+        """Check if mouse cursor is over the button."""
         return self.rect.collidepoint(pygame.mouse.get_pos())
 
     def update(self):
-        """
-        Aktualizuje stan przycisku i wywołuje obsługę zdarzenia.
-        """
-        # self.handle_event()
+        """Update button state and handle click events."""
         if self.is_hovered and pygame.mouse.get_pressed()[0]:
             return self.action
