@@ -13,38 +13,25 @@ from modules.states.state import GameState
 class Game:
 
     def __init__(self):
-        """
-        Inicjalizuje grę, ustawiając stan gry na MENU GŁÓWNE, tworząc ekran o określonych wymiarach.
-        """
+        """Initialize the game, set up the display, and initialize game states."""
         pygame.display.set_caption(WINDOW_TITLE)
 
-        # Inicjalizacja stanów
         self.running_game_state = RunningGameState(self)
         self.main_menu_state = MainMenuState(self.running_game_state)
         self.pause_menu_state = PauseMenuState(self.running_game_state)
 
-        # Ustawienie stanu pauzy dla stanu gry
         self.running_game_state.controller.set_pause_state(self.pause_menu_state)
 
-        # Ustawienie początkowego stanu
         self.current_state = self.main_menu_state
 
     def run(self):
-        """
-        Uruchamia główną pętlę gry, która trwa, dopóki stan gry nie jest równy QUIT.
-        W każdej iteracji pętli, zdarzenia są obsługiwane, stan gry jest aktualizowany, a następnie rysowany na ekranie.
-        """
+        """Main game loop that handles events, updates the current state, and draws to the screen."""
         clock = pygame.time.Clock()
         while self.current_state:
             events = pygame.event.get()
             new_state = self.current_state.handle_events(events)
-            if new_state is GameState.RESET:  # Jeśli zwrócona wartość to GameState.RESET, resetuj stan gry
-                self.running_game_state = RunningGameState(self)
-                self.running_game_state.controller.set_pause_state(self.pause_menu_state)
-                self.pause_menu_state.set_running_game_state(
-                    self.running_game_state
-                )  # Aktualizuj stan pauzy o nowym stanie gry
-                self.current_state = self.running_game_state
+            if new_state is GameState.RESET:
+                self.reset_game()
             elif new_state is not None:
                 self.current_state = new_state
             self.current_state.update()
@@ -52,11 +39,15 @@ class Game:
             pygame.display.flip()
             clock.tick(FPS_LIMIT)
 
+    def reset_game(self):
+        self.running_game_state = RunningGameState(self)
+        self.running_game_state.controller.set_pause_state(self.pause_menu_state)
+        self.pause_menu_state.set_running_game_state(self.running_game_state)
+        self.current_state = self.running_game_state
+
 
 def launch():
-    """
-    Inicjalizuje pygame, tworzy instancję klasy Game, uruchamia grę, a następnie kończy działanie pygame.
-    """
+    """Launch the game by initializing Pygame and starting the game loop."""
     pygame.init()
     game = Game()
     game.run()
