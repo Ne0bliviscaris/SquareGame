@@ -36,10 +36,9 @@ class Play(GameState):
         self.world_collisions = [WorldCollisions(square) for square in self.squares]
         self.square_collisions = [SquareCollisions(square) for square in self.squares]
 
-        self.camera = Camera(self.squares[0], self.tiles, self.ground_tiles)
-
-        self.player_square = self.squares[0]
-        self.controller = PlayerControls(self.player_square)
+        self.player = self.squares[0]
+        self.camera = Camera(self.player, self.tiles, self.ground_tiles)
+        self.controller = PlayerControls(self.player)
 
         self.drawables = self.tiles + self.squares
 
