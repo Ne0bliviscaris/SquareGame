@@ -1,4 +1,9 @@
 import os
+import sys
+
+# For quick start
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../.."))
+
 
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 
@@ -17,8 +22,8 @@ class Game:
         pygame.display.set_caption(WINDOW_TITLE)
 
         self.running_game_state = Play(self)
-        self.main_menu_state = MainMenuState(self.running_game_state)
-        self.pause_menu_state = PauseMenuState(self.running_game_state)
+        self.main_menu_state = MainMenuState(Play(self))
+        self.pause_menu_state = PauseMenuState(Play(self))
 
         self.running_game_state.controller.set_pause_state(self.pause_menu_state)
 
@@ -52,3 +57,11 @@ def launch():
     pygame.init()
     game = Game()
     game.run()
+
+    # launch()
+
+
+if __name__ == "__main__":
+    import sys
+
+    launch()
