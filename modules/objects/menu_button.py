@@ -12,10 +12,10 @@ class Button:
 
     def __init__(
         self,
-        x,
         y,
         text,
         action,
+        x=(SCREEN_WIDTH - BUTTON_WIDTH) / 2,
         width=BUTTON_WIDTH,
         height=BUTTON_HEIGHT,
         font_size=36,
@@ -25,7 +25,7 @@ class Button:
         border_width=2,
     ):
         """Initialize button with position, text and styling."""
-        self.rect = pygame.Rect(x, y, width, height)
+        self.shape = pygame.Rect(x, y, width, height)
         self.text = text
         self.action = action
         self.font = pygame.font.Font(None, font_size)
@@ -38,34 +38,27 @@ class Button:
     @staticmethod
     def create(y_offset, text, action):
         """Create button with predefined screen-based positioning."""
-        button_x = (SCREEN_WIDTH - BUTTON_WIDTH) / 2
-        return Button(button_x, BUTTON_Y_START + y_offset * BUTTON_Y_GAP, text, action)
+        button_y = BUTTON_Y_START + y_offset * BUTTON_Y_GAP
+        return Button(button_y, text, action)
 
     def draw(self):
         """Draw button on screen."""
-        if not pygame.display.get_init():
-            return
-
         if self.is_hovered:
             color = self.hover_color
         else:
             color = self.button_color
 
-        pygame.draw.rect(SCREEN, color, self.rect)
-        pygame.draw.rect(SCREEN, self.text_color, self.rect, self.border_width)
+        hover_effect = pygame.draw.rect(SCREEN, color, self.shape)
+        text = pygame.draw.rect(SCREEN, self.text_color, self.shape, self.border_width)
 
-        SCREEN.blit(
-            self.text_surface,
-            (
-                self.rect.x + (self.rect.width - self.text_surface.get_width()) // 2,
-                self.rect.y + (self.rect.height - self.text_surface.get_height()) // 2,
-            ),
-        )
+        center_x = self.shape.x + (self.shape.width - self.text_surface.get_width()) // 2
+        center_y = self.shape.y + (self.shape.height - self.text_surface.get_height()) // 2
+        centered_text = SCREEN.blit(self.text_surface, (center_x, center_y))
 
     @property
     def is_hovered(self):
         """Check if mouse cursor is over the button."""
-        return self.rect.collidepoint(pygame.mouse.get_pos())
+        return self.shape.collidepoint(pygame.mouse.get_pos())
 
     def update(self):
         """Update button state and handle click events."""
