@@ -40,6 +40,7 @@ class Game:
             clock.tick(FPS_LIMIT)
 
     def reset_game(self):
+        """Start a new game."""
         self.running_game_state = Play(self)
         self.running_game_state.controller.set_pause_state(self.pause_menu_state)
         self.pause_menu_state.set_running_game_state(self.running_game_state)
