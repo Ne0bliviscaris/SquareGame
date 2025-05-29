@@ -6,6 +6,8 @@ class GameState:
     PAUSE = 2
     QUIT = 3
     RESET = 4
+    START_GAME = 5
+    RESUME_GAME = 6
 
     def handle_events(self, events):
         pass

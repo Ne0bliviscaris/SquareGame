@@ -19,15 +19,14 @@ class Game:
 
     def __init__(self):
         """Initialize the game, set up the display, and initialize game states."""
+        pygame.init()
         pygame.display.set_caption(WINDOW_TITLE)
 
-        self.active_game = Play()
-        self.main_menu_state = MainMenuState(self.active_game)
-        self.pause_menu_state = PauseMenuState(self.active_game)
-
-        self.active_game.controller.set_pause_state(self.pause_menu_state)
+        self.main_menu_state = MainMenuState()
+        self.pause_menu_state = PauseMenuState()
 
         self.current_state = self.main_menu_state
+        self.run()
 
     def run(self):
         """Main game loop that handles events, updates the current state, and draws to the screen."""
@@ -46,9 +45,12 @@ class Game:
                 continue
             new_state = self.current_state.handle_events(event)
             if new_state is GameState.RESET:
-                self.reset_game()
-            elif new_state:
-                self.current_state = new_state
+                self.new_game()
+            elif new_state == GameState.START_GAME:
+                self.new_game()
+            elif new_state == GameState.RESUME_GAME:
+                print("Resuming game")
+                self.current_state = self.active_game
 
     def global_event(self, event):
         """Handle global events that are not specific to the current state."""
@@ -61,12 +63,11 @@ class Game:
             return True
         return False
 
-    def reset_game(self):
+    def new_game(self):
         """Start a new game."""
-        self.active_game = Play()
-        self.active_game.controller.set_pause_state(self.pause_menu_state)
-        self.pause_menu_state.set_running_game_state(self.active_game)
-        self.current_state = self.active_game
+        new_game = Play()
+        self.active_game = new_game
+        self.current_state = new_game
 
     def handle_esc_button(self):
         if self.current_state == self.active_game:
@@ -84,9 +85,7 @@ class Game:
 
 def launch():
     """Launch the game by initializing Pygame and starting the game loop."""
-    pygame.init()
-    game = Game()
-    game.run()
+    Game()
 
 
 if __name__ == "__main__":

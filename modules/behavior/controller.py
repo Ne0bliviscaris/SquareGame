@@ -32,7 +32,3 @@ class PlayerControls:
         """Handle events related to key press."""
         if event.key == pygame.K_SPACE:
             self.player_square.jump()
-
-    def set_pause_state(self, pause_state):
-        """Set pause state for game state."""
-        self.pause_state = pause_state
