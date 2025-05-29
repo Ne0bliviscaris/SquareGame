@@ -32,15 +32,19 @@ class Camera:
         max_offset_y = -highest_row * self.zoom_level
         max_offset_x = SCREEN_WIDTH - WORLD_WIDTH * self.zoom_level
 
-        # Lock the camera to the game world
-        if self.target_offset_y < min_offset_y:
+        near_floor = self.target_offset_y < min_offset_y
+        near_top = self.target_offset_y > max_offset_y
+        near_left_wall = self.target_offset_x > 0
+        near_right_wall = self.target_offset_x < max_offset_x
+
+        if near_floor:
             self.target_offset_y = min_offset_y
-        elif self.target_offset_y > max_offset_y:
+        elif near_top:
             self.target_offset_y = max_offset_y
 
-        if self.target_offset_x > 0:
+        if near_left_wall:
             self.target_offset_x = 0
-        elif self.target_offset_x < max_offset_x:
+        elif near_right_wall:
             self.target_offset_x = max_offset_x
 
     def update_camera_offset(self):
