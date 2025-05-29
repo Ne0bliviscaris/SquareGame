@@ -23,28 +23,30 @@ class Play(GameState):
         self.agent = DeepLearningAgent()
         self.agent.load_model()
 
-        self.tiles = world_list
-        self.ground_tiles = [tile for tile in self.tiles if isinstance(tile, Ground)]  # Najniższy rząd kafelków Ground
+        self.initialize_world()
 
-        self.square_generator = SquareGenerator(self.ground_tiles, self.agent)
-
-        self.squares = self.square_generator.create_squares()
+        self.initialize_player()
 
         # AI
         self.vector_calculator = VectorCalculator(self.squares)
+        self.deep_learning_data = DeepLearningData(self.squares)
+        self.state_for_model = self.deep_learning_data.get_state()
 
-        self.world_collisions = [WorldCollisions(square) for square in self.squares]
-        self.square_collisions = [SquareCollisions(square) for square in self.squares]
-
+    def initialize_player(self):
+        """Initialize the player square."""
         self.player = self.squares[0]
         self.camera = Camera(self.player, self.ground_tiles)
         self.controller = PlayerControls(self.player)
 
-        self.drawables = self.tiles + self.squares
-
-        # AI
-        self.deep_learning_data = DeepLearningData(self.squares)
-        self.state_for_model = self.deep_learning_data.get_state()
+    def initialize_world(self):
+        """Initialize the game world with squares and tiles."""
+        self.world_tiles = world_list
+        self.ground_tiles = [tile for tile in self.world_tiles if isinstance(tile, Ground)]
+        self.square_generator = SquareGenerator(self.ground_tiles, self.agent)
+        self.squares = self.square_generator.create_squares()
+        self.world_collisions = [WorldCollisions(square) for square in self.squares]
+        self.square_collisions = [SquareCollisions(square) for square in self.squares]
+        self.drawables = self.world_tiles + self.squares
 
     def update(self):
         """Update the game state. Performed every frame."""
@@ -59,7 +61,7 @@ class Play(GameState):
                 square.update(self.squares, self.state_for_model)
             else:
                 square.update(self.squares)
-            world_collision.handle_collisions_around(self.tiles)
+            world_collision.handle_collisions_around(self.world_tiles)
             square_collision.handle_square_collisions(self.squares)
 
         # AI
@@ -82,7 +84,7 @@ class Play(GameState):
 
         if DRAW_VECTORS:
             self.vector_calculator.draw_vectors(
-                self.camera.zoom_level, self.camera.camera_offset_x, self.camera.camera_offset_y
+                SCREEN, self.camera.zoom_level, self.camera.camera_offset_x, self.camera.camera_offset_y
             )
         pygame.display.update()
 
