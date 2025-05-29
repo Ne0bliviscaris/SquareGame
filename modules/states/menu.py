@@ -21,13 +21,7 @@ class MainMenu(GameState):
     def handle_events(self, event):
         """Handle events for the main menu."""
         if event.type == pygame.MOUSEBUTTONDOWN:
-            action = self.start_button.update()
-            if action is not None:
-                return action
-            action = self.quit_button.update()
-            if action is not None:
-                pygame.quit()
-                quit()
+            return self.start_button.update() or self.quit_button.update()
 
     def update(self):
         """Update the state of the start and quit buttons."""
@@ -56,18 +50,7 @@ class PauseMenu:
     def handle_events(self, event):
         """Handle events for the pause menu."""
         if event.type == pygame.MOUSEBUTTONDOWN:
-            action = self.resume_button.update()
-            if action is not None:
-                return action
-            action = self.replay_button.update()
-            if action is not None:
-                DeepLearningAgent().save_model()
-                return GameState.RESET
-            action = self.quit_button.update()
-            if action is not None:
-                DeepLearningAgent().save_model()
-                pygame.quit()
-                quit()
+            return self.resume_button.update() or self.replay_button.update() or self.quit_button.update()
 
     def update(self):
         """Update the state of resume and quit buttons."""
