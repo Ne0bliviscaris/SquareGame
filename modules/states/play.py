@@ -78,13 +78,13 @@ class Play(GameState):
         # Draw all objects considering camera offset and zoom level
         for drawable in self.drawables:
             if drawable is not self.squares[0]:
-                drawable.draw(self.camera.camera_offset_x, self.camera.camera_offset_y, self.camera.zoom_level)
+                drawable.draw(self.camera.offset_x, self.camera.offset_y, self.camera.zoom_level)
 
-        self.squares[0].draw(self.camera.camera_offset_x, self.camera.camera_offset_y, self.camera.zoom_level)
+        self.squares[0].draw(self.camera.offset_x, self.camera.offset_y, self.camera.zoom_level)
 
         if DRAW_VECTORS:
             self.vector_calculator.draw_vectors(
-                SCREEN, self.camera.zoom_level, self.camera.camera_offset_x, self.camera.camera_offset_y
+                SCREEN, self.camera.zoom_level, self.camera.offset_x, self.camera.offset_y
             )
         pygame.display.update()
 

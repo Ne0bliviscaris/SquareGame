@@ -23,7 +23,7 @@ class Camera:
         self.target_offset_x = half_screen_width - square_center_x * self.zoom_level
         self.target_offset_y = half_screen_height - square_center_y * self.zoom_level
 
-    def limit_target_offset(self):
+    def limit_camera_offset(self):
         """Limit camera offset to prevent displaying areas outside game world."""
         lowest_row = max(tile.y for tile in self.tiles)
         highest_row = min(tile.y for tile in self.tiles)
@@ -32,6 +32,7 @@ class Camera:
         max_offset_y = -highest_row * self.zoom_level
         max_offset_x = SCREEN_WIDTH - WORLD_WIDTH * self.zoom_level
 
+        # Lock the camera to the game world
         if self.target_offset_y < min_offset_y:
             self.target_offset_y = min_offset_y
         elif self.target_offset_y > max_offset_y:
@@ -44,8 +45,8 @@ class Camera:
 
     def update_camera_offset(self):
         """Update camera offset to smoothly follow the square."""
-        self.camera_offset_x = self.target_offset_x
-        self.camera_offset_y = self.target_offset_y
+        self.offset_x = self.target_offset_x
+        self.offset_y = self.target_offset_y
 
     def update_zoom(self):
         """Update zoom level to smoothly transition to the target zoom level."""
@@ -57,12 +58,15 @@ class Camera:
         """Handle mouse scroll events to zoom in and out."""
         mouse_roll_up = event.button == 4
         mouse_roll_down = event.button == 5
-        if mouse_roll_up and self.target_zoom_level < ZOOM_OUT_LIMIT:
+        can_zoom_in = self.target_zoom_level < ZOOM_OUT_LIMIT
+        can_zoom_out = self.target_zoom_level > ZOOM_IN_LIMIT
+
+        if mouse_roll_up and can_zoom_in:
             self.target_zoom_level *= ZOOM_STEP
-        elif mouse_roll_down and self.target_zoom_level > ZOOM_IN_LIMIT:
+        elif mouse_roll_down and can_zoom_out:
             self.target_zoom_level /= ZOOM_STEP
 
     def update_camera(self):
         self.calculate_target_offset()
-        self.limit_target_offset()
+        self.limit_camera_offset()
         self.update_camera_offset()
