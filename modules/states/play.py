@@ -5,7 +5,7 @@ from modules.ai.deep_learning_data import DeepLearningData
 from modules.ai.npc import Npc
 from modules.ai.vectors import VectorCalculator
 from modules.behavior.camera import Camera
-from modules.behavior.controller import Controller
+from modules.behavior.controller import PlayerControls
 from modules.behavior.square_collisions import SquareCollisions
 from modules.behavior.world_collisions import WorldCollisions
 from modules.objects.sqare_generator import SquareGenerator
@@ -38,7 +38,7 @@ class Play(GameState):
 
         self.camera = Camera(self.squares[0], self.tiles, self.ground_tiles)
 
-        self.controller = Controller(self.squares[0], game_state, self.camera)
+        self.controller = PlayerControls(self.squares[0], game_state, self.camera)
 
         self.drawables = self.tiles + self.squares
 

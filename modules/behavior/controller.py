@@ -1,7 +1,7 @@
 import pygame
 
 
-class Controller:
+class PlayerControls:
     """Handles game controls."""
 
     def __init__(self, squares, game_state, camera):
