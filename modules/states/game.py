@@ -10,7 +10,7 @@ os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 import pygame
 
 from modules.settings import FPS_LIMIT, WINDOW_TITLE
-from modules.states.menu import MainMenuState, PauseMenuState
+from modules.states.menu import MainMenu, PauseMenu
 from modules.states.play import Play
 from modules.states.state import GameState
 
@@ -22,10 +22,11 @@ class Game:
         pygame.init()
         pygame.display.set_caption(WINDOW_TITLE)
 
-        self.main_menu_state = MainMenuState()
-        self.pause_menu_state = PauseMenuState()
+        self.active_game = None
+        self.main_menu = MainMenu()
+        self.pause_menu = PauseMenu()
 
-        self.current_state = self.main_menu_state
+        self.current_state = self.main_menu
         self.run()
 
     def run(self):
@@ -71,10 +72,10 @@ class Game:
 
     def handle_esc_button(self):
         if self.current_state == self.active_game:
-            self.current_state = self.pause_menu_state
-        elif self.current_state == self.pause_menu_state:
+            self.current_state = self.pause_menu
+        elif self.current_state == self.pause_menu:
             self.current_state = self.active_game
-        elif self.current_state == self.main_menu_state:
+        elif self.current_state == self.main_menu:
             self.quit_game()
 
     def quit_game(self):

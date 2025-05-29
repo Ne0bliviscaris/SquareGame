@@ -11,7 +11,7 @@ BUTTON_Y_START = 300
 BUTTON_Y_GAP = 60
 
 
-class MainMenuState(GameState):
+class MainMenu(GameState):
     """Main menu state of the game."""
 
     def __init__(self):
@@ -42,7 +42,7 @@ class MainMenuState(GameState):
         display_logo(self.logo)
 
 
-class PauseMenuState:
+class PauseMenu:
     def __init__(self):
         """Pause menu state of the game."""
         self.resume_button = Button.create(0, "Resume", GameState.RESUME_GAME)
@@ -101,7 +101,7 @@ def display_logo(logo):
 
 def main_menu(game_state, logo, start_button, quit_button):
     """Handle the main menu of the game."""
-    main_menu_state = MainMenuState(start_button, quit_button)
+    main_menu_state = MainMenu(start_button, quit_button)
 
     SCREEN.fill((0, 0, 0))
 
@@ -118,7 +118,7 @@ def pause_menu(game_state, logo, resume_button, quit_button):
     pause_surface = pygame.Surface(SCREEN.get_size(), pygame.SRCALPHA)
     pause_surface.fill((0, 255, 0, 128))
 
-    pause_menu_state = PauseMenuState(resume_button, quit_button)
+    pause_menu_state = PauseMenu(resume_button, quit_button)
 
     display_logo(logo)
 
