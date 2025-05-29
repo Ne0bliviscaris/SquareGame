@@ -24,22 +24,17 @@ class PlayerControls:
             if keys[key]:
                 action()
 
-    def handle_key_release(self, event):
+    def release_movement_key(self, event):
         """Handle events related to key release."""
         if event.key in (pygame.K_a, pygame.K_LEFT, pygame.K_d, pygame.K_RIGHT):
             self.player_square.velocity_x = 0
 
-    def handle_key_press_actions(self, event):
+    def key_press_actions(self, event):
         """Handle events related to key press."""
         if event.key == pygame.K_ESCAPE:
             return self.game_state.pause_menu_state
         elif event.key == pygame.K_SPACE:
             self.player_square.jump()
-
-    def handle_quit_event(self):
-        """Handle game quit event."""
-        pygame.quit()
-        quit()
 
     def set_pause_state(self, pause_state):
         """Set pause state for game state."""

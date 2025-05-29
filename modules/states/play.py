@@ -90,9 +90,9 @@ class Play(GameState):
     def handle_events(self, events):
         """Handle events for the game state."""
         event_handlers = {
-            pygame.QUIT: self.controller.handle_quit_event,
-            pygame.KEYDOWN: self.controller.handle_key_press_actions,
-            pygame.KEYUP: self.controller.handle_key_release,
+            pygame.QUIT: GameState.QUIT,
+            pygame.KEYDOWN: self.controller.key_press_actions,
+            pygame.KEYUP: self.controller.release_movement_key,
             pygame.MOUSEBUTTONDOWN: self.camera.handle_scroll_zoom,
         }
 
