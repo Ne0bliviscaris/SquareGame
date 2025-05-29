@@ -2,17 +2,16 @@ import pygame
 
 
 class Controller:
-    """Obsługa sterowania w grze."""
+    """Handles game controls."""
 
-    def __init__(self, squares, game_state, camera, agent):
-        """Inicjalizuje kontroler z danymi kwadratami."""
+    def __init__(self, squares, game_state, camera):
+        """Initialize controller with given squares."""
         self.squares = squares
         self.game_state = game_state
         self.camera = camera
-        self.agent = agent
 
     def handle_movement(self):
-        """Obsługuje zdarzenia związane z ciągłym naciśnięciem klawisza."""
+        """Handle events related to continuous key press."""
         keys = pygame.key.get_pressed()
 
         key_handlers = {
@@ -27,23 +26,22 @@ class Controller:
                 handler()
 
     def handle_key_release(self, event):
-        """Obsługuje zdarzenia związane z puszczeniem klawisza."""
+        """Handle events related to key release."""
         if event.key in (pygame.K_a, pygame.K_LEFT, pygame.K_d, pygame.K_RIGHT):
-            self.squares.velocity_x = 0  # Zresetuj prędkość x kwadratu
+            self.squares.velocity_x = 0
 
     def handle_key_press_actions(self, event):
-        """Obsługuje zdarzenia związane z naciśnięciem klawisza."""
+        """Handle events related to key press."""
         if event.key == pygame.K_ESCAPE:
             return self.game_state.pause_menu_state
         elif event.key == pygame.K_SPACE:
             self.squares.jump()
 
-    def handle_quit_event(self, event):
-        """Obsługuje zdarzenie wyjścia z gry."""
-        self.agent.save_model()
+    def handle_quit_event(self):
+        """Handle game quit event."""
         pygame.quit()
         quit()
 
     def set_pause_state(self, pause_state):
-        """Ustawia stan pauzy dla stanu gry."""
+        """Set pause state for game state."""
         self.pause_state = pause_state
