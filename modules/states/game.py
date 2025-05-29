@@ -44,14 +44,16 @@ class Game:
         for event in events:
             if self.global_event(event):
                 continue
-            new_state = self.current_state.handle_events(event)
-            if new_state is GameState.RESET:
+
+            event = self.current_state.handle_events(event)
+            if event == GameState.RESET:
                 self.new_game()
-            elif new_state == GameState.START_GAME:
+            elif event == GameState.START_GAME:
                 self.new_game()
-            elif new_state == GameState.RESUME_GAME:
-                print("Resuming game")
+            elif event == GameState.RESUME_GAME:
                 self.current_state = self.active_game
+            elif event == GameState.QUIT:
+                self.quit_game()
 
     def global_event(self, event):
         """Handle global events that are not specific to the current state."""
