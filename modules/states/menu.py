@@ -20,20 +20,16 @@ class MainMenuState(GameState):
         self.quit_button = Button.create(1, "Quit", GameState.QUIT)
         self.logo = pygame.image.load("assets/logo.png")
 
-    def handle_events(self, events):
-        for event in events:
-            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                DeepLearningAgent().save_model()
+    def handle_events(self, event):
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            action = self.start_button.update()
+            if action is not None:
+                return action
+            action = self.quit_button.update()
+            if action is not None:
                 pygame.quit()
                 quit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                action = self.start_button.update()
-                if action is not None:
-                    return action
-                action = self.quit_button.update()
-                if action is not None:
-                    pygame.quit()
-                    quit()
 
     def update(self):
         """Update the state of the start and quit buttons."""
@@ -58,27 +54,21 @@ class PauseMenuState:
         self.pause_surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
         self.pause_surface.fill((0, 60, 0, 255))
 
-    def handle_events(self, events):
-        for event in events:
-            if event.type == pygame.QUIT:
+    def handle_events(self, event):
+        """Handle events for the pause menu."""
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            action = self.resume_button.update()
+            if action is not None:
+                return action
+            action = self.replay_button.update()
+            if action is not None:
+                DeepLearningAgent().save_model()
+                return GameState.RESET
+            action = self.quit_button.update()
+            if action is not None:
+                DeepLearningAgent().save_model()
                 pygame.quit()
                 quit()
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                return self.running_game_state
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                action = self.resume_button.update()
-                if action is not None:
-                    return action
-                action = self.replay_button.update()
-                if action is not None:
-                    DeepLearningAgent().save_model()
-                    return GameState.RESET
-                action = self.quit_button.update()
-                if action is not None:
-                    DeepLearningAgent().save_model()
-                    pygame.quit()
-                    quit()
-        return self
 
     def update(self):
         """Update the state of resume and quit buttons."""

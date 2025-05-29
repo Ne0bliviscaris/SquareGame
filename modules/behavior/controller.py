@@ -4,10 +4,9 @@ import pygame
 class PlayerControls:
     """Handles game controls."""
 
-    def __init__(self, player_square, game_state):
+    def __init__(self, player_square):
         """Initialize controller with given squares."""
         self.player_square = player_square
-        self.game_state = game_state
 
     def player_movement(self):
         """Handle events related to continuous key press."""
@@ -31,9 +30,7 @@ class PlayerControls:
 
     def key_press_actions(self, event):
         """Handle events related to key press."""
-        if event.key == pygame.K_ESCAPE:
-            return self.game_state.pause_menu_state
-        elif event.key == pygame.K_SPACE:
+        if event.key == pygame.K_SPACE:
             self.player_square.jump()
 
     def set_pause_state(self, pause_state):

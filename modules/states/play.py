@@ -18,7 +18,7 @@ from modules.world.grid_builder import world_list
 class Play(GameState):
     """Main game state for running the game."""
 
-    def __init__(self, game_state):
+    def __init__(self):
         # AI
         self.agent = DeepLearningAgent()
         self.agent.load_model()
@@ -39,7 +39,7 @@ class Play(GameState):
         self.camera = Camera(self.squares[0], self.tiles, self.ground_tiles)
 
         self.player_square = self.squares[0]
-        self.controller = PlayerControls(self.player_square, game_state)
+        self.controller = PlayerControls(self.player_square)
 
         self.drawables = self.tiles + self.squares
 
@@ -87,21 +87,19 @@ class Play(GameState):
             )
         pygame.display.update()
 
-    def handle_events(self, events):
+    def handle_events(self, event):
         """Handle events for the game state."""
         event_handlers = {
-            pygame.QUIT: GameState.QUIT,
             pygame.KEYDOWN: self.controller.key_press_actions,
             pygame.KEYUP: self.controller.release_movement_key,
             pygame.MOUSEBUTTONDOWN: self.camera.handle_scroll_zoom,
         }
 
-        for event in events:
-            handler = event_handlers.get(event.type)
-            if handler:
-                new_state = handler(event)
-                if new_state is not None:
-                    return new_state
+        handler = event_handlers.get(event.type)
+        if handler:
+            new_state = handler(event)
+            if new_state is not None:
+                return new_state
 
         self.controller.player_movement()
 
