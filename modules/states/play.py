@@ -38,7 +38,8 @@ class Play(GameState):
 
         self.camera = Camera(self.squares[0], self.tiles, self.ground_tiles)
 
-        self.controller = PlayerControls(self.squares[0], game_state, self.camera)
+        self.player_square = self.squares[0]
+        self.controller = PlayerControls(self.player_square, game_state)
 
         self.drawables = self.tiles + self.squares
 
