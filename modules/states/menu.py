@@ -17,10 +17,9 @@ class MainMenu(GameState):
     def __init__(self):
         self.start_button = Button.create(0, "New Game", GameState.START_GAME)
         self.quit_button = Button.create(1, "Quit", GameState.QUIT)
-        self.logo = pygame.image.load("assets/logo.png")
 
     def handle_events(self, event):
-
+        """Handle events for the main menu."""
         if event.type == pygame.MOUSEBUTTONDOWN:
             action = self.start_button.update()
             if action is not None:
@@ -39,7 +38,7 @@ class MainMenu(GameState):
         """Draw menu on the screen."""
         self.start_button.draw()
         self.quit_button.draw()
-        display_logo(self.logo)
+        display_logo()
 
 
 class PauseMenu:
@@ -48,9 +47,11 @@ class PauseMenu:
         self.resume_button = Button.create(0, "Resume", GameState.RESUME_GAME)
         self.replay_button = Button.create(1, "Replay", GameState.RESET)
         self.quit_button = Button.create(2, "Quit", GameState.QUIT)
-        self.logo = pygame.image.load("assets/logo.png")
-        self.pause_surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
-        self.pause_surface.fill((0, 60, 0, 255))
+
+    def pause_background(self):
+        pause_surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+        pause_surface.fill((0, 60, 0, 255))
+        return pause_surface
 
     def handle_events(self, event):
         """Handle events for the pause menu."""
@@ -80,8 +81,8 @@ class PauseMenu:
 
     def draw(self):
         """Draw resume and quit buttons on the screen."""
-        SCREEN.blit(self.pause_surface, (0, 0))
-        display_logo(self.logo)
+        SCREEN.blit(self.pause_background(), (0, 0))
+        display_logo()
         self.resume_button.draw()
         self.replay_button.draw()
         self.quit_button.draw()
@@ -92,42 +93,9 @@ class PauseMenu:
         self.resume_button.action = running_game_state
 
 
-def display_logo(logo):
+def display_logo():
     """Display the game logo."""
+    logo = pygame.image.load("assets/logo.png")
     x = (SCREEN.get_width() - logo.get_width()) // 2
     y = 5
     SCREEN.blit(logo, (x, y))
-
-
-def main_menu(game_state, logo, start_button, quit_button):
-    """Handle the main menu of the game."""
-    main_menu_state = MainMenu(start_button, quit_button)
-
-    SCREEN.fill((0, 0, 0))
-
-    main_menu_state.update()
-    display_logo(logo)
-    main_menu_state.draw()
-    pygame.display.flip()
-
-    return game_state
-
-
-def pause_menu(game_state, logo, resume_button, quit_button):
-    """Handle the pause menu of the game."""
-    pause_surface = pygame.Surface(SCREEN.get_size(), pygame.SRCALPHA)
-    pause_surface.fill((0, 255, 0, 128))
-
-    pause_menu_state = PauseMenu(resume_button, quit_button)
-
-    display_logo(logo)
-
-    action = pause_menu_state.update()
-    if action is not None:
-        return action
-
-    pause_menu_state.draw()
-    SCREEN.blit(pause_surface, (0, 0))
-    pygame.display.flip()
-
-    return game_state
