@@ -21,10 +21,8 @@ class Play(GameState):
     def __init__(self):
         # AI
         self.agent = DeepLearningAgent()
-        self.agent.load_model()
 
         self.initialize_world()
-
         self.initialize_player()
 
         # AI
