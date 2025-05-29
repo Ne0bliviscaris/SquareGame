@@ -37,7 +37,7 @@ class Play(GameState):
         self.square_collisions = [SquareCollisions(square) for square in self.squares]
 
         self.player = self.squares[0]
-        self.camera = Camera(self.player, self.tiles)
+        self.camera = Camera(self.player, self.ground_tiles)
         self.controller = PlayerControls(self.player)
 
         self.drawables = self.tiles + self.squares
@@ -91,7 +91,7 @@ class Play(GameState):
         event_handlers = {
             pygame.KEYDOWN: self.controller.key_press_actions,
             pygame.KEYUP: self.controller.release_movement_key,
-            pygame.MOUSEBUTTONDOWN: self.camera.handle_scroll_zoom,
+            pygame.MOUSEBUTTONDOWN: self.camera.mouse_scroll_zoom,
         }
 
         handler = event_handlers.get(event.type)
