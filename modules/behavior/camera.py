@@ -7,28 +7,20 @@ ZOOM_IN_LIMIT = 0.5
 
 
 class Camera:
-    def __init__(self, square, tiles, ground_tiles):
+    def __init__(self, player, ground_tiles):
         """Inicjalizuje kamerę."""
-        self.square = square
-        self.tiles = tiles
+        self.player = player
+        self.tiles = ground_tiles
         self.zoom_level = 1
         self.target_zoom_level = 1  # Dla płynnego zoomu
-
-        # Ustaw przesunięcie kamery na środek świata gry
-        self.camera_offset_x = -WORLD_WIDTH / 2 + SCREEN_WIDTH / 2
-        self.camera_offset_y = 0
-
-        # Znajdź najniższy rząd kafelków Ground
-        self.ground_tiles = ground_tiles
-        self.lowest_row = max(tile.y for tile in ground_tiles)
 
     def calculate_target_offset(self):
         """Oblicza przesunięcie kamery, aby śledzić kwadrat."""
         # Ustalenie środkowych pozycji kwadratu i ekranu
         half_screen_width = SCREEN_WIDTH / 2
         half_screen_height = SCREEN_HEIGHT / 2
-        square_center_x = self.square.x + SQUARE_SIZE / 2
-        square_center_y = self.square.y + SQUARE_SIZE / 2
+        square_center_x = self.player.x + SQUARE_SIZE / 2
+        square_center_y = self.player.y + SQUARE_SIZE / 2
         self.target_offset_x = half_screen_width - square_center_x * self.zoom_level
         self.target_offset_y = half_screen_height - square_center_y * self.zoom_level
 
