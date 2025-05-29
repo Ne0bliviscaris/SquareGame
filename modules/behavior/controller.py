@@ -9,20 +9,20 @@ class PlayerControls:
         self.player_square = player_square
         self.game_state = game_state
 
-    def handle_movement(self):
+    def player_movement(self):
         """Handle events related to continuous key press."""
         keys = pygame.key.get_pressed()
 
-        key_handlers = {
+        key_mapping = {
             pygame.K_a: self.player_square.move_left,
             pygame.K_LEFT: self.player_square.move_left,
             pygame.K_d: self.player_square.move_right,
             pygame.K_RIGHT: self.player_square.move_right,
         }
 
-        for key, handler in key_handlers.items():
+        for key, action in key_mapping.items():
             if keys[key]:
-                handler()
+                action()
 
     def handle_key_release(self, event):
         """Handle events related to key release."""

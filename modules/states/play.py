@@ -49,7 +49,7 @@ class Play(GameState):
 
     def update(self):
         """Update the game state. Performed every frame."""
-        self.controller.handle_movement()
+        self.controller.player_movement()
         self.camera.update_zoom()
         self.camera.update_camera()
 
@@ -103,6 +103,6 @@ class Play(GameState):
                 if new_state is not None:
                     return new_state
 
-        self.controller.handle_movement()
+        self.controller.player_movement()
 
         return self
