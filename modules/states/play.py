@@ -26,7 +26,7 @@ class Play(GameState):
         self.initialize_player()
 
         # AI
-        self.vector_calculator = VectorCalculator(self.squares)
+        self.vectors = VectorCalculator(self.squares)
         self.deep_learning_data = DeepLearningData(self.squares)
         self.state_for_model = self.deep_learning_data.get_state()
 
@@ -81,7 +81,7 @@ class Play(GameState):
         self.squares[0].draw(self.camera.offset_x, self.camera.offset_y, self.camera.zoom_level)
 
         if DRAW_VECTORS:
-            self.vector_calculator.draw_vectors(self.camera.zoom_level, self.camera.offset_x, self.camera.offset_y)
+            self.vectors.draw_vectors(self.camera.zoom_level, self.camera.offset_x, self.camera.offset_y)
         pygame.display.update()
 
     def handle_events(self, event):
