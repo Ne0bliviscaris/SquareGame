@@ -70,7 +70,8 @@ class Camera:
         elif mouse_roll_down and can_zoom_out:
             self.target_zoom_level /= ZOOM_STEP
 
-    def update_camera(self):
+    def update(self):
+        self.update_zoom()
         self.calculate_target_offset()
         self.limit_camera_offset()
         self.update_camera_offset()

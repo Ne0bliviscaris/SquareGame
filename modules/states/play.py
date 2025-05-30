@@ -49,9 +49,15 @@ class Play(GameState):
     def update(self):
         """Update the game state. Performed every frame."""
         self.controller.player_movement()
-        self.camera.update_zoom()
-        self.camera.update_camera()
+        self.camera.update()
 
+        self.update_squares_and_collisions()
+
+        # AI
+        self.state_for_model = self.deep_learning_data.get_state()
+
+    def update_squares_and_collisions(self):
+        """Update squares and collisions"""
         current_frame = zip(self.squares, self.world_collisions, self.square_collisions)
         for square, world_collision, square_collision in current_frame:
             if square is self.player:
@@ -61,9 +67,6 @@ class Play(GameState):
 
             world_collision.handle_collisions_around(self.world_tiles)
             square_collision.handle_square_collisions(self.squares)
-
-        # AI
-        self.state_for_model = self.deep_learning_data.get_state()
 
     def draw(self):
         """Draw the game state to the screen. Performed every frame."""
