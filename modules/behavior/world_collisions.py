@@ -2,6 +2,7 @@ from modules.objects.tiles import Ground
 from modules.settings import GRID_PULLING_RANGE, SQUARE_SIZE, TILE_SIZE
 
 CANT_JUMP = 1 - GRID_PULLING_RANGE
+COLLISION_DISTANCE = SQUARE_SIZE + 1
 
 
 class WorldCollisions:
@@ -11,14 +12,15 @@ class WorldCollisions:
         """Inicjalizuje obiekt kolizji dla danego kwadratu."""
         self.square = square
 
-    def get_nearby_tiles(self, tiles, distance):
+    def get_nearby_tiles(self, tiles):
         """Zwraca listę kafelków, które są w danym dystansie od kwadratu."""
-        return [tile for tile in tiles if self._is_tile_nearby(tile, distance)]
+        return [tile for tile in tiles if self._in_collision_range(tile)]
 
-    def _is_tile_nearby(self, tile, distance):
+    def _in_collision_range(self, tile):
         """Sprawdza, czy dany kafelek jest w określonym dystansie od kwadratu."""
-        is_x_nearby = abs(tile.x - self.square.x) <= distance
-        is_y_nearby = abs(tile.y - self.square.y) <= distance
+        is_x_nearby = abs(tile.x - self.square.x) <= COLLISION_DISTANCE
+        is_y_nearby = abs(tile.y - self.square.y) <= COLLISION_DISTANCE
+
         return is_x_nearby and is_y_nearby
 
     def handle_falling_collision(self, tile):
@@ -72,9 +74,9 @@ class WorldCollisions:
         elif is_moving_horizontally:
             self.handle_horizontal_collision(tile, is_moving_left)
 
-    def handle_collisions_around(self, tiles):
+    def handle_collisions_around(self, ground_tiles):
         """Sprawdza kolizje między kwadratem a wszystkimi kafelkami i innymi kwadratami."""
-        nearby_tiles = self.get_nearby_tiles(tiles, SQUARE_SIZE * 2)  # Użyj rozmiaru kwadratu jako dystansu
+        nearby_tiles = self.get_nearby_tiles(ground_tiles)
         for tile in nearby_tiles:
-            if isinstance(tile, Ground) and tile.collides_with(self.square):
+            if tile.collides_with(self.square):
                 self.handle_collision(tile)

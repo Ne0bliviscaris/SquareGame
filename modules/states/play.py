@@ -65,7 +65,7 @@ class Play(GameState):
             else:
                 square.update(self.squares, self.state_for_model)
 
-            world_collision.handle_collisions_around(self.world_tiles)
+            world_collision.handle_collisions_around(self.ground_tiles)
             square_collision.handle_square_collisions(self.squares)
 
     def draw(self):
