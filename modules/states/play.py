@@ -81,9 +81,7 @@ class Play(GameState):
         self.squares[0].draw(self.camera.offset_x, self.camera.offset_y, self.camera.zoom_level)
 
         if DRAW_VECTORS:
-            self.vector_calculator.draw_vectors(
-                SCREEN, self.camera.zoom_level, self.camera.offset_x, self.camera.offset_y
-            )
+            self.vector_calculator.draw_vectors(self.camera.zoom_level, self.camera.offset_x, self.camera.offset_y)
         pygame.display.update()
 
     def handle_events(self, event):
