@@ -71,17 +71,12 @@ class Play(GameState):
 
     def draw(self):
         """Draw the game state to the screen. Performed every frame."""
-        SCREEN.fill((0, 38, 52))
-
-        # Draw all objects considering camera offset and zoom level
-        for drawable in self.drawables:
-            if drawable is not self.squares[0]:
-                drawable.draw(self.camera.offset_x, self.camera.offset_y, self.camera.zoom_level)
-
-        self.squares[0].draw(self.camera.offset_x, self.camera.offset_y, self.camera.zoom_level)
+        self.draw_out_of_bounds_bg()
+        self.draw_all_objects()
 
         if DRAW_VECTORS:
             self.vectors.draw_vectors(self.camera.zoom_level, self.camera.offset_x, self.camera.offset_y)
+
         pygame.display.update()
 
     def handle_events(self, event):
@@ -101,3 +96,13 @@ class Play(GameState):
         self.controller.player_movement()
 
         return self
+
+    def draw_all_objects(self):
+        """Draw all objects considering camera offset and zoom level. Player is drawn on top."""
+        for drawable in self.drawables[1:]:
+            drawable.draw(self.camera.offset_x, self.camera.offset_y, self.camera.zoom_level)
+
+        self.player.draw(self.camera.offset_x, self.camera.offset_y, self.camera.zoom_level)
+
+    def draw_out_of_bounds_bg(self):
+        SCREEN.fill((0, 38, 52))
