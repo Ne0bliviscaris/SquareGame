@@ -22,11 +22,11 @@ class Play(GameState):
         # AI
         self.agent = DeepLearningAgent()
 
-        self.initialize_world()
+        self.initialize_game()
         self.initialize_player()
 
-        # AI
         self.vectors = VectorCalculator(self.squares)
+        # AI
         self.deep_learning_data = DeepLearningData(self.squares)
         self.state_for_model = self.deep_learning_data.get_state()
 
@@ -36,7 +36,7 @@ class Play(GameState):
         self.camera = Camera(self.player, self.ground_tiles)
         self.controller = PlayerControls(self.player)
 
-    def initialize_world(self):
+    def initialize_game(self):
         """Initialize the game world with squares and tiles."""
         self.world_tiles = world_list
         self.ground_tiles = [tile for tile in self.world_tiles if isinstance(tile, Ground)]
@@ -52,22 +52,18 @@ class Play(GameState):
         self.camera.update_zoom()
         self.camera.update_camera()
 
-        for square, world_collision, square_collision in zip(
-            self.squares, self.world_collisions, self.square_collisions
-        ):
-            if isinstance(square, Npc):
-                square.update(self.squares, self.state_for_model)
+        current_frame = zip(self.squares, self.world_collisions, self.square_collisions)
+        for square, world_collision, square_collision in current_frame:
+            if square is self.player:
+                self.player.update(self.squares)
             else:
-                square.update(self.squares)
+                square.update(self.squares, self.state_for_model)
+
             world_collision.handle_collisions_around(self.world_tiles)
             square_collision.handle_square_collisions(self.squares)
 
         # AI
         self.state_for_model = self.deep_learning_data.get_state()
-
-        for square in self.squares:
-            if isinstance(square, Npc):
-                square.update(self.squares, self.state_for_model)
 
     def draw(self):
         """Draw the game state to the screen. Performed every frame."""
