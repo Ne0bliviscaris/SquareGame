@@ -12,6 +12,13 @@ class WorldCollisions:
         """Initializes the collision object for a given square."""
         self.square = square
 
+    def handle_collisions_around(self, ground_tiles):
+        """Checks for collisions between the square and all ground tiles."""
+        nearby_tiles = self.get_nearby_tiles(ground_tiles)
+        for tile in nearby_tiles:
+            if tile.collides_with(self.square):
+                self.handle_collision(tile)
+
     def get_nearby_tiles(self, tiles):
         """Returns a list of tiles that are within a given distance from the square."""
         return [tile for tile in tiles if self._in_collision_range(tile)]
@@ -22,6 +29,22 @@ class WorldCollisions:
         is_y_nearby = abs(tile.y - self.square.y) <= COLLISION_DISTANCE
 
         return is_x_nearby and is_y_nearby
+
+    def handle_collision(self, tile):
+        """Handles the collision of the square with a given tile."""
+        is_above = self.square.y < tile.y
+        is_falling = self.square.velocity_y > 0
+        is_below = self.square.y > tile.y
+        is_rising = self.square.velocity_y < 0
+        is_moving_horizontally = self.square.velocity_x != 0
+        is_moving_left = self.square.x > tile.x and self.square.velocity_x < 0
+
+        if is_above and is_falling:
+            self.handle_falling_collision(tile)
+        elif is_below and is_rising:
+            self.handle_rising_collision(tile)
+        elif is_moving_horizontally:
+            self.handle_horizontal_collision(tile, is_moving_left)
 
     def handle_falling_collision(self, tile):
         """Handles the collision of the square with a given tile while falling."""
@@ -56,26 +79,3 @@ class WorldCollisions:
             self.square.x = tile.x + SQUARE_SIZE
         else:
             self.square.x = tile.x - SQUARE_SIZE
-
-    def handle_collision(self, tile):
-        """Handles the collision of the square with a given tile."""
-        is_above = self.square.y < tile.y
-        is_falling = self.square.velocity_y > 0
-        is_below = self.square.y > tile.y
-        is_rising = self.square.velocity_y < 0
-        is_moving_horizontally = self.square.velocity_x != 0
-        is_moving_left = self.square.x > tile.x and self.square.velocity_x < 0
-
-        if is_above and is_falling:
-            self.handle_falling_collision(tile)
-        elif is_below and is_rising:
-            self.handle_rising_collision(tile)
-        elif is_moving_horizontally:
-            self.handle_horizontal_collision(tile, is_moving_left)
-
-    def handle_collisions_around(self, ground_tiles):
-        """Checks for collisions between the square and all ground tiles."""
-        nearby_tiles = self.get_nearby_tiles(ground_tiles)
-        for tile in nearby_tiles:
-            if tile.collides_with(self.square):
-                self.handle_collision(tile)
