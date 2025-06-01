@@ -6,30 +6,30 @@ COLLISION_DISTANCE = SQUARE_SIZE + 1
 
 
 class WorldCollisions:
-    """Klasa do obsługi kolizji kwadratu."""
+    """Handles collisions for the square."""
 
     def __init__(self, square):
-        """Inicjalizuje obiekt kolizji dla danego kwadratu."""
+        """Initializes the collision object for a given square."""
         self.square = square
 
     def get_nearby_tiles(self, tiles):
-        """Zwraca listę kafelków, które są w danym dystansie od kwadratu."""
+        """Returns a list of tiles that are within a given distance from the square."""
         return [tile for tile in tiles if self._in_collision_range(tile)]
 
     def _in_collision_range(self, tile):
-        """Sprawdza, czy dany kafelek jest w określonym dystansie od kwadratu."""
+        """Checks if a given tile is within a specified distance from the square."""
         is_x_nearby = abs(tile.x - self.square.x) <= COLLISION_DISTANCE
         is_y_nearby = abs(tile.y - self.square.y) <= COLLISION_DISTANCE
 
         return is_x_nearby and is_y_nearby
 
     def handle_falling_collision(self, tile):
-        """Obsługuje kolizję kwadratu z danym kafelkiem podczas spadania."""
+        """Handles the collision of the square with a given tile while falling."""
         self.square.velocity_y = 0
-        self.square.move(0, tile.y - SQUARE_SIZE - self.square.y)  # Przesuń kwadrat do kafelka
+        self.square.move(0, tile.y - SQUARE_SIZE - self.square.y)
 
     def handle_rising_collision(self, tile):
-        """Obsługuje kolizję kwadratu z danym kafelkiem podczas skoku."""
+        """Handles the collision of the square with a given tile during a jump."""
         is_below_ground = self.square.y > tile.y + TILE_SIZE
 
         left_threshold = tile.x - SQUARE_SIZE * GRID_PULLING_RANGE
@@ -50,7 +50,7 @@ class WorldCollisions:
                 self.square.velocity_y = 0
 
     def handle_horizontal_collision(self, tile, is_moving_left):
-        """Obsługuje kolizję kwadratu z danym kafelkiem podczas ruchu poziomego."""
+        """Handles the collision of the square with a given tile during horizontal movement."""
         self.square.velocity_x = 0
         if is_moving_left:
             self.square.x = tile.x + SQUARE_SIZE
@@ -58,8 +58,7 @@ class WorldCollisions:
             self.square.x = tile.x - SQUARE_SIZE
 
     def handle_collision(self, tile):
-        """Obsługuje kolizję kwadratu z danym kafelkiem."""
-        # Warunki kolizji
+        """Handles the collision of the square with a given tile."""
         is_above = self.square.y < tile.y
         is_falling = self.square.velocity_y > 0
         is_below = self.square.y > tile.y
@@ -75,7 +74,7 @@ class WorldCollisions:
             self.handle_horizontal_collision(tile, is_moving_left)
 
     def handle_collisions_around(self, ground_tiles):
-        """Sprawdza kolizje między kwadratem a wszystkimi kafelkami i innymi kwadratami."""
+        """Checks for collisions between the square and all ground tiles."""
         nearby_tiles = self.get_nearby_tiles(ground_tiles)
         for tile in nearby_tiles:
             if tile.collides_with(self.square):
